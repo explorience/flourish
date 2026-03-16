@@ -1,0 +1,88 @@
+import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { PotluckDetailClient } from "./potluck-detail-client";
+import type { Metadata } from "next";
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const supabase = await createClient();
+    const { data: potluck } = await supabase
+      .from("potlucks")
+      .select("title, description, banner_url")
+      .eq("slug", slug)
+      .single();
+
+    if (!potluck) return { title: "Potluck Not Found" };
+
+    return {
+      title: `${potluck.title} — Potluck`,
+      description: potluck.description,
+      openGraph: {
+        title: potluck.title,
+        description: potluck.description,
+        images: potluck.banner_url ? [potluck.banner_url] : [],
+      },
+    };
+  } catch {
+    return { title: "Potluck" };
+  }
+}
+
+export default async function PotluckPage({ params }: PageProps) {
+  const { slug } = await params;
+  let potluck = null;
+  let needs: any[] = [];
+  let offers: any[] = [];
+  let host = null;
+
+  try {
+    const supabase = await createClient();
+
+    const { data: potluckData, error } = await supabase
+      .from("potlucks")
+      .select("*")
+      .eq("slug", slug)
+      .single();
+
+    if (error || !potluckData) return notFound();
+    potluck = potluckData;
+
+    const [needsRes, offersRes, hostRes] = await Promise.all([
+      supabase
+        .from("needs")
+        .select("*, claims(*)")
+        .eq("potluck_id", potluck.id)
+        .order("sort_order"),
+      supabase
+        .from("offers")
+        .select("*")
+        .eq("potluck_id", potluck.id)
+        .order("created_at"),
+      supabase
+        .from("profiles")
+        .select("id, display_name, avatar_url")
+        .eq("id", potluck.host_id)
+        .single(),
+    ]);
+
+    needs = needsRes.data || [];
+    offers = offersRes.data || [];
+    host = hostRes.data;
+  } catch {
+    return notFound();
+  }
+
+  return (
+    <PotluckDetailClient
+      potluck={potluck}
+      initialNeeds={needs}
+      initialOffers={offers}
+      host={host}
+    />
+  );
+}
