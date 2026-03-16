@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { PotluckDetailClient } from "./potluck-detail-client";
 import type { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -48,8 +49,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export default async function PotluckPage({ params }: PageProps) {
+export default async function PotluckPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
+  const sp = await searchParams;
+  const inviteCode = typeof sp.invite === "string" ? sp.invite : undefined;
+
   let potluck = null;
   let needs: any[] = [];
   let offers: any[] = [];
@@ -58,11 +62,39 @@ export default async function PotluckPage({ params }: PageProps) {
   try {
     const supabase = await createClient();
 
-    const { data: potluckData, error } = await supabase
+    let potluckData: any = null;
+    let error: any = null;
+
+    const result = await supabase
       .from("potlucks")
       .select("*")
       .eq("slug", slug)
       .single();
+
+    potluckData = result.data;
+    error = result.error;
+
+    if ((error || !potluckData) && inviteCode) {
+      const serviceClient = await createServiceClient();
+      const inviteCheck = await serviceClient
+        .from("invites")
+        .select("potluck_id")
+        .eq("code", inviteCode)
+        .single();
+
+      if (inviteCheck.data) {
+        const fallback = await serviceClient
+          .from("potlucks")
+          .select("*")
+          .eq("slug", slug)
+          .single();
+
+        if (fallback.data && fallback.data.id === inviteCheck.data.potluck_id) {
+          potluckData = fallback.data;
+          error = null;
+        }
+      }
+    }
 
     if (error || !potluckData) return notFound();
     potluck = potluckData;

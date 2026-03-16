@@ -10,6 +10,8 @@ import { VerificationPanel } from "@/components/verification-panel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import {
   Copy,
   ExternalLink,
@@ -17,10 +19,17 @@ import {
   CheckCircle,
   Plus,
   Loader2,
+  Mail,
+  Send,
+  Link as LinkIcon,
+  Check,
+  Clock,
+  Trash2,
+  Share2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDateTime, getClaimProgress } from "@/lib/utils";
-import type { Potluck, NeedWithClaims, Offer } from "@/types/database";
+import type { Potluck, NeedWithClaims, Offer, Invite } from "@/types/database";
 
 export default function ManagePotluckPage() {
   const params = useParams();
@@ -33,8 +42,11 @@ export default function ManagePotluckPage() {
   const [potluck, setPotluck] = useState<Potluck | null>(null);
   const [rawNeeds, setRawNeeds] = useState<NeedWithClaims[]>([]);
   const [rawOffers, setRawOffers] = useState<Offer[]>([]);
+  const [invites, setInvites] = useState<Invite[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"overview" | "verify">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "verify" | "invites">("overview");
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [sendingInvites, setSendingInvites] = useState(false);
 
   const { needs, refetchNeeds } = useRealtimeClaims(potluck?.id || "", rawNeeds);
   const { offers, refetchOffers } = useRealtimeOffers(potluck?.id || "", rawOffers);
@@ -53,7 +65,7 @@ export default function ManagePotluckPage() {
 
     setPotluck(potluckData);
 
-    const [needsRes, offersRes] = await Promise.all([
+    const [needsRes, offersRes, invitesRes] = await Promise.all([
       supabase
         .from("needs")
         .select("*, claims(*)")
@@ -64,10 +76,16 @@ export default function ManagePotluckPage() {
         .select("*")
         .eq("potluck_id", potluckData.id)
         .order("created_at"),
+      supabase
+        .from("invites")
+        .select("*")
+        .eq("potluck_id", potluckData.id)
+        .order("created_at", { ascending: false }),
     ]);
 
     setRawNeeds((needsRes.data as NeedWithClaims[]) || []);
     setRawOffers(offersRes.data || []);
+    setInvites(invitesRes.data || []);
     setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug, router]);
@@ -103,6 +121,80 @@ export default function ManagePotluckPage() {
   const deleteNeed = async (needId: string) => {
     const { error } = await supabase.from("needs").delete().eq("id", needId);
     if (!error) refetchNeeds();
+  };
+
+  const sendInvites = async () => {
+    const raw = inviteEmail.trim();
+    if (!raw) return;
+
+    const emails = raw
+      .split(/[,;\s]+/)
+      .map((e) => e.trim().toLowerCase())
+      .filter((e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
+
+    if (emails.length === 0) {
+      toast.error("Please enter valid email addresses.");
+      return;
+    }
+
+    const existing = new Set(invites.map((i) => i.email.toLowerCase()));
+    const newEmails = emails.filter((e) => !existing.has(e));
+    if (newEmails.length === 0) {
+      toast.error("All emails have already been invited.");
+      return;
+    }
+
+    setSendingInvites(true);
+    try {
+      const res = await fetch(`/api/potlucks/${slug}/invite`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emails: newEmails }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || "Failed to send invites.");
+        return;
+      }
+      const emailsSent = data.emailsSent || 0;
+      if (emailsSent > 0) {
+        toast.success(`${emailsSent} invite email(s) sent!`);
+      } else {
+        toast.success(`${newEmails.length} invite(s) created! Share the links below.`);
+      }
+      setInviteEmail("");
+      fetchData();
+    } catch {
+      toast.error("Failed to send invites.");
+    } finally {
+      setSendingInvites(false);
+    }
+  };
+
+  const copyInviteLink = (code: string) => {
+    const url = `${window.location.origin}/invite/${code}`;
+    navigator.clipboard.writeText(url);
+    toast.success("Invite link copied!");
+  };
+
+  const shareInvite = (invite: Invite) => {
+    const link = `${window.location.origin}/invite/${invite.code}`;
+    const subject = encodeURIComponent(`You're invited to ${potluck?.title || "a Potluck"}!`);
+    const body = encodeURIComponent(
+      `Hey! You're invited to "${potluck?.title}".\n\n` +
+      `📅 ${potluck ? formatDateTime(potluck.event_date) : ""}\n` +
+      `📍 ${potluck?.location || ""}\n\n` +
+      `Join here: ${link}`
+    );
+    window.open(`mailto:${invite.email}?subject=${subject}&body=${body}`);
+  };
+
+  const deleteInvite = async (inviteId: string) => {
+    const { error } = await supabase.from("invites").delete().eq("id", inviteId);
+    if (!error) {
+      setInvites((prev) => prev.filter((i) => i.id !== inviteId));
+      toast.success("Invite removed.");
+    }
   };
 
   if (loading || authLoading) {
@@ -207,6 +299,22 @@ export default function ManagePotluckPage() {
           <CheckCircle className="inline mr-1.5 h-4 w-4" />
           Verify
         </button>
+        <button
+          onClick={() => setActiveTab("invites")}
+          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+            activeTab === "invites"
+              ? "border-primary text-primary"
+              : "border-transparent text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          <Mail className="inline mr-1.5 h-4 w-4" />
+          Invites
+          {invites.length > 0 && (
+            <Badge variant="secondary" className="ml-1.5 h-5 px-1.5 text-[10px]">
+              {invites.length}
+            </Badge>
+          )}
+        </button>
       </div>
 
       {activeTab === "overview" && (
@@ -276,6 +384,148 @@ export default function ManagePotluckPage() {
             />
           </CardContent>
         </Card>
+      )}
+
+      {activeTab === "invites" && (
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Send className="h-5 w-5" />
+                Send Invites
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-3">
+                Enter email addresses to invite people to this potluck.
+                They&apos;ll get a unique link to join.
+              </p>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="email@example.com, friend@example.com"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") sendInvites(); }}
+                  className="flex-1"
+                />
+                <Button
+                  onClick={sendInvites}
+                  disabled={sendingInvites || !inviteEmail.trim()}
+                >
+                  {sendingInvites ? (
+                    <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Plus className="mr-1.5 h-4 w-4" />
+                  )}
+                  Invite
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                Separate multiple emails with commas, semicolons, or spaces.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Invited Guests
+                </span>
+                <span className="text-sm font-normal text-muted-foreground">
+                  {invites.filter((i) => i.accepted).length}/{invites.length} accepted
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {invites.length === 0 ? (
+                <div className="text-center py-8">
+                  <Mail className="h-10 w-10 mx-auto text-muted-foreground/40 mb-3" />
+                  <p className="text-muted-foreground">
+                    No invites sent yet.
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Add email addresses above to invite people.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {invites.map((invite) => (
+                    <div
+                      key={invite.id}
+                      className="flex items-center gap-3 p-3 rounded-lg border"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">
+                          {invite.email}
+                        </p>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          {invite.accepted ? (
+                            <span className="flex items-center gap-1 text-xs text-green-600">
+                              <Check className="h-3 w-3" />
+                              Accepted
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <Clock className="h-3 w-3" />
+                              Pending
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => copyInviteLink(invite.code)}
+                          title="Copy invite link"
+                        >
+                          <LinkIcon className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => shareInvite(invite)}
+                          title="Send via email"
+                        >
+                          <Share2 className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-destructive hover:text-destructive"
+                          onClick={() => deleteInvite(invite.id)}
+                          title="Remove invite"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {potluck.access_level !== "invite_only" && (
+            <Card className="border-dashed">
+              <CardContent className="p-4">
+                <p className="text-sm text-muted-foreground">
+                  <strong>Tip:</strong> This potluck is set to{" "}
+                  <Badge variant="outline" className="mx-1">
+                    {potluck.access_level === "public" ? "Public" : "Link Only"}
+                  </Badge>
+                  — anyone with the link can view it. Switch to{" "}
+                  <strong>Invite Only</strong> if you want to restrict access to
+                  only invited guests.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       )}
     </div>
   );
