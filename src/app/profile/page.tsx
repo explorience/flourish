@@ -116,14 +116,14 @@ export default function ProfilePage() {
   if (!profile) return null;
 
   return (
-    <div className="container max-w-3xl py-8 space-y-6">
+    <div className="container max-w-3xl py-6 md:py-8 space-y-5 md:space-y-6">
       {/* Profile header */}
       <Card>
-        <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <Avatar className="h-16 w-16">
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <Avatar className="h-12 w-12 sm:h-16 sm:w-16">
               <AvatarImage src={profile.avatar_url || undefined} />
-              <AvatarFallback className="text-xl bg-warm-green text-white">
+              <AvatarFallback className="text-base sm:text-xl bg-warm-green text-white">
                 {profile.display_name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
@@ -167,35 +167,35 @@ export default function ProfilePage() {
 
           <Separator className="my-4" />
 
-          <div className="grid grid-cols-3 gap-4 text-center">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
             <div>
-              <div className="flex items-center justify-center gap-1.5 text-warm-golden">
-                <Trophy className="h-5 w-5" />
-                <span className="text-2xl font-bold">
+              <div className="flex items-center justify-center gap-1 sm:gap-1.5 text-warm-golden">
+                <Trophy className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="text-xl sm:text-2xl font-bold">
                   {profile.total_points}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Potluck Points
+              <p className="text-[11px] sm:text-xs text-muted-foreground mt-1">
+                Points
               </p>
             </div>
             <div>
-              <div className="flex items-center justify-center gap-1.5 text-warm-green">
-                <ChefHat className="h-5 w-5" />
-                <span className="text-2xl font-bold">
+              <div className="flex items-center justify-center gap-1 sm:gap-1.5 text-warm-green">
+                <ChefHat className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="text-xl sm:text-2xl font-bold">
                   {hostedPotlucks.length}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">Hosted</p>
+              <p className="text-[11px] sm:text-xs text-muted-foreground mt-1">Hosted</p>
             </div>
             <div>
-              <div className="flex items-center justify-center gap-1.5 text-warm-terracotta">
-                <Users className="h-5 w-5" />
-                <span className="text-2xl font-bold">
+              <div className="flex items-center justify-center gap-1 sm:gap-1.5 text-warm-terracotta">
+                <Users className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="text-xl sm:text-2xl font-bold">
                   {participatedPotlucks.length}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-[11px] sm:text-xs text-muted-foreground mt-1">
                 Participated
               </p>
             </div>

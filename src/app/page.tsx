@@ -48,24 +48,24 @@ export default async function HomePage({
     <div className="min-h-screen">
       {/* Hero */}
       <section className="border-b bg-gradient-to-b from-warm-cream to-background">
-        <div className="container py-16 md:py-24 text-center space-y-6">
+        <div className="container py-12 md:py-24 text-center space-y-5 md:space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-warm-golden-light/50 text-sm text-foreground">
             <Sparkles className="h-3.5 w-3.5" />
             Coordination made simple
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-balance max-w-3xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight text-balance max-w-3xl mx-auto">
             What do we need?{" "}
             <span className="text-warm-green">Who&apos;s bringing what?</span>
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto text-balance">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto text-balance">
             Create a potluck, share it with your people, and let everyone claim
             what to bring. Simple, beautiful coordination.
           </p>
-          <div className="flex items-center justify-center gap-3">
-            <Button size="lg" asChild>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Button size="lg" className="w-full sm:w-auto" asChild>
               <Link href="/create">Create a Potluck</Link>
             </Button>
-            <Button variant="outline" size="lg" asChild>
+            <Button variant="outline" size="lg" className="w-full sm:w-auto" asChild>
               <Link href="#potlucks">Browse Potlucks</Link>
             </Button>
           </div>

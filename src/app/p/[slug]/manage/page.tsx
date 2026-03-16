@@ -118,22 +118,23 @@ export default function ManagePotluckPage() {
   const progress = getClaimProgress(needs);
 
   return (
-    <div className="container max-w-4xl py-8 space-y-6">
+    <div className="container max-w-4xl py-6 md:py-8 space-y-5 md:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-        <div>
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
           <Badge variant="outline" className="mb-2">
             Host Dashboard
           </Badge>
-          <h1 className="text-3xl font-bold">{potluck.title}</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold truncate">{potluck.title}</h1>
+          <p className="text-sm sm:text-base text-muted-foreground mt-1">
             {formatDateTime(potluck.event_date)} · {potluck.location}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <Button variant="outline" size="sm" onClick={copyLink}>
             <Copy className="mr-1.5 h-3.5 w-3.5" />
-            Copy Link
+            <span className="hidden sm:inline">Copy Link</span>
+            <span className="sm:hidden">Copy</span>
           </Button>
           <Button
             variant="outline"
@@ -262,7 +263,7 @@ export default function ManagePotluckPage() {
 
       {activeTab === "verify" && (
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <VerificationPanel
               potluckSlug={slug}
               needs={needs}

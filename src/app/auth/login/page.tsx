@@ -78,7 +78,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-8">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="text-4xl mb-2">🍲</div>

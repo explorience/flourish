@@ -66,11 +66,11 @@ export function NeedsBuilder({
         {needs.map((need, index) => (
           <div
             key={need.id}
-            className="flex items-center gap-2 p-3 rounded-lg border bg-card group"
+            className="flex flex-wrap items-center gap-2 p-3 rounded-lg border bg-card group"
           >
             <button
               type="button"
-              className="cursor-grab text-muted-foreground hover:text-foreground shrink-0"
+              className="cursor-grab text-muted-foreground hover:text-foreground shrink-0 hidden sm:block"
               title="Drag to reorder"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => {
@@ -89,7 +89,7 @@ export function NeedsBuilder({
               placeholder="What's needed?"
               value={need.name}
               onChange={(e) => updateNeed(need.id, { name: e.target.value })}
-              className="flex-1"
+              className="flex-1 min-w-[120px]"
             />
 
             <div className="flex items-center gap-1 shrink-0">
@@ -104,7 +104,7 @@ export function NeedsBuilder({
                     quantity: Math.max(1, parseInt(e.target.value) || 1),
                   })
                 }
-                className="w-16 text-center"
+                className="w-14 sm:w-16 text-center"
               />
             </div>
 
@@ -120,7 +120,7 @@ export function NeedsBuilder({
                       point_value: parseInt(e.target.value) || 0,
                     })
                   }
-                  className="w-16 text-center"
+                  className="w-14 sm:w-16 text-center"
                 />
               </div>
             )}

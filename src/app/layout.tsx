@@ -25,7 +25,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased min-h-screen`}>
         <Navbar />
         <main className="min-h-[calc(100vh-4rem)]">{children}</main>
-        <Toaster position="bottom-right" richColors />
+        <Toaster position="bottom-center" richColors toastOptions={{ className: "sm:ml-auto sm:mr-0" }} />
       </body>
     </html>
   );

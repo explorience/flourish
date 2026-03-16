@@ -37,7 +37,7 @@ export function PotluckDetailClient({
     );
 
   return (
-    <div className="container max-w-3xl py-8 space-y-6">
+    <div className="container max-w-3xl py-6 md:py-8 space-y-5 md:space-y-6">
       {/* Banner */}
       {potluck.banner_url ? (
         <div className="aspect-[16/9] w-full rounded-xl overflow-hidden">
@@ -55,27 +55,29 @@ export function PotluckDetailClient({
 
       {/* Header */}
       <div className="space-y-3">
-        <div className="flex items-start justify-between gap-4">
-          <h1 className="text-3xl font-bold">{potluck.title}</h1>
-          <Badge variant="outline" className="shrink-0 flex items-center gap-1">
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="text-2xl sm:text-3xl font-bold">{potluck.title}</h1>
+          <Badge variant="outline" className="shrink-0 flex items-center gap-1 text-xs">
             {accessIcon}
-            {potluck.access_level === "public"
-              ? "Public"
-              : potluck.access_level === "link_shared"
-                ? "Link Shared"
-                : "Invite Only"}
+            <span className="hidden sm:inline">
+              {potluck.access_level === "public"
+                ? "Public"
+                : potluck.access_level === "link_shared"
+                  ? "Link Shared"
+                  : "Invite Only"}
+            </span>
           </Badge>
         </div>
 
-        <p className="text-muted-foreground">{potluck.description}</p>
+        <p className="text-sm sm:text-base text-muted-foreground">{potluck.description}</p>
 
-        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
-            <Calendar className="h-4 w-4" />
+            <Calendar className="h-4 w-4 shrink-0" />
             <span>{formatDateTime(potluck.event_date)}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <MapPin className="h-4 w-4" />
+            <MapPin className="h-4 w-4 shrink-0" />
             <span>{potluck.location}</span>
           </div>
         </div>
@@ -102,8 +104,8 @@ export function PotluckDetailClient({
 
       {/* Needs */}
       <Card>
-        <CardContent className="p-6">
-          <h2 className="text-xl font-semibold mb-4">What&apos;s Needed</h2>
+        <CardContent className="p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-semibold mb-4">What&apos;s Needed</h2>
           <NeedsList
             needs={needs}
             potluckId={potluck.id}
@@ -115,7 +117,7 @@ export function PotluckDetailClient({
       {/* Offers */}
       {potluck.open_offers && (
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <OfferSection
               potluckId={potluck.id}
               offers={offers}
@@ -127,7 +129,7 @@ export function PotluckDetailClient({
 
       {potluck.points_enabled && (
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span className="text-lg">🏆</span>
               <span>

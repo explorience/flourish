@@ -29,10 +29,15 @@ export function Navbar() {
             <>
               {user ? (
                 <>
-                  <Button asChild size="sm">
+                  <Button asChild size="sm" className="hidden sm:inline-flex">
                     <Link href="/create">
                       <Plus className="mr-1.5 h-4 w-4" />
                       New Potluck
+                    </Link>
+                  </Button>
+                  <Button asChild size="icon" variant="outline" className="sm:hidden h-9 w-9">
+                    <Link href="/create">
+                      <Plus className="h-4 w-4" />
                     </Link>
                   </Button>
 
