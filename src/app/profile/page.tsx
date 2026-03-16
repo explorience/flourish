@@ -17,6 +17,7 @@ import {
   Loader2,
   Pencil,
   Check,
+  Camera,
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDate } from "@/lib/utils";
@@ -32,6 +33,9 @@ export default function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [saving, setSaving] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
   const [hostedPotlucks, setHostedPotlucks] = useState<Potluck[]>([]);
   const [participatedPotlucks, setParticipatedPotlucks] = useState<
     (Potluck & { my_claims: Claim[] })[]
@@ -85,7 +89,10 @@ export default function ProfilePage() {
   }, [authLoading, user, fetchData, router]);
 
   useEffect(() => {
-    if (profile) setDisplayName(profile.display_name);
+    if (profile) {
+      setDisplayName(profile.display_name);
+      setAvatarUrl(profile.avatar_url);
+    }
   }, [profile]);
 
   const handleSaveName = async () => {
@@ -105,6 +112,46 @@ export default function ProfilePage() {
     setSaving(false);
   };
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Invalid file type. Use JPEG, PNG, or WebP.");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("File too large. Max 2MB.");
+      return;
+    }
+
+    setUploadingAvatar(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload/avatar", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || "Upload failed.");
+        return;
+      }
+
+      setAvatarUrl(data.url);
+      toast.success("Profile picture updated!");
+    } catch {
+      toast.error("Upload failed. Please try again.");
+    } finally {
+      setUploadingAvatar(false);
+      if (avatarInputRef.current) avatarInputRef.current.value = "";
+    }
+  };
+
   if (authLoading || loadingData) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
@@ -121,12 +168,33 @@ export default function ProfilePage() {
       <Card>
         <CardContent className="p-4 sm:p-6">
           <div className="flex items-start gap-3 sm:gap-4">
-            <Avatar className="h-12 w-12 sm:h-16 sm:w-16">
-              <AvatarImage src={profile.avatar_url || undefined} />
-              <AvatarFallback className="text-base sm:text-xl bg-warm-green text-white">
-                {profile.display_name.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <button
+              type="button"
+              onClick={() => avatarInputRef.current?.click()}
+              disabled={uploadingAvatar}
+              className="relative group shrink-0"
+            >
+              <Avatar className="h-12 w-12 sm:h-16 sm:w-16">
+                <AvatarImage src={avatarUrl || undefined} />
+                <AvatarFallback className="text-base sm:text-xl bg-warm-green text-white">
+                  {profile.display_name.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                {uploadingAvatar ? (
+                  <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 text-white animate-spin" />
+                ) : (
+                  <Camera className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                )}
+              </div>
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleAvatarUpload}
+                className="hidden"
+              />
+            </button>
             <div className="flex-1">
               {editing ? (
                 <div className="flex items-center gap-2">
