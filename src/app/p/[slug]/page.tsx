@@ -13,19 +13,34 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const supabase = await createClient();
     const { data: potluck } = await supabase
       .from("potlucks")
-      .select("title, description, banner_url")
+      .select("title, description, banner_url, event_date, location")
       .eq("slug", slug)
       .single();
 
     if (!potluck) return { title: "Potluck Not Found" };
 
+    const date = new Date(potluck.event_date).toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      timeZone: "UTC",
+    });
+    const desc = potluck.description
+      ? `${potluck.description} — ${date} · ${potluck.location}`
+      : `${date} · ${potluck.location}`;
+
     return {
-      title: `${potluck.title} — Potluck`,
-      description: potluck.description,
+      title: potluck.title,
+      description: desc,
       openGraph: {
         title: potluck.title,
-        description: potluck.description,
-        images: potluck.banner_url ? [potluck.banner_url] : [],
+        description: desc,
+        type: "article",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: potluck.title,
+        description: desc,
       },
     };
   } catch {
