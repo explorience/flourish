@@ -1,13 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import { useRealtimeClaims, useRealtimeOffers } from "@/hooks/use-realtime-claims";
 import { NeedsList } from "@/components/needs-list";
 import { OfferSection } from "@/components/offer-form";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar, MapPin, Globe, Link as LinkIcon, Lock } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Calendar, MapPin, Globe, Link as LinkIcon, Lock, Navigation, ExternalLink } from "lucide-react";
 import { formatDateTime } from "@/lib/utils";
 import type { Potluck, NeedWithClaims, Offer, Profile } from "@/types/database";
 
@@ -26,6 +34,15 @@ export function PotluckDetailClient({
 }: PotluckDetailClientProps) {
   const { needs, refetchNeeds } = useRealtimeClaims(potluck.id, initialNeeds);
   const { offers, refetchOffers } = useRealtimeOffers(potluck.id, initialOffers);
+  const [directionsOpen, setDirectionsOpen] = useState(false);
+
+  const encodedLocation = encodeURIComponent(potluck.location);
+  const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedLocation}`;
+  const appleMapsUrl = `https://maps.apple.com/?daddr=${encodedLocation}`;
+
+  const looksLikeAddress =
+    /\d/.test(potluck.location) || /,/.test(potluck.location) ||
+    /\b(st|ave|blvd|rd|dr|ln|ct|way|pl|pk|hwy|street|avenue|road|drive|lane|court|plaza|park)\b/i.test(potluck.location);
 
   const accessIcon =
     potluck.access_level === "public" ? (
@@ -76,10 +93,24 @@ export function PotluckDetailClient({
             <Calendar className="h-4 w-4 shrink-0" />
             <span>{formatDateTime(potluck.event_date)}</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <MapPin className="h-4 w-4 shrink-0" />
-            <span>{potluck.location}</span>
-          </div>
+          {looksLikeAddress ? (
+            <button
+              type="button"
+              onClick={() => setDirectionsOpen(true)}
+              className="flex items-center gap-1.5 hover:text-foreground transition-colors group"
+            >
+              <MapPin className="h-4 w-4 shrink-0" />
+              <span className="underline decoration-dashed underline-offset-2 group-hover:decoration-solid">
+                {potluck.location}
+              </span>
+              <Navigation className="h-3 w-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </button>
+          ) : (
+            <div className="flex items-center gap-1.5">
+              <MapPin className="h-4 w-4 shrink-0" />
+              <span>{potluck.location}</span>
+            </div>
+          )}
         </div>
 
         {host && (
@@ -141,6 +172,34 @@ export function PotluckDetailClient({
           </CardContent>
         </Card>
       )}
+
+      <Dialog open={directionsOpen} onOpenChange={setDirectionsOpen}>
+        <DialogContent className="max-w-xs">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Navigation className="h-4 w-4" />
+              Get Directions
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground mb-1">{potluck.location}</p>
+          <div className="flex flex-col gap-2">
+            <Button asChild className="w-full justify-start gap-3" variant="outline">
+              <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer">
+                <span className="text-lg">🗺️</span>
+                Google Maps
+                <ExternalLink className="ml-auto h-3.5 w-3.5 text-muted-foreground" />
+              </a>
+            </Button>
+            <Button asChild className="w-full justify-start gap-3" variant="outline">
+              <a href={appleMapsUrl} target="_blank" rel="noopener noreferrer">
+                <span className="text-lg">🍎</span>
+                Apple Maps
+                <ExternalLink className="ml-auto h-3.5 w-3.5 text-muted-foreground" />
+              </a>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
