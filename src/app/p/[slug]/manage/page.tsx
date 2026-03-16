@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -8,21 +8,16 @@ import { useRealtimeClaims, useRealtimeOffers } from "@/hooks/use-realtime-claim
 import { NeedsList } from "@/components/needs-list";
 import { VerificationPanel } from "@/components/verification-panel";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import {
   Copy,
   ExternalLink,
-  Settings,
   Users,
   CheckCircle,
   Plus,
-  Trash2,
   Loader2,
 } from "lucide-react";
-import { EmojiPicker } from "@/components/emoji-picker";
 import { toast } from "sonner";
 import { formatDateTime, getClaimProgress } from "@/lib/utils";
 import type { Potluck, NeedWithClaims, Offer } from "@/types/database";
@@ -32,7 +27,8 @@ export default function ManagePotluckPage() {
   const slug = params.slug as string;
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
 
   const [potluck, setPotluck] = useState<Potluck | null>(null);
   const [rawNeeds, setRawNeeds] = useState<NeedWithClaims[]>([]);
@@ -73,7 +69,8 @@ export default function ManagePotluckPage() {
     setRawNeeds((needsRes.data as NeedWithClaims[]) || []);
     setRawOffers(offersRes.data || []);
     setLoading(false);
-  }, [supabase, slug, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug, router]);
 
   useEffect(() => {
     if (!authLoading) fetchData();

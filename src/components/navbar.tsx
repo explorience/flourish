@@ -77,7 +77,10 @@ export function Navbar() {
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
-                        onClick={signOut}
+                        onClick={async () => {
+                          await signOut();
+                          window.location.href = "/";
+                        }}
                         className="cursor-pointer text-destructive"
                       >
                         <LogOut className="mr-2 h-4 w-4" />

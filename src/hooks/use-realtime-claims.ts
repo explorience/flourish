@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { Claim, Offer, NeedWithClaims, Need } from "@/types/database";
+import type { Offer, NeedWithClaims } from "@/types/database";
 
 export function useRealtimeClaims(potluckId: string, initialNeeds: NeedWithClaims[]) {
   const [needs, setNeeds] = useState<NeedWithClaims[]>(initialNeeds);
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
 
   const refetchNeeds = useCallback(async () => {
-    const { data: needsData } = await supabase
+    const { data: needsData } = await supabaseRef.current
       .from("needs")
       .select("*, claims(*)")
       .eq("potluck_id", potluckId)
@@ -18,13 +18,14 @@ export function useRealtimeClaims(potluckId: string, initialNeeds: NeedWithClaim
     if (needsData) {
       setNeeds(needsData as NeedWithClaims[]);
     }
-  }, [supabase, potluckId]);
+  }, [potluckId]);
 
   useEffect(() => {
     setNeeds(initialNeeds);
   }, [initialNeeds]);
 
   useEffect(() => {
+    const supabase = supabaseRef.current;
     const channel = supabase
       .channel(`potluck:${potluckId}`)
       .on(
@@ -56,17 +57,17 @@ export function useRealtimeClaims(potluckId: string, initialNeeds: NeedWithClaim
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, potluckId, refetchNeeds]);
+  }, [potluckId, refetchNeeds]);
 
   return { needs, refetchNeeds };
 }
 
 export function useRealtimeOffers(potluckId: string, initialOffers: Offer[]) {
   const [offers, setOffers] = useState<Offer[]>(initialOffers);
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
 
   const refetchOffers = useCallback(async () => {
-    const { data } = await supabase
+    const { data } = await supabaseRef.current
       .from("offers")
       .select("*")
       .eq("potluck_id", potluckId)
@@ -75,13 +76,14 @@ export function useRealtimeOffers(potluckId: string, initialOffers: Offer[]) {
     if (data) {
       setOffers(data);
     }
-  }, [supabase, potluckId]);
+  }, [potluckId]);
 
   useEffect(() => {
     setOffers(initialOffers);
   }, [initialOffers]);
 
   useEffect(() => {
+    const supabase = supabaseRef.current;
     const channel = supabase
       .channel(`potluck-offers:${potluckId}`)
       .on(
@@ -101,7 +103,7 @@ export function useRealtimeOffers(potluckId: string, initialOffers: Offer[]) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, potluckId, refetchOffers]);
+  }, [potluckId, refetchOffers]);
 
   return { offers, refetchOffers };
 }

@@ -57,8 +57,8 @@ function LoginForm() {
           password,
         });
         if (error) throw error;
-        router.push(redirect);
-        router.refresh();
+        window.location.href = redirect;
+        return;
       }
     } catch (err: any) {
       toast.error(err.message || "Authentication failed.");
