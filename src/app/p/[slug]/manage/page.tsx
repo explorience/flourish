@@ -11,7 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { EmojiPicker } from "@/components/emoji-picker";
 import {
   Copy,
   ExternalLink,
@@ -26,6 +29,9 @@ import {
   Clock,
   Trash2,
   Share2,
+  Pencil,
+  Save,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDateTime, getClaimProgress } from "@/lib/utils";
@@ -47,6 +53,16 @@ export default function ManagePotluckPage() {
   const [activeTab, setActiveTab] = useState<"overview" | "verify" | "invites">("overview");
   const [inviteEmail, setInviteEmail] = useState("");
   const [sendingInvites, setSendingInvites] = useState(false);
+  const [editingDetails, setEditingDetails] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editDate, setEditDate] = useState("");
+  const [editLocation, setEditLocation] = useState("");
+  const [savingDetails, setSavingDetails] = useState(false);
+  const [editingNeedId, setEditingNeedId] = useState<string | null>(null);
+  const [editNeedName, setEditNeedName] = useState("");
+  const [editNeedEmoji, setEditNeedEmoji] = useState("");
+  const [editNeedQuantity, setEditNeedQuantity] = useState(1);
 
   const { needs, refetchNeeds } = useRealtimeClaims(potluck?.id || "", rawNeeds);
   const { offers, refetchOffers } = useRealtimeOffers(potluck?.id || "", rawOffers);
@@ -68,12 +84,12 @@ export default function ManagePotluckPage() {
     const [needsRes, offersRes, invitesRes] = await Promise.all([
       supabase
         .from("needs")
-        .select("*, claims(*)")
+        .select("*, claims(*, profile:profiles(display_name, avatar_url))")
         .eq("potluck_id", potluckData.id)
         .order("sort_order"),
       supabase
         .from("offers")
-        .select("*")
+        .select("*, profile:profiles(display_name, avatar_url)")
         .eq("potluck_id", potluckData.id)
         .order("created_at"),
       supabase
@@ -120,7 +136,75 @@ export default function ManagePotluckPage() {
 
   const deleteNeed = async (needId: string) => {
     const { error } = await supabase.from("needs").delete().eq("id", needId);
-    if (!error) refetchNeeds();
+    if (!error) {
+      refetchNeeds();
+      toast.success("Need removed.");
+    }
+  };
+
+  const startEditDetails = () => {
+    if (!potluck) return;
+    setEditTitle(potluck.title);
+    setEditDescription(potluck.description);
+    // Convert ISO string to datetime-local format
+    const d = new Date(potluck.event_date);
+    const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 16);
+    setEditDate(local);
+    setEditLocation(potluck.location);
+    setEditingDetails(true);
+  };
+
+  const saveDetails = async () => {
+    if (!potluck) return;
+    setSavingDetails(true);
+    try {
+      const res = await fetch(`/api/potlucks/${slug}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: editTitle.trim(),
+          description: editDescription.trim(),
+          event_date: new Date(editDate).toISOString(),
+          location: editLocation.trim(),
+        }),
+      });
+      if (!res.ok) throw new Error();
+      toast.success("Details updated!");
+      setEditingDetails(false);
+      fetchData();
+    } catch {
+      toast.error("Failed to save changes.");
+    } finally {
+      setSavingDetails(false);
+    }
+  };
+
+  const startEditNeed = (need: NeedWithClaims) => {
+    setEditingNeedId(need.id);
+    setEditNeedName(need.name);
+    setEditNeedEmoji(need.emoji);
+    setEditNeedQuantity(need.quantity);
+  };
+
+  const saveNeed = async () => {
+    if (!editingNeedId) return;
+    const { error } = await supabase
+      .from("needs")
+      .update({
+        name: editNeedName.trim(),
+        emoji: editNeedEmoji,
+        quantity: editNeedQuantity,
+      })
+      .eq("id", editingNeedId);
+    if (!error) {
+      toast.success("Need updated!");
+      setEditingNeedId(null);
+      refetchNeeds();
+    } else {
+      toast.error("Failed to update need.");
+    }
   };
 
   const sendInvites = async () => {
@@ -319,6 +403,81 @@ export default function ManagePotluckPage() {
 
       {activeTab === "overview" && (
         <div className="space-y-6">
+          {/* Event details */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Event Details</CardTitle>
+              {editingDetails ? (
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="sm" onClick={() => setEditingDetails(false)}>
+                    <X className="mr-1.5 h-3.5 w-3.5" />
+                    Cancel
+                  </Button>
+                  <Button size="sm" onClick={saveDetails} disabled={savingDetails}>
+                    <Save className="mr-1.5 h-3.5 w-3.5" />
+                    {savingDetails ? "Saving..." : "Save"}
+                  </Button>
+                </div>
+              ) : (
+                <Button variant="outline" size="sm" onClick={startEditDetails}>
+                  <Pencil className="mr-1.5 h-3.5 w-3.5" />
+                  Edit
+                </Button>
+              )}
+            </CardHeader>
+            <CardContent>
+              {editingDetails ? (
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-title">Title</Label>
+                    <Input
+                      id="edit-title"
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      maxLength={100}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-desc">Description</Label>
+                    <Textarea
+                      id="edit-desc"
+                      value={editDescription}
+                      onChange={(e) => setEditDescription(e.target.value)}
+                      maxLength={500}
+                      rows={3}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-date">Date & Time</Label>
+                      <Input
+                        id="edit-date"
+                        type="datetime-local"
+                        value={editDate}
+                        onChange={(e) => setEditDate(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-location">Location</Label>
+                      <Input
+                        id="edit-location"
+                        value={editLocation}
+                        onChange={(e) => setEditLocation(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2 text-sm">
+                  <p><span className="text-muted-foreground">Title:</span> {potluck.title}</p>
+                  <p><span className="text-muted-foreground">Description:</span> {potluck.description}</p>
+                  <p><span className="text-muted-foreground">When:</span> {formatDateTime(potluck.event_date)}</p>
+                  <p><span className="text-muted-foreground">Where:</span> {potluck.location}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Needs management */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
@@ -329,11 +488,94 @@ export default function ManagePotluckPage() {
               </Button>
             </CardHeader>
             <CardContent>
-              <NeedsList
-                needs={needs}
-                potluckId={potluck.id}
-                showClaimButton={false}
-              />
+              <div className="space-y-2">
+                {needs.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    No needs yet. Add one above.
+                  </p>
+                ) : (
+                  needs.map((need) => (
+                    <div
+                      key={need.id}
+                      className="flex items-center gap-3 p-3 rounded-lg border bg-card"
+                    >
+                      {editingNeedId === need.id ? (
+                        <>
+                          <EmojiPicker value={editNeedEmoji} onChange={setEditNeedEmoji} />
+                          <div className="flex-1 flex flex-col sm:flex-row gap-2">
+                            <Input
+                              value={editNeedName}
+                              onChange={(e) => setEditNeedName(e.target.value)}
+                              className="flex-1"
+                              autoFocus
+                            />
+                            <Input
+                              type="number"
+                              value={editNeedQuantity}
+                              onChange={(e) => setEditNeedQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                              className="w-20"
+                              min={1}
+                            />
+                          </div>
+                          <Button size="sm" onClick={saveNeed}>
+                            <Save className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => setEditingNeedId(null)}>
+                            <X className="h-3.5 w-3.5" />
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-2xl shrink-0">{need.emoji}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium">{need.name}</p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span className="text-xs text-muted-foreground">
+                                {need.claimed_quantity} / {need.quantity} claimed
+                              </span>
+                              {need.point_value && (
+                                <Badge variant="warm" className="text-xs">
+                                  {need.point_value} pts
+                                </Badge>
+                              )}
+                            </div>
+                            {need.claims.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-1.5">
+                                {need.claims.map((claim) => (
+                                  <Badge key={claim.id} variant="outline" className="text-xs">
+                                    {claim.profile?.display_name || claim.guest_name || "Guest"}
+                                    {claim.verified && (
+                                      <span className="ml-1 text-warm-green">✓</span>
+                                    )}
+                                  </Badge>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 shrink-0"
+                            onClick={() => startEditNeed(need)}
+                            title="Edit need"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 shrink-0 text-destructive hover:text-destructive"
+                            onClick={() => deleteNeed(need.id)}
+                            title="Delete need"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -354,7 +596,7 @@ export default function ManagePotluckPage() {
                       <div className="flex-1">
                         <p className="font-medium text-sm">{offer.name}</p>
                         <p className="text-xs text-muted-foreground">
-                          by {offer.guest_name || "Member"}
+                          by {(offer as any).profile?.display_name || offer.guest_name || "Guest"}
                         </p>
                       </div>
                       {offer.verified && (

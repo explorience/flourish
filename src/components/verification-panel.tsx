@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Check, CheckCheck, XCircle } from "lucide-react";
+import { Check, CheckCheck } from "lucide-react";
 import { toast } from "sonner";
 import type { NeedWithClaims, Offer } from "@/types/database";
 
@@ -34,6 +35,13 @@ export function VerificationPanel({
       if (o.verified) ids.add(o.id);
     });
     return ids;
+  });
+  const [offerPoints, setOfferPoints] = useState<Record<string, number>>(() => {
+    const pts: Record<string, number> = {};
+    offers.forEach((o) => {
+      pts[o.id] = o.points_awarded || 0;
+    });
+    return pts;
   });
 
   const toggleVerify = (id: string) => {
@@ -66,6 +74,7 @@ export function VerificationPanel({
           verified_offer_ids: offerIds.filter((id) => verifiedIds.has(id)),
           unverified_claim_ids: claimIds.filter((id) => !verifiedIds.has(id)),
           unverified_offer_ids: offerIds.filter((id) => !verifiedIds.has(id)),
+          offer_points: offerPoints,
         }),
       });
 
@@ -136,7 +145,7 @@ export function VerificationPanel({
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm">{claim.needName}</p>
                 <p className="text-xs text-muted-foreground">
-                  by {claim.guest_name || "Member"}
+                  by {claim.profile?.display_name || claim.guest_name || "Guest"}
                 </p>
               </div>
               {pointsEnabled && claim.pointValue && (
@@ -172,9 +181,26 @@ export function VerificationPanel({
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-sm">{offer.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  by {offer.guest_name || "Member"}
+                  by {(offer as any).profile?.display_name || offer.guest_name || "Guest"}
                 </p>
               </div>
+              {pointsEnabled && (
+                <div className="flex items-center gap-1 shrink-0">
+                  <Input
+                    type="number"
+                    min={0}
+                    value={offerPoints[offer.id] || 0}
+                    onChange={(e) =>
+                      setOfferPoints((prev) => ({
+                        ...prev,
+                        [offer.id]: Math.max(0, parseInt(e.target.value) || 0),
+                      }))
+                    }
+                    className="w-16 h-8 text-center text-xs"
+                  />
+                  <span className="text-xs text-muted-foreground">pts</span>
+                </div>
+              )}
             </div>
           ))}
         </div>

@@ -7,6 +7,7 @@ const VerifySchema = z.object({
   verified_offer_ids: z.array(z.string()),
   unverified_claim_ids: z.array(z.string()),
   unverified_offer_ids: z.array(z.string()),
+  offer_points: z.record(z.string(), z.number()).optional(),
 });
 
 export async function POST(
@@ -109,20 +110,56 @@ export async function POST(
       }
     }
 
-    // Verify offers
+    // Verify offers (with optional points)
     if (data.verified_offer_ids.length > 0) {
-      await serviceClient
+      const { data: offersToVerify } = await serviceClient
         .from("offers")
-        .update({ verified: true })
+        .select()
         .in("id", data.verified_offer_ids);
+
+      for (const offer of offersToVerify || []) {
+        const pointValue =
+          potluck.points_enabled && data.offer_points?.[offer.id]
+            ? data.offer_points[offer.id]
+            : 0;
+        const prevPoints = offer.points_awarded || 0;
+        const pointsDelta = pointValue - prevPoints;
+
+        await serviceClient
+          .from("offers")
+          .update({ verified: true, points_awarded: pointValue })
+          .eq("id", offer.id);
+
+        if (pointsDelta !== 0 && offer.profile_id) {
+          await serviceClient.rpc("increment_points", {
+            user_id: offer.profile_id,
+            amount: pointsDelta,
+          });
+        }
+      }
     }
 
     // Unverify offers
     if (data.unverified_offer_ids.length > 0) {
-      await serviceClient
+      const { data: offersToUnverify } = await serviceClient
         .from("offers")
-        .update({ verified: false, points_awarded: 0 })
-        .in("id", data.unverified_offer_ids);
+        .select()
+        .in("id", data.unverified_offer_ids)
+        .eq("verified", true);
+
+      for (const offer of offersToUnverify || []) {
+        if ((offer.points_awarded || 0) > 0 && offer.profile_id) {
+          await serviceClient.rpc("increment_points", {
+            user_id: offer.profile_id,
+            amount: -(offer.points_awarded || 0),
+          });
+        }
+
+        await serviceClient
+          .from("offers")
+          .update({ verified: false, points_awarded: 0 })
+          .eq("id", offer.id);
+      }
     }
 
     return NextResponse.json({ success: true });
