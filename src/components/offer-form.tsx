@@ -97,7 +97,7 @@ export function OfferSection({
                   </p>
                 )}
                 <p className="text-xs text-muted-foreground mt-1">
-                  by {offer.guest_name || "Member"}
+                  by {(offer as any).profile?.display_name || offer.guest_name || "Guest"}
                   {offer.verified && (
                     <Badge variant="success" className="ml-2">
                       Verified

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,10 +12,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NeedsBuilder, type NeedItem } from "@/components/needs-builder";
 import { BannerUpload } from "@/components/banner-upload";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, LogIn } from "lucide-react";
+import Link from "next/link";
 
 export default function CreatePotluckPage() {
   const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(false);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
 
@@ -34,6 +37,12 @@ export default function CreatePotluckPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!user) {
+      toast.error("Please sign in to create a potluck.");
+      router.push("/auth/login?redirect=/create");
+      return;
+    }
 
     if (!title.trim()) {
       toast.error("Please add a title.");
@@ -118,6 +127,25 @@ export default function CreatePotluckPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {!authLoading && !user && (
+          <Card className="border-amber-200 bg-amber-50/50">
+            <CardContent className="p-4 flex items-center gap-3">
+              <LogIn className="h-5 w-5 text-amber-600 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-amber-900">
+                  Sign in to create your potluck
+                </p>
+                <p className="text-xs text-amber-700">
+                  You&apos;ll need an account to host and manage events.
+                </p>
+              </div>
+              <Button size="sm" asChild>
+                <Link href="/auth/login?redirect=/create">Sign In</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         <Card>
           <CardHeader>
             <CardTitle>Banner Image</CardTitle>

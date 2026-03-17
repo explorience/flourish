@@ -57,6 +57,7 @@ export default async function PotluckPage({ params, searchParams }: PageProps) {
   let potluck = null;
   let needs: any[] = [];
   let offers: any[] = [];
+  let rsvps: any[] = [];
   let host = null;
 
   try {
@@ -99,15 +100,15 @@ export default async function PotluckPage({ params, searchParams }: PageProps) {
     if (error || !potluckData) return notFound();
     potluck = potluckData;
 
-    const [needsRes, offersRes, hostRes] = await Promise.all([
+    const [needsRes, offersRes, hostRes, rsvpsRes] = await Promise.all([
       supabase
         .from("needs")
-        .select("*, claims(*)")
+        .select("*, claims(*, profile:profiles(display_name, avatar_url))")
         .eq("potluck_id", potluck.id)
         .order("sort_order"),
       supabase
         .from("offers")
-        .select("*")
+        .select("*, profile:profiles(display_name, avatar_url)")
         .eq("potluck_id", potluck.id)
         .order("created_at"),
       supabase
@@ -115,11 +116,17 @@ export default async function PotluckPage({ params, searchParams }: PageProps) {
         .select("id, display_name, avatar_url")
         .eq("id", potluck.host_id)
         .single(),
+      supabase
+        .from("rsvps")
+        .select("*, profile:profiles(display_name, avatar_url)")
+        .eq("potluck_id", potluck.id)
+        .order("created_at"),
     ]);
 
     needs = needsRes.data || [];
     offers = offersRes.data || [];
     host = hostRes.data;
+    rsvps = rsvpsRes.data || [];
   } catch {
     return notFound();
   }
@@ -129,6 +136,7 @@ export default async function PotluckPage({ params, searchParams }: PageProps) {
       potluck={potluck}
       initialNeeds={needs}
       initialOffers={offers}
+      initialRsvps={rsvps}
       host={host}
     />
   );

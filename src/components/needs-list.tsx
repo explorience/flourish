@@ -65,7 +65,7 @@ export function NeedsList({
                 <div className="flex flex-wrap gap-1 mt-1.5">
                   {need.claims.map((claim) => (
                     <Badge key={claim.id} variant="outline" className="text-xs">
-                      {claim.guest_name || "Member"}
+                      {claim.profile?.display_name || claim.guest_name || "Guest"}
                       {claim.verified && (
                         <span className="ml-1 text-warm-green">✓</span>
                       )}

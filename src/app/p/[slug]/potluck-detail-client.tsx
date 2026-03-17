@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRealtimeClaims, useRealtimeOffers } from "@/hooks/use-realtime-claims";
+import { useRealtimeClaims, useRealtimeOffers, useRealtimeRsvps } from "@/hooks/use-realtime-claims";
 import { NeedsList } from "@/components/needs-list";
 import { OfferSection } from "@/components/offer-form";
+import { RsvpSection } from "@/components/rsvp-section";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,12 +18,13 @@ import {
 } from "@/components/ui/dialog";
 import { Calendar, MapPin, Globe, Link as LinkIcon, Lock, Navigation, ExternalLink } from "lucide-react";
 import { formatDateTime } from "@/lib/utils";
-import type { Potluck, NeedWithClaims, Offer, Profile } from "@/types/database";
+import type { Potluck, NeedWithClaims, Offer, Profile, RsvpWithProfile } from "@/types/database";
 
 interface PotluckDetailClientProps {
   potluck: Potluck;
   initialNeeds: NeedWithClaims[];
   initialOffers: Offer[];
+  initialRsvps: RsvpWithProfile[];
   host: Pick<Profile, "id" | "display_name" | "avatar_url"> | null;
 }
 
@@ -30,10 +32,12 @@ export function PotluckDetailClient({
   potluck,
   initialNeeds,
   initialOffers,
+  initialRsvps,
   host,
 }: PotluckDetailClientProps) {
   const { needs, refetchNeeds } = useRealtimeClaims(potluck.id, initialNeeds);
   const { offers, refetchOffers } = useRealtimeOffers(potluck.id, initialOffers);
+  const { rsvps, refetchRsvps } = useRealtimeRsvps(potluck.id, initialRsvps);
   const [directionsOpen, setDirectionsOpen] = useState(false);
 
   const encodedLocation = encodeURIComponent(potluck.location);
@@ -132,6 +136,17 @@ export function PotluckDetailClient({
       </div>
 
       <Separator />
+
+      {/* RSVP */}
+      <Card>
+        <CardContent className="p-4 sm:p-6">
+          <RsvpSection
+            potluckId={potluck.id}
+            rsvps={rsvps}
+            onRsvpChanged={() => refetchRsvps()}
+          />
+        </CardContent>
+      </Card>
 
       {/* Needs */}
       <Card>

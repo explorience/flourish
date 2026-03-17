@@ -281,6 +281,46 @@ export interface Database {
           },
         ];
       };
+      rsvps: {
+        Row: {
+          id: string;
+          potluck_id: string;
+          profile_id: string | null;
+          guest_name: string | null;
+          guest_email: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          potluck_id: string;
+          profile_id?: string | null;
+          guest_name?: string | null;
+          guest_email?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          potluck_id?: string;
+          profile_id?: string | null;
+          guest_name?: string | null;
+          guest_email?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "rsvps_potluck_id_fkey";
+            columns: ["potluck_id"];
+            isOneToOne: false;
+            referencedRelation: "potlucks";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "rsvps_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {};
     Functions: {
@@ -310,8 +350,15 @@ export type Need = Tables<"needs">;
 export type Claim = Tables<"claims">;
 export type Offer = Tables<"offers">;
 export type Invite = Tables<"invites">;
+export type Rsvp = Tables<"rsvps">;
 
-export type NeedWithClaims = Need & { claims: Claim[] };
+export type ClaimWithProfile = Claim & {
+  profile?: Pick<Profile, "display_name" | "avatar_url"> | null;
+};
+export type NeedWithClaims = Need & { claims: ClaimWithProfile[] };
+export type RsvpWithProfile = Rsvp & {
+  profile?: Pick<Profile, "display_name" | "avatar_url"> | null;
+};
 export type PotluckWithDetails = Potluck & {
   needs: NeedWithClaims[];
   offers: Offer[];
