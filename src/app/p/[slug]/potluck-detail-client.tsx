@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Calendar, MapPin, Globe, Link as LinkIcon, Lock, Navigation, ExternalLink } from "lucide-react";
+import { Calendar, CalendarPlus, MapPin, Globe, Link as LinkIcon, Lock, Navigation, ExternalLink, Download } from "lucide-react";
 import { formatDateTime } from "@/lib/utils";
 import type { Potluck, NeedWithClaims, Offer, Profile, RsvpWithProfile } from "@/types/database";
 
@@ -39,6 +39,7 @@ export function PotluckDetailClient({
   const { offers, refetchOffers } = useRealtimeOffers(potluck.id, initialOffers);
   const { rsvps, refetchRsvps } = useRealtimeRsvps(potluck.id, initialRsvps);
   const [directionsOpen, setDirectionsOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   const encodedLocation = encodeURIComponent(potluck.location);
   const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedLocation}`;
@@ -47,6 +48,40 @@ export function PotluckDetailClient({
   const looksLikeAddress =
     /\d/.test(potluck.location) || /,/.test(potluck.location) ||
     /\b(st|ave|blvd|rd|dr|ln|ct|way|pl|pk|hwy|street|avenue|road|drive|lane|court|plaza|park)\b/i.test(potluck.location);
+
+  // Calendar helpers
+  const eventStart = new Date(potluck.event_date);
+  const eventEnd = new Date(eventStart.getTime() + 2 * 60 * 60 * 1000); // 2-hour default
+
+  const toCalString = (d: Date) =>
+    d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+
+  const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(potluck.title)}&dates=${toCalString(eventStart)}/${toCalString(eventEnd)}&location=${encodedLocation}&details=${encodeURIComponent(potluck.description || "")}`;
+
+  const downloadIcs = () => {
+    const ics = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Potluck//EN",
+      "BEGIN:VEVENT",
+      `DTSTART:${toCalString(eventStart)}`,
+      `DTEND:${toCalString(eventEnd)}`,
+      `SUMMARY:${potluck.title}`,
+      `LOCATION:${potluck.location}`,
+      `DESCRIPTION:${(potluck.description || "").replace(/\n/g, "\\n")}`,
+      `URL:${typeof window !== "undefined" ? window.location.href : ""}`,
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ].join("\r\n");
+
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${potluck.title.replace(/[^a-z0-9]+/gi, "-")}.ics`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const accessIcon =
     potluck.access_level === "public" ? (
@@ -93,10 +128,17 @@ export function PotluckDetailClient({
         <p className="text-sm sm:text-base text-muted-foreground">{potluck.description}</p>
 
         <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setCalendarOpen(true)}
+            className="flex items-center gap-1.5 hover:text-foreground transition-colors group"
+          >
             <Calendar className="h-4 w-4 shrink-0" />
-            <span>{formatDateTime(potluck.event_date)}</span>
-          </div>
+            <span className="underline decoration-dashed underline-offset-2 group-hover:decoration-solid">
+              {formatDateTime(potluck.event_date)}
+            </span>
+            <CalendarPlus className="h-3 w-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </button>
           {looksLikeAddress ? (
             <button
               type="button"
@@ -211,6 +253,31 @@ export function PotluckDetailClient({
                 Apple Maps
                 <ExternalLink className="ml-auto h-3.5 w-3.5 text-muted-foreground" />
               </a>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={calendarOpen} onOpenChange={setCalendarOpen}>
+        <DialogContent className="max-w-xs">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CalendarPlus className="h-4 w-4" />
+              Add to Calendar
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground mb-1">{formatDateTime(potluck.event_date)}</p>
+          <div className="flex flex-col gap-2">
+            <Button asChild className="w-full justify-start gap-3" variant="outline">
+              <a href={googleCalUrl} target="_blank" rel="noopener noreferrer">
+                <span className="text-lg">📅</span>
+                Google Calendar
+                <ExternalLink className="ml-auto h-3.5 w-3.5 text-muted-foreground" />
+              </a>
+            </Button>
+            <Button className="w-full justify-start gap-3" variant="outline" onClick={downloadIcs}>
+              <Download className="h-4 w-4" />
+              Apple Calendar / Other (.ics)
             </Button>
           </div>
         </DialogContent>
