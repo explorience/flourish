@@ -9,9 +9,17 @@ import {
   GuestIdentityModal,
   getStoredGuestIdentity,
 } from "@/components/guest-identity-modal";
-import { UserCheck, UserPlus, Users, X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { UserCheck, UserPlus, Users } from "lucide-react";
 import { toast } from "sonner";
 import type { RsvpWithProfile } from "@/types/database";
+
+const AVATAR_DISPLAY_LIMIT = 8;
 
 interface RsvpSectionProps {
   potluckId: string;
@@ -107,6 +115,9 @@ export function RsvpSection({
     return name.charAt(0).toUpperCase();
   };
 
+  const [showAllRsvps, setShowAllRsvps] = useState(false);
+  const overflow = rsvps.length - AVATAR_DISPLAY_LIMIT;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -141,24 +152,36 @@ export function RsvpSection({
       </div>
 
       {rsvps.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {rsvps.map((rsvp) => (
-            <div
-              key={rsvp.id}
-              className="flex items-center gap-2.5 p-2.5 rounded-lg border bg-card"
-            >
-              <Avatar className="h-8 w-8">
+        <button
+          type="button"
+          onClick={() => setShowAllRsvps(true)}
+          className="flex items-center gap-2 group"
+        >
+          <div className="flex -space-x-2">
+            {rsvps.slice(0, AVATAR_DISPLAY_LIMIT).map((rsvp) => (
+              <Avatar
+                key={rsvp.id}
+                className="h-8 w-8 ring-2 ring-background"
+                title={displayName(rsvp)}
+              >
                 <AvatarImage src={rsvp.profile?.avatar_url || undefined} />
                 <AvatarFallback className="text-xs bg-warm-green/10 text-warm-green">
                   {initial(rsvp)}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm font-medium truncate">
-                {displayName(rsvp)}
-              </span>
-            </div>
-          ))}
-        </div>
+            ))}
+            {overflow > 0 && (
+              <div className="h-8 w-8 rounded-full ring-2 ring-background bg-muted flex items-center justify-center">
+                <span className="text-xs font-medium text-muted-foreground">
+                  +{overflow}
+                </span>
+              </div>
+            )}
+          </div>
+          <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+            See who&apos;s going
+          </span>
+        </button>
       )}
 
       {rsvps.length === 0 && (
@@ -166,6 +189,35 @@ export function RsvpSection({
           No RSVPs yet — be the first to say you&apos;re going!
         </p>
       )}
+
+      <Dialog open={showAllRsvps} onOpenChange={setShowAllRsvps}>
+        <DialogContent className="max-w-sm max-h-[70vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Attending ({rsvps.length})
+            </DialogTitle>
+          </DialogHeader>
+          <div className="overflow-y-auto -mx-1 px-1 space-y-1">
+            {rsvps.map((rsvp) => (
+              <div
+                key={rsvp.id}
+                className="flex items-center gap-2.5 p-2.5 rounded-lg hover:bg-muted/50"
+              >
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={rsvp.profile?.avatar_url || undefined} />
+                  <AvatarFallback className="text-xs bg-warm-green/10 text-warm-green">
+                    {initial(rsvp)}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-sm font-medium truncate">
+                  {displayName(rsvp)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <GuestIdentityModal
         open={showGuestModal}

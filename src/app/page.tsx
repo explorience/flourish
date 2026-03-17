@@ -110,6 +110,24 @@ export default async function HomePage({
               <Link href="#potlucks">Browse Potlucks</Link>
             </Button>
           </div>
+          <p className="text-xs text-muted-foreground pt-2">
+            Potluck is in beta — free and{" "}
+            <a
+              href="https://github.com/omniharmonic/potluck"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-foreground transition-colors"
+            >
+              open source
+            </a>
+            . Questions? Reach out to{" "}
+            <a
+              href="mailto:potluck@solutul.resend.app"
+              className="underline underline-offset-2 hover:text-foreground transition-colors"
+            >
+              potluck@solutul.resend.app
+            </a>
+          </p>
         </div>
       </section>
 

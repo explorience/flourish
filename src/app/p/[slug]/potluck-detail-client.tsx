@@ -16,8 +16,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Calendar, CalendarPlus, MapPin, Globe, Link as LinkIcon, Lock, Navigation, ExternalLink, Download } from "lucide-react";
+import { Calendar, CalendarPlus, MapPin, Globe, Link as LinkIcon, Lock, Navigation, ExternalLink, Download, Share2, Settings } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 import { formatDateTime } from "@/lib/utils";
+import { toast } from "sonner";
+import Link from "next/link";
 import type { Potluck, NeedWithClaims, Offer, Profile, RsvpWithProfile } from "@/types/database";
 
 interface PotluckDetailClientProps {
@@ -35,11 +38,24 @@ export function PotluckDetailClient({
   initialRsvps,
   host,
 }: PotluckDetailClientProps) {
+  const { user } = useAuth();
   const { needs, refetchNeeds } = useRealtimeClaims(potluck.id, initialNeeds);
   const { offers, refetchOffers } = useRealtimeOffers(potluck.id, initialOffers);
   const { rsvps, refetchRsvps } = useRealtimeRsvps(potluck.id, initialRsvps);
   const [directionsOpen, setDirectionsOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
+
+  const isHost = user?.id === potluck.host_id;
+
+  const shareLink = () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({ title: potluck.title, url }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(url);
+      toast.success("Link copied!");
+    }
+  };
 
   const encodedLocation = encodeURIComponent(potluck.location);
   const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedLocation}`;
@@ -113,16 +129,20 @@ export function PotluckDetailClient({
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-3">
           <h1 className="text-2xl sm:text-3xl font-bold">{potluck.title}</h1>
-          <Badge variant="outline" className="shrink-0 flex items-center gap-1 text-xs">
-            {accessIcon}
-            <span className="hidden sm:inline">
-              {potluck.access_level === "public"
-                ? "Public"
-                : potluck.access_level === "link_shared"
-                  ? "Link Shared"
-                  : "Invite Only"}
-            </span>
-          </Badge>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button variant="outline" size="sm" onClick={shareLink}>
+              <Share2 className="mr-1.5 h-3.5 w-3.5" />
+              Share
+            </Button>
+            {isHost && (
+              <Button variant="outline" size="sm" asChild>
+                <Link href={`/p/${potluck.slug}/manage`}>
+                  <Settings className="mr-1.5 h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Manage</span>
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
 
         <p className="text-sm sm:text-base text-muted-foreground">{potluck.description}</p>

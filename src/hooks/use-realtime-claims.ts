@@ -69,7 +69,7 @@ export function useRealtimeOffers(potluckId: string, initialOffers: Offer[]) {
   const refetchOffers = useCallback(async () => {
     const { data } = await supabaseRef.current
       .from("offers")
-      .select("*")
+      .select("*, profile:profiles(display_name, avatar_url)")
       .eq("potluck_id", potluckId)
       .order("created_at");
 
