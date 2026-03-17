@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { PotluckCard } from "@/components/potluck-card";
+import { MyPotlucksSection } from "@/components/my-potlucks-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Sparkles } from "lucide-react";
@@ -17,9 +18,49 @@ export default async function HomePage({
 
   let potlucks: any[] = [];
   let hasMore = false;
+  let hostedPotlucks: any[] = [];
+  let participatingPotlucks: any[] = [];
+  let isLoggedIn = false;
 
   try {
     const supabase = await createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      isLoggedIn = true;
+
+      const { data: hosted } = await supabase
+        .from("potlucks")
+        .select("*, needs(quantity, claimed_quantity)")
+        .eq("host_id", user.id)
+        .eq("status", "active")
+        .order("event_date", { ascending: true });
+
+      hostedPotlucks = hosted || [];
+
+      const { data: claims } = await supabase
+        .from("claims")
+        .select("potluck_id")
+        .eq("profile_id", user.id);
+
+      if (claims && claims.length > 0) {
+        const claimedIds = Array.from(
+          new Set(claims.map((c: any) => c.potluck_id))
+        );
+        const { data: attending } = await supabase
+          .from("potlucks")
+          .select("*, needs(quantity, claimed_quantity)")
+          .in("id", claimedIds)
+          .eq("status", "active")
+          .order("event_date", { ascending: true });
+
+        participatingPotlucks = attending || [];
+      }
+    }
+
     let dbQuery = supabase
       .from("potlucks")
       .select("*, needs(quantity, claimed_quantity)")
@@ -71,6 +112,15 @@ export default async function HomePage({
           </div>
         </div>
       </section>
+
+      {/* My potlucks (logged-in users only) */}
+      {isLoggedIn &&
+        (hostedPotlucks.length > 0 || participatingPotlucks.length > 0) && (
+          <MyPotlucksSection
+            hosted={hostedPotlucks}
+            participating={participatingPotlucks}
+          />
+        )}
 
       {/* Public potlucks feed */}
       <section id="potlucks" className="container py-12 space-y-8">
