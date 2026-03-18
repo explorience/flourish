@@ -20,11 +20,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     if (!potluck) return { title: "Potluck Not Found" };
 
-    const date = new Date(potluck.event_date).toLocaleDateString("en-US", {
+    const cleaned = potluck.event_date.replace(/Z$/, "").replace(/[+-]\d{2}:\d{2}$/, "");
+    const date = new Date(cleaned).toLocaleDateString("en-US", {
       weekday: "short",
       month: "short",
       day: "numeric",
-      timeZone: "UTC",
     });
     const desc = potluck.description
       ? `${potluck.description} — ${date} · ${potluck.location}`

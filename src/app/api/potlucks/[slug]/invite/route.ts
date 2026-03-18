@@ -22,12 +22,12 @@ function buildInviteEmail(params: {
 }) {
   const { potluckTitle, hostName, eventDate, location, description, inviteLink } = params;
 
-  const dateStr = new Date(eventDate).toLocaleDateString("en-US", {
+  const cleaned = eventDate.replace(/Z$/, "").replace(/[+-]\d{2}:\d{2}$/, "");
+  const dateStr = new Date(cleaned).toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
     year: "numeric",
-    timeZone: "UTC",
   });
 
   const html = `<!DOCTYPE html>

@@ -65,12 +65,16 @@ export function PotluckDetailClient({
     /\d/.test(potluck.location) || /,/.test(potluck.location) ||
     /\b(st|ave|blvd|rd|dr|ln|ct|way|pl|pk|hwy|street|avenue|road|drive|lane|court|plaza|park)\b/i.test(potluck.location);
 
-  // Calendar helpers
-  const eventStart = new Date(potluck.event_date);
+  // Calendar helpers — parse as local wall clock time
+  const cleanedDate = potluck.event_date.replace(/Z$/, "").replace(/[+-]\d{2}:\d{2}$/, "");
+  const eventStart = new Date(cleanedDate);
   const eventEnd = new Date(eventStart.getTime() + 2 * 60 * 60 * 1000); // 2-hour default
 
-  const toCalString = (d: Date) =>
-    d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  // Format as local time for calendar (YYYYMMDDTHHMMSS without Z suffix)
+  const toCalString = (d: Date) => {
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+  };
 
   const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(potluck.title)}&dates=${toCalString(eventStart)}/${toCalString(eventEnd)}&location=${encodedLocation}&details=${encodeURIComponent(potluck.description || "")}`;
 

@@ -146,12 +146,9 @@ export default function ManagePotluckPage() {
     if (!potluck) return;
     setEditTitle(potluck.title);
     setEditDescription(potluck.description);
-    // Convert ISO string to datetime-local format
-    const d = new Date(potluck.event_date);
-    const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
-      .toISOString()
-      .slice(0, 16);
-    setEditDate(local);
+    // Extract datetime-local format from stored value (strip Z/timezone suffix)
+    const cleaned = potluck.event_date.replace(/Z$/, "").replace(/[+-]\d{2}:\d{2}$/, "");
+    setEditDate(cleaned.slice(0, 16));
     setEditLocation(potluck.location);
     setEditingDetails(true);
   };
@@ -166,7 +163,7 @@ export default function ManagePotluckPage() {
         body: JSON.stringify({
           title: editTitle.trim(),
           description: editDescription.trim(),
-          event_date: new Date(editDate).toISOString(),
+          event_date: editDate,
           location: editLocation.trim(),
         }),
       });

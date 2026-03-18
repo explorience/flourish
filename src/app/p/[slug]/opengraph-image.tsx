@@ -34,12 +34,12 @@ export default async function OgImage({
       description = potluck.description || "";
       bannerUrl = potluck.banner_url;
       location = potluck.location || "";
-      date = new Date(potluck.event_date).toLocaleDateString("en-US", {
+      const cleaned = potluck.event_date.replace(/Z$/, "").replace(/[+-]\d{2}:\d{2}$/, "");
+      date = new Date(cleaned).toLocaleDateString("en-US", {
         weekday: "short",
         month: "short",
         day: "numeric",
         year: "numeric",
-        timeZone: "UTC",
       });
     }
 

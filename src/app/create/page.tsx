@@ -86,7 +86,7 @@ export default function CreatePotluckPage() {
         body: JSON.stringify({
           title: title.trim(),
           description: description.trim(),
-          event_date: new Date(eventDate).toISOString(),
+          event_date: eventDate,
           location: location.trim(),
           access_level: accessLevel,
           open_offers: openOffers,

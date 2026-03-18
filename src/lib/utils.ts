@@ -16,23 +16,32 @@ export function generateSlug(title: string): string {
 }
 
 export function formatDate(dateString: string): string {
-  const date = new Date(dateString);
+  const date = parseDateAsLocal(dateString);
   return date.toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
-    timeZone: "UTC",
   });
 }
 
 export function formatTime(dateString: string): string {
-  const date = new Date(dateString);
+  const date = parseDateAsLocal(dateString);
   return date.toLocaleTimeString("en-US", {
     hour: "numeric",
     minute: "2-digit",
-    timeZone: "UTC",
   });
+}
+
+/**
+ * Parse a date string as local time, stripping any UTC "Z" suffix.
+ * This ensures times entered by the host display as-is (wall clock time)
+ * regardless of the viewer's timezone.
+ */
+function parseDateAsLocal(dateString: string): Date {
+  // Strip trailing "Z" or "+00:00" so the string is parsed as local time
+  const cleaned = dateString.replace(/Z$/, "").replace(/[+-]\d{2}:\d{2}$/, "");
+  return new Date(cleaned);
 }
 
 export function formatDateTime(dateString: string): string {
