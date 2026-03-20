@@ -10,17 +10,41 @@ function getSupabase() {
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://exchange.clawyard.dev';
 
-/*
- * SMS Conversation State Machine
- * 
- * States:
- *   greeting     → new user, ask for name
- *   ask_type     → known user, ask need or offer
- *   ask_title    → ask what they need/offer
- *   ask_details  → ask for extra context
- *   confirm      → show preview, ask YES/EDIT
- *   idle         → waiting for next interaction
- */
+const SYSTEM_PROMPT = `You are the SMS assistant for Mutual Exchange, a community exchange board for neighbours in London, Ontario. People text you to post needs and offers to the community board.
+
+Your job is to have a warm, brief conversation to gather what they want to post. You are friendly, neighbourly, and concise - every message costs them time to read on a small screen.
+
+RULES:
+- Keep responses under 160 characters when possible (SMS length), max 300 chars
+- Be warm but brief. You're a neighbour, not a corporation
+- Never use emojis
+- Use casual language, contractions, first names
+- If they text something ambiguous, ask one clarifying question - don't guess
+
+You manage a conversation to create posts. Each post needs:
+1. Type: "need" or "offer"
+2. Title: short description (what they need or are offering)
+3. Details: optional extra context
+4. Category: one of "items", "services", "skills", "space", "other"
+
+CONVERSATION FLOW:
+- If this is a NEW user (no name yet): welcome them and ask their first name
+- If you know their name: greet them and figure out if they have a need or offer
+- Once you understand what they want to post, confirm it with them before posting
+- Returning users who text "NEED: ..." or "OFFER: ..." want a quick post - confirm and post it
+
+When you have enough information to create a post, respond with a JSON block at the END of your message:
+{"action":"post","type":"need|offer","title":"...","details":"...or null","category":"items|services|skills|space|other"}
+
+Only include the JSON when you're ready to post AND the user has confirmed. The JSON must be on its own line at the very end.
+
+When you just want to chat/ask questions, respond with plain text only - no JSON.
+
+EXAMPLES OF GOOD RESPONSES:
+- "Hey! Welcome to Mutual Exchange. What's your first name?"
+- "Hi Sarah! What can I do for you - need something or have something to offer?"
+- "Got it - a ride to Vic Hospital on Tuesday afternoon. Want me to post that?"
+- "Posted! I'll text you when someone responds."`;
 
 export async function POST(req: NextRequest) {
   const supabase = getSupabase();
@@ -29,16 +53,7 @@ export async function POST(req: NextRequest) {
   const phone = formData.get('From') as string || '';
 
   if (!body || !phone) {
-    return twiml('Please text us to get started with Mutual Exchange.');
-  }
-
-  const input = body.trim();
-  const inputUpper = input.toUpperCase();
-
-  // Check for RESET/START OVER command
-  if (inputUpper === 'RESET' || inputUpper === 'START OVER') {
-    await supabase.from('sms_sessions').delete().eq('phone', phone);
-    return twiml('Fresh start! Are you looking for something (reply NEED) or offering something (reply OFFER)?');
+    return twiml('Text us to get started with Mutual Exchange.');
   }
 
   // Look up user
@@ -48,218 +63,175 @@ export async function POST(req: NextRequest) {
     .eq('phone', phone)
     .single();
 
-  // Get or create session
-  let { data: session } = await supabase
+  // Get conversation history
+  const { data: sessions } = await supabase
     .from('sms_sessions')
     .select('*')
     .eq('phone', phone)
-    .order('updated_at', { ascending: false })
-    .limit(1)
-    .single();
+    .order('created_at', { ascending: true })
+    .limit(20);
 
-  // --- NEW USER: never texted before ---
-  if (!user) {
-    // Create user record (no name yet)
-    await supabase.from('sms_users').insert({ phone });
+  // Build message history for the LLM
+  const messages: { role: string; content: string }[] = [
+    { role: 'system', content: SYSTEM_PROMPT },
+  ];
 
-    // Create session in greeting state
-    await supabase.from('sms_sessions').insert({
-      phone,
-      state: 'greeting',
-      data: {},
+  // Add context about the user
+  if (user?.name) {
+    messages.push({
+      role: 'system',
+      content: `The user's name is ${user.name}. They've used the service before.`,
     });
-
-    return twiml(
-      `Hey! Welcome to Mutual Exchange - a community board for neighbours in London, ON. ` +
-      `Before we get started, what's your first name?`
-    );
+  } else {
+    messages.push({
+      role: 'system',
+      content: `This is a new user. We don't know their name yet.`,
+    });
   }
 
-  // --- RETURNING USER, no active session ---
-  if (!session || session.state === 'idle') {
-    // Check for quick-post shortcuts: "NEED: ..." or "OFFER: ..."
-    if (inputUpper.startsWith('NEED:') || inputUpper.startsWith('NEED ')) {
-      const title = extractAfterPrefix(input, 'NEED');
-      if (title) {
-        return await quickPost(supabase, phone, user.name || 'Neighbour', 'need', title);
+  // Add conversation history
+  if (sessions && sessions.length > 0) {
+    for (const s of sessions) {
+      const data = s.data as any;
+      if (data?.user_message) {
+        messages.push({ role: 'user', content: data.user_message });
+      }
+      if (data?.assistant_message) {
+        messages.push({ role: 'assistant', content: data.assistant_message });
       }
     }
-    if (inputUpper.startsWith('OFFER:') || inputUpper.startsWith('OFFER ')) {
-      const title = extractAfterPrefix(input, 'OFFER');
-      if (title) {
-        return await quickPost(supabase, phone, user.name || 'Neighbour', 'offer', title);
-      }
-    }
-
-    // Start new session
-    await upsertSession(supabase, phone, 'ask_type', {});
-
-    const greeting = user.name ? `Hey ${user.name}!` : 'Hey!';
-    return twiml(
-      `${greeting} Are you looking for something (reply NEED) or offering something (reply OFFER)?`
-    );
   }
 
-  // --- ACTIVE SESSION: handle based on state ---
-  const state = session.state;
-  const data: any = session.data || {};
+  // Add the new message
+  messages.push({ role: 'user', content: body });
 
-  switch (state) {
-    case 'greeting': {
-      // They're telling us their name
-      const name = input.split(' ')[0]; // Take first word as name
-      await supabase.from('sms_users').update({ name }).eq('phone', phone);
-      await upsertSession(supabase, phone, 'ask_type', {});
+  // Call MiniMax M2.7
+  const llmResponse = await callMiniMax(messages);
 
-      return twiml(
-        `Hi ${name}! Nice to meet you. ` +
-        `Are you looking for something (reply NEED) or offering something (reply OFFER)?`
-      );
-    }
-
-    case 'ask_type': {
-      if (inputUpper.startsWith('NEED') || inputUpper === 'N') {
-        await upsertSession(supabase, phone, 'ask_title', { type: 'need' });
-        return twiml(`What do you need? Just describe it in a few words.`);
-      }
-      if (inputUpper.startsWith('OFFER') || inputUpper === 'O') {
-        await upsertSession(supabase, phone, 'ask_title', { type: 'offer' });
-        return twiml(`What are you offering? Just describe it briefly.`);
-      }
-      return twiml(`Reply NEED if you're looking for something, or OFFER if you have something to share.`);
-    }
-
-    case 'ask_title': {
-      await upsertSession(supabase, phone, 'ask_details', { ...data, title: input });
-      return twiml(
-        `Got it. Anything else people should know? ` +
-        `Location, timing, details - or reply SKIP if that covers it.`
-      );
-    }
-
-    case 'ask_details': {
-      const details = inputUpper === 'SKIP' || inputUpper === 'NO' ? null : input;
-      const fullData = { ...data, details };
-      await upsertSession(supabase, phone, 'confirm', fullData);
-
-      const userName = user.name || 'You';
-      const typeLabel = fullData.type === 'need' ? 'looking for' : 'offering';
-      let preview = `Here's what I'll post:\n\n${userName} is ${typeLabel}: ${fullData.title}`;
-      if (details) preview += `\n${details}`;
-      preview += `\n\nReply YES to post, or EDIT to start over.`;
-
-      return twiml(preview);
-    }
-
-    case 'confirm': {
-      if (inputUpper === 'YES' || inputUpper === 'Y' || inputUpper === 'POST') {
-        const userName = user.name || 'Neighbour';
-        const category = guessCategory(data.title || '');
-
-        const { error } = await supabase.from('posts').insert({
-          type: data.type,
-          title: data.title,
-          details: data.details || null,
-          category,
-          urgency: 'flexible',
-          contact_name: userName,
-          contact_method: 'phone',
-          contact_value: phone,
-          source: 'sms',
-          source_phone: phone,
-        });
-
-        await upsertSession(supabase, phone, 'idle', {});
-
-        if (error) {
-          return twiml(`Sorry, something went wrong. Try again or text RESET to start fresh.`);
-        }
-
-        return twiml(
-          `Posted! Your neighbours can see it now at ${APP_URL}\n\n` +
-          `When someone responds, I'll text you right away. ` +
-          `Text anytime to post again.`
-        );
-      }
-
-      if (inputUpper === 'EDIT' || inputUpper === 'NO' || inputUpper === 'CHANGE') {
-        await upsertSession(supabase, phone, 'ask_type', {});
-        return twiml(`No problem. Let's start over. NEED or OFFER?`);
-      }
-
-      return twiml(`Reply YES to post it, or EDIT to change it.`);
-    }
-
-    default: {
-      await upsertSession(supabase, phone, 'idle', {});
-      return twiml(`Something got mixed up. Text NEED or OFFER to start a new post.`);
-    }
+  if (!llmResponse) {
+    return twiml('Sorry, having a moment. Text again in a sec?');
   }
-}
 
-// --- Helper functions ---
+  // Check if the LLM wants to create a post
+  const { text, postData } = parseResponse(llmResponse);
 
-async function upsertSession(supabase: any, phone: string, state: string, data: any) {
-  // Delete old sessions, create new one
-  await supabase.from('sms_sessions').delete().eq('phone', phone);
+  // Save this exchange to conversation history
   await supabase.from('sms_sessions').insert({
     phone,
-    state,
-    data,
-  });
-  // Update last_active
-  await supabase.from('sms_users').update({ last_active_at: new Date().toISOString() }).eq('phone', phone);
-}
-
-async function quickPost(supabase: any, phone: string, name: string, type: string, title: string) {
-  const category = guessCategory(title);
-
-  const { error } = await supabase.from('posts').insert({
-    type,
-    title,
-    category,
-    urgency: 'flexible',
-    contact_name: name,
-    contact_method: 'phone',
-    contact_value: phone,
-    source: 'sms',
-    source_phone: phone,
+    state: postData ? 'posted' : 'chatting',
+    data: {
+      user_message: body,
+      assistant_message: text,
+    },
   });
 
-  const APP_URL_local = process.env.NEXT_PUBLIC_APP_URL || 'https://exchange.clawyard.dev';
-
-  if (error) {
-    return twiml(`Sorry, something went wrong. Try again!`);
+  // If new user and LLM asked for name, try to extract name from context
+  if (!user) {
+    await supabase.from('sms_users').insert({ phone });
+  }
+  
+  // Try to learn the user's name from their messages
+  if (user && !user.name && sessions && sessions.length >= 1) {
+    // The second message is likely their name if we just asked
+    const prevData = sessions[sessions.length - 1]?.data as any;
+    if (prevData?.assistant_message?.toLowerCase().includes('name')) {
+      const possibleName = body.split(' ')[0].replace(/[^a-zA-Z]/g, '');
+      if (possibleName.length >= 2 && possibleName.length <= 20) {
+        await supabase.from('sms_users').update({ name: possibleName }).eq('phone', phone);
+      }
+    }
+  } else if (!user) {
+    // Will be handled next message
   }
 
-  return twiml(
-    `Posted your ${type}: "${title}"\n` +
-    `Your neighbours can see it at ${APP_URL_local}\n` +
-    `I'll text you when someone responds.`
-  );
-}
+  // Create the post if LLM returned action data
+  if (postData) {
+    const userName = user?.name || 'Neighbour';
 
-function extractAfterPrefix(input: string, prefix: string): string {
-  const idx = input.indexOf(':');
-  if (idx >= 0 && idx < prefix.length + 2) {
-    return input.slice(idx + 1).trim();
+    const { error } = await supabase.from('posts').insert({
+      type: postData.type,
+      title: postData.title,
+      details: postData.details || null,
+      category: postData.category || 'other',
+      urgency: 'flexible',
+      contact_name: userName,
+      contact_method: 'phone',
+      contact_value: phone,
+      source: 'sms',
+      source_phone: phone,
+    });
+
+    if (error) {
+      return twiml('Sorry, something went wrong posting that. Try again?');
+    }
+
+    // Update last_active
+    await supabase.from('sms_users')
+      .update({ last_active_at: new Date().toISOString() })
+      .eq('phone', phone);
   }
-  return input.slice(prefix.length).trim();
+
+  return twiml(text);
 }
 
-function guessCategory(title: string): string {
-  const lower = title.toLowerCase();
-  if (/ride|deliver|moving|childcare|clean|cook|drive|babysit|walk|shovel|mow/.test(lower)) return 'services';
-  if (/teach|tutor|fix|repair|translate|help.*with|learn|show.*how/.test(lower)) return 'skills';
-  if (/room|space|garage|storage|kitchen|venue|place/.test(lower)) return 'space';
-  if (/clothes|coat|food|furniture|bike|tool|book|toy|fabric|supplies/.test(lower)) return 'items';
-  return 'other';
+async function callMiniMax(messages: { role: string; content: string }[]): Promise<string | null> {
+  const apiKey = process.env.MINIMAX_API_KEY;
+  if (!apiKey) {
+    console.error('MINIMAX_API_KEY not set');
+    return null;
+  }
+
+  try {
+    const response = await fetch('https://api.minimax.io/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'MiniMax-M2.7',
+        messages,
+        max_tokens: 300,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('MiniMax API error:', response.status, await response.text());
+      return null;
+    }
+
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content || null;
+  } catch (error) {
+    console.error('MiniMax API call failed:', error);
+    return null;
+  }
+}
+
+function parseResponse(response: string): { text: string; postData: any | null } {
+  // Look for JSON action block at the end of the response
+  const jsonMatch = response.match(/\{[\s]*"action"[\s]*:[\s]*"post".*\}$/m);
+  
+  if (jsonMatch) {
+    try {
+      const postData = JSON.parse(jsonMatch[0]);
+      const text = response.slice(0, response.lastIndexOf(jsonMatch[0])).trim();
+      return { text: text || 'Posted!', postData };
+    } catch {
+      return { text: response, postData: null };
+    }
+  }
+
+  return { text: response, postData: null };
 }
 
 function twiml(message: string) {
+  // Trim to SMS-friendly length
+  const trimmed = message.length > 1600 ? message.slice(0, 1597) + '...' : message;
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Message>${escapeXml(message)}</Message>
+  <Message>${escapeXml(trimmed)}</Message>
 </Response>`;
   return new NextResponse(xml, { headers: { 'Content-Type': 'text/xml' } });
 }
