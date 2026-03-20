@@ -1,8 +1,9 @@
 import { createClient } from '@/lib/supabase/server';
 import { PostFeed } from '@/components/post-feed';
-import { CreatePostButton } from '@/components/create-post-button';
-import { APP_NAME, APP_DESCRIPTION } from '@/lib/constants';
-import { Heart } from 'lucide-react';
+import { Header } from '@/components/header';
+import { APP_NAME, APP_TAGLINE, APP_DESCRIPTION } from '@/lib/constants';
+
+export const revalidate = 0;
 
 export default async function Home() {
   const supabase = await createClient();
@@ -13,24 +14,41 @@ export default async function Home() {
     .eq('status', 'active')
     .order('created_at', { ascending: false });
 
+  const { count } = await supabase
+    .from('posts')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'active');
+
   return (
-    <main className="min-h-screen bg-amber-50">
+    <main className="min-h-screen">
+      <Header />
+
       {/* Hero */}
-      <div className="bg-gradient-to-b from-amber-100 to-amber-50 border-b border-amber-200">
-        <div className="max-w-2xl mx-auto px-4 py-8 text-center">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Heart className="w-8 h-8 text-orange-500 fill-orange-500" />
-            <h1 className="text-3xl font-bold text-amber-900">{APP_NAME}</h1>
-          </div>
-          <p className="text-lg text-amber-700 mb-6">{APP_DESCRIPTION}</p>
-          <CreatePostButton />
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(35,40%,92%)] via-[hsl(39,50%,96%)] to-transparent" />
+        <div className="relative max-w-2xl mx-auto px-5 pt-12 pb-10 text-center">
+          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-[hsl(25,30%,18%)] leading-[1.1] mb-4">
+            {APP_NAME}
+          </h1>
+          <p className="text-sm uppercase tracking-[0.2em] text-[hsl(25,15%,55%)] font-medium mb-5">
+            {APP_TAGLINE}
+          </p>
+          <p className="text-lg text-[hsl(25,20%,40%)] leading-relaxed max-w-md mx-auto mb-8" style={{ fontFamily: 'var(--font-display)' }}>
+            {APP_DESCRIPTION}
+          </p>
+          
+          {count !== null && count > 0 && (
+            <p className="text-sm text-[hsl(25,15%,55%)]">
+              {count} active {count === 1 ? 'post' : 'posts'} from your neighbours
+            </p>
+          )}
         </div>
-      </div>
+      </section>
 
       {/* Feed */}
-      <div className="max-w-2xl mx-auto px-4 py-6">
+      <section className="max-w-2xl mx-auto px-5 pb-24">
         <PostFeed initialPosts={posts || []} />
-      </div>
+      </section>
     </main>
   );
 }

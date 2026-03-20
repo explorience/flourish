@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { PostCard } from './post-card';
 import { FilterBar } from './filter-bar';
+import { CreatePostButton } from './create-post-button';
 import type { PostWithResponses, PostType, Category } from '@/types/database';
 
 interface PostFeedProps {
@@ -32,11 +33,14 @@ export function PostFeed({ initialPosts }: PostFeedProps) {
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'posts' },
         (payload) => {
-          setPosts((prev) =>
-            prev.map((p) =>
-              p.id === payload.new.id ? { ...p, ...payload.new } : p
-            )
-          );
+          const updated = payload.new as any;
+          if (updated.status !== 'active') {
+            setPosts((prev) => prev.filter((p) => p.id !== updated.id));
+          } else {
+            setPosts((prev) =>
+              prev.map((p) => p.id === updated.id ? { ...p, ...updated } : p)
+            );
+          }
         }
       )
       .on(
@@ -74,15 +78,24 @@ export function PostFeed({ initialPosts }: PostFeedProps) {
         categoryFilter={categoryFilter}
         onTypeChange={setTypeFilter}
         onCategoryChange={setCategoryFilter}
+        totalCount={posts.filter(p => p.status === 'active').length}
+        filteredCount={filtered.length}
       />
       
       {filtered.length === 0 ? (
-        <div className="text-center py-12 text-amber-600">
-          <p className="text-xl mb-2">Nothing here yet!</p>
-          <p>Be the first to post a need or offer.</p>
+        <div className="text-center py-20 animate-fade-up">
+          <p className="text-2xl font-semibold text-[hsl(25,20%,30%)] mb-2" style={{ fontFamily: 'var(--font-display)' }}>
+            {posts.length === 0 ? 'The board is quiet' : 'Nothing matches'}
+          </p>
+          <p className="text-[hsl(25,15%,50%)] mb-8 max-w-sm mx-auto">
+            {posts.length === 0 
+              ? 'Be the first to share something with your neighbours.'
+              : 'Try adjusting your filters.'}
+          </p>
+          {posts.length === 0 && <CreatePostButton />}
         </div>
       ) : (
-        <div className="space-y-4 mt-4">
+        <div className="space-y-4 mt-6 stagger-children">
           {filtered.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}

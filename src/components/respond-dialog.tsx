@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { Post } from '@/types/database';
+import { X } from 'lucide-react';
 
 interface RespondDialogProps {
   post: Post;
@@ -34,16 +35,12 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
     });
 
     if (!error) {
-      // Also notify via SMS if the post was from SMS
       if (post.source === 'sms' && post.source_phone) {
         fetch('/api/notify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            postId: post.id,
-            responderName: name.trim(),
-          }),
-        }).catch(() => {}); // best effort
+          body: JSON.stringify({ postId: post.id, responderName: name.trim() }),
+        }).catch(() => {});
       }
 
       setSubmitted(true);
@@ -59,92 +56,103 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
     setSubmitting(false);
   };
 
+  const isNeed = post.type === 'need';
+
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 animate-fade-in" onClick={onClose}>
       <div
-        className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-md p-6 animate-in slide-in-from-bottom"
+        className="bg-[hsl(39,50%,98%)] rounded-t-3xl sm:rounded-3xl w-full max-w-md animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
         {submitted ? (
-          <div className="text-center py-8">
-            <p className="text-2xl mb-2">💚</p>
-            <p className="text-lg font-semibold text-amber-900">Response sent!</p>
-            <p className="text-amber-600 text-sm mt-1">
+          <div className="text-center py-16 px-6">
+            <p className="text-2xl font-semibold text-[hsl(25,30%,18%)] mb-2" style={{ fontFamily: 'var(--font-display)' }}>
+              Response sent
+            </p>
+            <p className="text-[hsl(25,15%,50%)] text-sm">
               {post.contact_name} will be notified.
             </p>
           </div>
         ) : (
-          <>
-            <h3 className="text-lg font-semibold text-amber-900 mb-1">
-              {post.type === 'need' ? 'Offer to help' : 'Express interest'}
-            </h3>
-            <p className="text-sm text-amber-600 mb-4">
-              Re: {post.title}
-            </p>
+          <div className="p-6">
+            <div className="flex items-start justify-between mb-5">
+              <div>
+                <h3 className="text-lg font-semibold text-[hsl(25,30%,18%)]" style={{ fontFamily: 'var(--font-display)' }}>
+                  {isNeed ? 'Offer to help' : 'Express interest'}
+                </h3>
+                <p className="text-sm text-[hsl(25,15%,50%)] mt-0.5">
+                  Re: {post.title}
+                </p>
+              </div>
+              <button onClick={onClose} className="p-1.5 rounded-full hover:bg-[hsl(35,30%,90%)] text-[hsl(25,15%,50%)]">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-amber-800 mb-1">
-                  Your name *
+                <label className="block text-xs font-medium text-[hsl(25,15%,50%)] uppercase tracking-wider mb-1.5">
+                  Your name
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-amber-200 bg-amber-50/50 focus:outline-none focus:ring-2 focus:ring-amber-400 text-base"
-                  placeholder="Your name"
+                  className="w-full px-4 py-3 rounded-xl border border-[hsl(35,20%,87%)] bg-white focus:outline-none focus:ring-2 focus:ring-[hsl(25,45%,35%)]/20 focus:border-[hsl(25,45%,35%)] text-base transition-all"
+                  placeholder="Your first name"
+                  autoFocus
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-amber-800 mb-1">
-                  How to reach you (optional)
+                <label className="block text-xs font-medium text-[hsl(25,15%,50%)] uppercase tracking-wider mb-1.5">
+                  How to reach you <span className="normal-case tracking-normal">(optional)</span>
                 </label>
                 <input
                   type="text"
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-amber-200 bg-amber-50/50 focus:outline-none focus:ring-2 focus:ring-amber-400 text-base"
+                  className="w-full px-4 py-3 rounded-xl border border-[hsl(35,20%,87%)] bg-white focus:outline-none focus:ring-2 focus:ring-[hsl(25,45%,35%)]/20 focus:border-[hsl(25,45%,35%)] text-base transition-all"
                   placeholder="Phone, email, or other"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-amber-800 mb-1">
-                  Message (optional)
+                <label className="block text-xs font-medium text-[hsl(25,15%,50%)] uppercase tracking-wider mb-1.5">
+                  Message <span className="normal-case tracking-normal">(optional)</span>
                 </label>
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-amber-200 bg-amber-50/50 focus:outline-none focus:ring-2 focus:ring-amber-400 text-base resize-none"
+                  className="w-full px-4 py-3 rounded-xl border border-[hsl(35,20%,87%)] bg-white focus:outline-none focus:ring-2 focus:ring-[hsl(25,45%,35%)]/20 focus:border-[hsl(25,45%,35%)] text-sm resize-none transition-all"
                   rows={3}
-                  placeholder="Any details..."
+                  placeholder="Anything you want them to know..."
                 />
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-3 pt-1">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 px-4 py-3 rounded-lg border border-amber-200 text-amber-700 font-medium hover:bg-amber-50 transition-colors"
+                  className="flex-1 px-4 py-3 rounded-xl border border-[hsl(35,20%,87%)] text-[hsl(25,20%,40%)] font-medium text-sm hover:bg-[hsl(35,30%,95%)] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting || !name.trim()}
-                  className={`flex-1 px-4 py-3 rounded-lg font-medium text-white transition-colors disabled:opacity-50 ${
-                    post.type === 'need'
-                      ? 'bg-orange-500 hover:bg-orange-600'
-                      : 'bg-emerald-500 hover:bg-emerald-600'
+                  className={`flex-1 px-4 py-3 rounded-xl font-medium text-sm text-white transition-all disabled:opacity-40 ${
+                    isNeed
+                      ? 'bg-[hsl(18,60%,52%)] hover:bg-[hsl(18,60%,46%)]'
+                      : 'bg-[hsl(145,30%,42%)] hover:bg-[hsl(145,30%,36%)]'
                   }`}
                 >
                   {submitting ? 'Sending...' : 'Send'}
                 </button>
               </div>
             </form>
-          </>
+          </div>
         )}
       </div>
     </div>

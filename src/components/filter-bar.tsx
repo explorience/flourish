@@ -8,64 +8,81 @@ interface FilterBarProps {
   categoryFilter: Category | 'all';
   onTypeChange: (type: PostType | 'all') => void;
   onCategoryChange: (category: Category | 'all') => void;
+  totalCount: number;
+  filteredCount: number;
 }
 
-export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategoryChange }: FilterBarProps) {
+export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategoryChange, totalCount, filteredCount }: FilterBarProps) {
+  const isFiltered = typeFilter !== 'all' || categoryFilter !== 'all';
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 animate-fade-up">
       {/* Type filter */}
-      <div className="flex gap-2 flex-wrap">
-        <button
+      <div className="flex items-center gap-2 overflow-x-auto scroll-fade pb-1">
+        <FilterPill
+          active={typeFilter === 'all'}
           onClick={() => onTypeChange('all')}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            typeFilter === 'all'
-              ? 'bg-amber-800 text-white'
-              : 'bg-white text-amber-700 border border-amber-200 hover:bg-amber-100'
-          }`}
-        >
-          All
-        </button>
+          label="All"
+        />
         {POST_TYPES.map((t) => (
-          <button
+          <FilterPill
             key={t.value}
+            active={typeFilter === t.value}
             onClick={() => onTypeChange(t.value)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              typeFilter === t.value
-                ? 'bg-amber-800 text-white'
-                : 'bg-white text-amber-700 border border-amber-200 hover:bg-amber-100'
-            }`}
-          >
-            {t.emoji} {t.label}s
-          </button>
+            label={`${t.label}s`}
+            activeColor={t.value === 'need' ? 'bg-[hsl(18,60%,52%)] text-white' : 'bg-[hsl(145,30%,42%)] text-white'}
+          />
+        ))}
+        
+        <div className="h-4 w-px bg-[hsl(35,20%,85%)] mx-1 flex-shrink-0" />
+        
+        {CATEGORIES.map((c) => (
+          <FilterPill
+            key={c.value}
+            active={categoryFilter === c.value}
+            onClick={() => onCategoryChange(categoryFilter === c.value ? 'all' : c.value)}
+            label={c.label}
+            size="small"
+          />
         ))}
       </div>
 
-      {/* Category filter */}
-      <div className="flex gap-2 flex-wrap">
-        <button
-          onClick={() => onCategoryChange('all')}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-            categoryFilter === 'all'
-              ? 'bg-amber-600 text-white'
-              : 'bg-white text-amber-600 border border-amber-200 hover:bg-amber-50'
-          }`}
-        >
-          All categories
-        </button>
-        {CATEGORIES.map((c) => (
+      {isFiltered && (
+        <div className="flex items-center justify-between text-xs text-[hsl(25,12%,55%)]">
+          <span>
+            Showing {filteredCount} of {totalCount}
+          </span>
           <button
-            key={c.value}
-            onClick={() => onCategoryChange(c.value)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-              categoryFilter === c.value
-                ? 'bg-amber-600 text-white'
-                : 'bg-white text-amber-600 border border-amber-200 hover:bg-amber-50'
-            }`}
+            onClick={() => { onTypeChange('all'); onCategoryChange('all'); }}
+            className="text-[hsl(25,45%,35%)] hover:text-[hsl(25,45%,25%)] font-medium"
           >
-            {c.emoji} {c.label}
+            Clear filters
           </button>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+function FilterPill({ active, onClick, label, activeColor, size = 'normal' }: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  activeColor?: string;
+  size?: 'normal' | 'small';
+}) {
+  const sizeClasses = size === 'small' ? 'px-3 py-1.5 text-xs' : 'px-4 py-2 text-sm';
+  
+  return (
+    <button
+      onClick={onClick}
+      className={`${sizeClasses} rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+        active
+          ? (activeColor || 'bg-[hsl(25,45%,30%)] text-white')
+          : 'bg-white/80 text-[hsl(25,15%,45%)] border border-[hsl(35,20%,87%)] hover:border-[hsl(35,25%,78%)] hover:bg-white'
+      }`}
+    >
+      {label}
+    </button>
   );
 }

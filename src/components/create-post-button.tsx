@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus } from 'lucide-react';
 import { CreatePostForm } from './create-post-form';
 
 export function CreatePostButton() {
@@ -11,10 +10,9 @@ export function CreatePostButton() {
     <>
       <button
         onClick={() => setShowForm(true)}
-        className="inline-flex items-center gap-2 px-6 py-3 bg-amber-800 hover:bg-amber-900 text-white rounded-xl font-semibold text-lg transition-colors shadow-lg shadow-amber-900/20"
+        className="px-6 py-3 bg-[hsl(25,45%,30%)] hover:bg-[hsl(25,45%,25%)] text-[hsl(39,50%,96%)] rounded-xl font-medium text-sm transition-colors"
       >
-        <Plus className="w-5 h-5" />
-        Post a Need or Offer
+        Share something
       </button>
 
       {showForm && <CreatePostForm onClose={() => setShowForm(false)} />}
