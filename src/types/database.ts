@@ -1,366 +1,61 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type PostType = 'need' | 'offer';
+export type Category = 'items' | 'services' | 'skills' | 'space' | 'other';
+export type Urgency = 'flexible' | 'this_week' | 'today';
+export type ContactMethod = 'app' | 'phone' | 'email';
+export type PostSource = 'web' | 'sms';
+export type PostStatus = 'active' | 'fulfilled' | 'expired';
 
-export type AccessLevel = "invite_only" | "link_shared" | "public";
-export type PotluckStatus = "draft" | "active" | "completed" | "archived";
+export interface Post {
+  id: string;
+  type: PostType;
+  title: string;
+  details: string | null;
+  category: Category;
+  urgency: Urgency;
+  contact_name: string;
+  contact_method: ContactMethod;
+  contact_value: string | null;
+  source: PostSource;
+  source_phone: string | null;
+  status: PostStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Response {
+  id: string;
+  post_id: string;
+  responder_name: string;
+  responder_contact: string | null;
+  message: string | null;
+  created_at: string;
+}
+
+export interface PostWithResponses extends Post {
+  responses: Response[];
+}
 
 export interface Database {
   public: {
     Tables: {
-      profiles: {
-        Row: {
-          id: string;
-          display_name: string;
-          avatar_url: string | null;
-          total_points: number;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id: string;
-          display_name: string;
-          avatar_url?: string | null;
-          total_points?: number;
+      posts: {
+        Row: Post;
+        Insert: Omit<Post, 'id' | 'created_at' | 'updated_at' | 'status'> & {
+          id?: string;
           created_at?: string;
           updated_at?: string;
+          status?: PostStatus;
         };
-        Update: {
-          id?: string;
-          display_name?: string;
-          avatar_url?: string | null;
-          total_points?: number;
-          updated_at?: string;
-        };
-        Relationships: [];
+        Update: Partial<Post>;
       };
-      potlucks: {
-        Row: {
-          id: string;
-          host_id: string;
-          title: string;
-          description: string;
-          event_date: string;
-          location: string;
-          access_level: AccessLevel;
-          open_offers: boolean;
-          points_enabled: boolean;
-          banner_url: string | null;
-          slug: string;
-          status: PotluckStatus;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
+      responses: {
+        Row: Response;
+        Insert: Omit<Response, 'id' | 'created_at'> & {
           id?: string;
-          host_id: string;
-          title: string;
-          description: string;
-          event_date: string;
-          location: string;
-          access_level?: AccessLevel;
-          open_offers?: boolean;
-          points_enabled?: boolean;
-          banner_url?: string | null;
-          slug: string;
-          status?: PotluckStatus;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          host_id?: string;
-          title?: string;
-          description?: string;
-          event_date?: string;
-          location?: string;
-          access_level?: AccessLevel;
-          open_offers?: boolean;
-          points_enabled?: boolean;
-          banner_url?: string | null;
-          slug?: string;
-          status?: PotluckStatus;
-          updated_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "potlucks_host_id_fkey";
-            columns: ["host_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      needs: {
-        Row: {
-          id: string;
-          potluck_id: string;
-          emoji: string;
-          name: string;
-          quantity: number;
-          claimed_quantity: number;
-          point_value: number | null;
-          sort_order: number;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          potluck_id: string;
-          emoji: string;
-          name: string;
-          quantity?: number;
-          claimed_quantity?: number;
-          point_value?: number | null;
-          sort_order?: number;
           created_at?: string;
         };
-        Update: {
-          potluck_id?: string;
-          emoji?: string;
-          name?: string;
-          quantity?: number;
-          claimed_quantity?: number;
-          point_value?: number | null;
-          sort_order?: number;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "needs_potluck_id_fkey";
-            columns: ["potluck_id"];
-            isOneToOne: false;
-            referencedRelation: "potlucks";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      claims: {
-        Row: {
-          id: string;
-          need_id: string;
-          potluck_id: string;
-          profile_id: string | null;
-          guest_name: string | null;
-          guest_email: string | null;
-          quantity: number;
-          verified: boolean;
-          points_awarded: number;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          need_id: string;
-          potluck_id: string;
-          profile_id?: string | null;
-          guest_name?: string | null;
-          guest_email?: string | null;
-          quantity?: number;
-          verified?: boolean;
-          points_awarded?: number;
-          created_at?: string;
-        };
-        Update: {
-          need_id?: string;
-          potluck_id?: string;
-          profile_id?: string | null;
-          guest_name?: string | null;
-          guest_email?: string | null;
-          quantity?: number;
-          verified?: boolean;
-          points_awarded?: number;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "claims_need_id_fkey";
-            columns: ["need_id"];
-            isOneToOne: false;
-            referencedRelation: "needs";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "claims_potluck_id_fkey";
-            columns: ["potluck_id"];
-            isOneToOne: false;
-            referencedRelation: "potlucks";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "claims_profile_id_fkey";
-            columns: ["profile_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      offers: {
-        Row: {
-          id: string;
-          potluck_id: string;
-          profile_id: string | null;
-          guest_name: string | null;
-          emoji: string;
-          name: string;
-          description: string | null;
-          verified: boolean;
-          points_awarded: number;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          potluck_id: string;
-          profile_id?: string | null;
-          guest_name?: string | null;
-          emoji: string;
-          name: string;
-          description?: string | null;
-          verified?: boolean;
-          points_awarded?: number;
-          created_at?: string;
-        };
-        Update: {
-          potluck_id?: string;
-          profile_id?: string | null;
-          guest_name?: string | null;
-          emoji?: string;
-          name?: string;
-          description?: string | null;
-          verified?: boolean;
-          points_awarded?: number;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "offers_potluck_id_fkey";
-            columns: ["potluck_id"];
-            isOneToOne: false;
-            referencedRelation: "potlucks";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "offers_profile_id_fkey";
-            columns: ["profile_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      invites: {
-        Row: {
-          id: string;
-          potluck_id: string;
-          email: string;
-          code: string;
-          accepted: boolean;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          potluck_id: string;
-          email: string;
-          code: string;
-          accepted?: boolean;
-          created_at?: string;
-        };
-        Update: {
-          potluck_id?: string;
-          email?: string;
-          code?: string;
-          accepted?: boolean;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "invites_potluck_id_fkey";
-            columns: ["potluck_id"];
-            isOneToOne: false;
-            referencedRelation: "potlucks";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      rsvps: {
-        Row: {
-          id: string;
-          potluck_id: string;
-          profile_id: string | null;
-          guest_name: string | null;
-          guest_email: string | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          potluck_id: string;
-          profile_id?: string | null;
-          guest_name?: string | null;
-          guest_email?: string | null;
-          created_at?: string;
-        };
-        Update: {
-          potluck_id?: string;
-          profile_id?: string | null;
-          guest_name?: string | null;
-          guest_email?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "rsvps_potluck_id_fkey";
-            columns: ["potluck_id"];
-            isOneToOne: false;
-            referencedRelation: "potlucks";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "rsvps_profile_id_fkey";
-            columns: ["profile_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
+        Update: Partial<Response>;
       };
     };
-    Views: {};
-    Functions: {
-      increment_points: {
-        Args: { user_id: string; amount: number };
-        Returns: undefined;
-      };
-    };
-    Enums: {
-      access_level: AccessLevel;
-      potluck_status: PotluckStatus;
-    };
-    CompositeTypes: {};
   };
 }
-
-export type Tables<T extends keyof Database["public"]["Tables"]> =
-  Database["public"]["Tables"][T]["Row"];
-export type InsertTables<T extends keyof Database["public"]["Tables"]> =
-  Database["public"]["Tables"][T]["Insert"];
-export type UpdateTables<T extends keyof Database["public"]["Tables"]> =
-  Database["public"]["Tables"][T]["Update"];
-
-export type Profile = Tables<"profiles">;
-export type Potluck = Tables<"potlucks">;
-export type Need = Tables<"needs">;
-export type Claim = Tables<"claims">;
-export type Offer = Tables<"offers">;
-export type Invite = Tables<"invites">;
-export type Rsvp = Tables<"rsvps">;
-
-export type ClaimWithProfile = Claim & {
-  profile?: Pick<Profile, "display_name" | "avatar_url"> | null;
-};
-export type NeedWithClaims = Need & { claims: ClaimWithProfile[] };
-export type RsvpWithProfile = Rsvp & {
-  profile?: Pick<Profile, "display_name" | "avatar_url"> | null;
-};
-export type PotluckWithDetails = Potluck & {
-  needs: NeedWithClaims[];
-  offers: Offer[];
-  host: Profile;
-};

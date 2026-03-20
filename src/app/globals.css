@@ -4,34 +4,23 @@
 
 @layer base {
   :root {
-    --background: 40 33% 96%;
-    --foreground: 30 10% 15%;
-
-    --card: 40 30% 98%;
-    --card-foreground: 30 10% 15%;
-
-    --popover: 40 30% 98%;
-    --popover-foreground: 30 10% 15%;
-
-    --primary: 145 26% 39%;
-    --primary-foreground: 40 33% 96%;
-
-    --secondary: 18 42% 56%;
-    --secondary-foreground: 40 33% 96%;
-
-    --muted: 35 20% 90%;
-    --muted-foreground: 30 10% 42%;
-
-    --accent: 30 45% 64%;
-    --accent-foreground: 30 10% 15%;
-
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 40 33% 96%;
-
-    --border: 35 20% 85%;
-    --input: 35 20% 85%;
-    --ring: 145 26% 39%;
-
+    --background: 36 100% 97%;
+    --foreground: 30 50% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 30 50% 10%;
+    --primary: 30 60% 25%;
+    --primary-foreground: 36 100% 97%;
+    --secondary: 36 50% 90%;
+    --secondary-foreground: 30 60% 25%;
+    --muted: 36 30% 90%;
+    --muted-foreground: 30 20% 45%;
+    --accent: 36 50% 90%;
+    --accent-foreground: 30 60% 25%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 36 30% 85%;
+    --input: 36 30% 85%;
+    --ring: 30 60% 35%;
     --radius: 0.75rem;
   }
 }
@@ -45,8 +34,22 @@
   }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Smooth animations */
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
   }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-in {
+  animation: slideInFromBottom 0.3s ease-out;
+}
+
+.slide-in-from-bottom {
+  animation: slideInFromBottom 0.3s ease-out;
 }
