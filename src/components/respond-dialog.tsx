@@ -35,11 +35,17 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
     });
 
     if (!error) {
-      if (post.source === 'sms' && post.source_phone) {
+      // Notify poster (works for SMS and could extend to email)
+      {
         fetch('/api/notify', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ postId: post.id, responderName: name.trim() }),
+          body: JSON.stringify({
+            postId: post.id,
+            responderName: name.trim(),
+            responderContact: contact.trim() || null,
+            responderMessage: message.trim() || null,
+          }),
         }).catch(() => {});
       }
 

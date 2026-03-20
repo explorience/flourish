@@ -79,3 +79,30 @@ $$ language plpgsql;
 create trigger posts_updated_at
   before update on posts
   for each row execute function update_updated_at();
+
+-- SMS conversation tracking
+create table if not exists sms_users (
+  id uuid primary key default uuid_generate_v4(),
+  phone text unique not null,
+  name text,
+  created_at timestamptz not null default now(),
+  last_active_at timestamptz not null default now()
+);
+
+create table if not exists sms_sessions (
+  id uuid primary key default uuid_generate_v4(),
+  phone text not null,
+  state text not null default 'greeting',
+  data jsonb not null default '{}',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists idx_sms_users_phone on sms_users(phone);
+create index if not exists idx_sms_sessions_phone on sms_sessions(phone);
+
+alter table sms_users enable row level security;
+alter table sms_sessions enable row level security;
+
+create policy "sms_users_all" on sms_users for all using (true) with check (true);
+create policy "sms_sessions_all" on sms_sessions for all using (true) with check (true);

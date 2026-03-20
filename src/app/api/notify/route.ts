@@ -10,7 +10,7 @@ function getSupabase() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { postId, responderName } = await req.json();
+    const { postId, responderName, responderContact, responderMessage } = await req.json();
     const supabase = getSupabase();
 
     const { data: post } = await supabase
@@ -31,8 +31,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, skipped: true });
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://exchange.clawyard.dev';
-    const message = `💬 ${responderName} responded to your ${post.type}: "${post.title}". Check it out: ${appUrl}`;
+    // Build a warm, informative notification
+    let message = `Good news - ${responderName} responded to your post about "${post.title}".`;
+    
+    if (responderMessage) {
+      message += `\n\nThey said: "${responderMessage}"`;
+    }
+    
+    if (responderContact) {
+      message += `\n\nReach them at: ${responderContact}`;
+    }
+
+    message += `\n\nView your post: ${process.env.NEXT_PUBLIC_APP_URL || 'https://exchange.clawyard.dev'}/post/${post.id}`;
 
     const twilioUrl = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
     await fetch(twilioUrl, {
