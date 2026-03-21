@@ -9,9 +9,9 @@ export default async function MapPage() {
   const supabase = await createClient();
   const { data: posts } = await supabase
     .from('posts')
-    .select('id, type, title, details, category, contact_name, created_at, status, location_label, location_lat, location_lng')
+    .select('id, type, title, details, category, contact_name, created_at, status, location_label, location_fuzzed_lat, location_fuzzed_lng')
     .eq('status', 'active')
-    .not('location_lat', 'is', null)
+    .not('location_fuzzed_lat', 'is', null)
     .order('created_at', { ascending: false });
 
   return (

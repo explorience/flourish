@@ -21,8 +21,8 @@ interface MapPost {
   created_at: string;
   status: string;
   location_label: string | null;
-  location_lat: number;
-  location_lng: number;
+  location_fuzzed_lat: number;
+  location_fuzzed_lng: number;
 }
 
 interface MapClientProps {
@@ -33,7 +33,7 @@ export function MapClient({ posts }: MapClientProps) {
   const [selected, setSelected] = useState<MapPost | null>(null);
   const [typeFilter, setTypeFilter] = useState<'all' | 'need' | 'offer'>('all');
 
-  const filtered = posts.filter(p => typeFilter === 'all' || p.type === typeFilter);
+  const filtered = posts.filter(p => (typeFilter === 'all' || p.type === typeFilter) && p.location_fuzzed_lat && p.location_fuzzed_lng);
 
   return (
     <div className="flex flex-col" style={{ height: 'calc(100vh - 52px)' }}>

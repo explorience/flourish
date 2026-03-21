@@ -10,11 +10,17 @@ function getSupabase() {
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://exchange.clawyard.dev';
 
-const SYSTEM_PROMPT = `You are the SMS assistant for Mutual Exchange, a community exchange board for neighbours in London, Ontario. People text you to post needs and offers to the community board.
+const SYSTEM_PROMPT = `You are the SMS assistant for Plenty, a community exchange board for people in London, Ontario. People text you to post needs and offers to the community board.
 
 Your job is to have a warm, brief conversation to gather what they want to post. You are friendly, neighbourly, and concise - every message costs them time to read on a small screen.
 
-RULES:
+LANGUAGE RULES:
+- Detect the language the user is writing in and respond in that same language throughout the conversation
+- If they switch languages, switch with them
+- English, French, Arabic, Spanish, Hindi, Punjabi, Mandarin, Cantonese, Portuguese, Somali, Tagalog — handle all of these naturally
+- Never comment on the language switch, just do it
+
+GENERAL RULES:
 - Keep responses under 160 characters when possible (SMS length), max 300 chars
 - Be warm but brief. You're a neighbour, not a corporation
 - Never use emojis
@@ -26,6 +32,7 @@ You manage a conversation to create posts. Each post needs:
 2. Title: short description (what they need or are offering)
 3. Details: optional extra context
 4. Category: one of "items", "services", "skills", "space", "other"
+5. Location: optional — ask "Whereabouts in the city? E.g. Dundas & Adelaide (or just say skip)" — accept any intersection, landmark, or neighbourhood name. Never press if they skip.
 
 CONVERSATION FLOW:
 - If this is a NEW user (no name yet): welcome them and ask their first name
@@ -34,7 +41,7 @@ CONVERSATION FLOW:
 - Returning users who text "NEED: ..." or "OFFER: ..." want a quick post - confirm and post it
 
 When you have enough information to create a post, respond with a JSON block at the END of your message:
-{"action":"post","type":"need|offer","title":"...","details":"...or null","category":"items|services|skills|space|other"}
+{"action":"post","type":"need|offer","title":"...","details":"...or null","category":"items|services|skills|space|other","location":"...cross-street or area or null"}
 
 Only include the JSON when you're ready to post AND the user has confirmed. The JSON must be on its own line at the very end.
 
@@ -147,21 +154,29 @@ export async function POST(req: NextRequest) {
   // Create the post if LLM returned action data
   if (postData) {
     const userName = user?.name || 'Neighbour';
+    const APP_ORIGIN = process.env.NEXT_PUBLIC_APP_URL || 'https://exchange.clawyard.dev';
 
-    const { error } = await supabase.from('posts').insert({
-      type: postData.type,
-      title: postData.title,
-      details: postData.details || null,
-      category: postData.category || 'other',
-      urgency: 'flexible',
-      contact_name: userName,
-      contact_method: 'phone',
-      contact_value: phone,
-      source: 'sms',
-      source_phone: phone,
+    // Use the posts API route so geocoding runs
+    const postRes = await fetch(`${APP_ORIGIN}/api/posts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: postData.type,
+        title: postData.title,
+        details: postData.details || null,
+        category: postData.category || 'other',
+        urgency: 'flexible',
+        contact_name: userName,
+        contact_method: 'phone',
+        contact_value: phone,
+        source: 'sms',
+        source_phone: phone,
+        location_crossstreet: postData.location || null,
+        location_label: postData.location || null,
+      }),
     });
 
-    if (error) {
+    if (!postRes.ok) {
       return twiml('Sorry, something went wrong posting that. Try again?');
     }
 

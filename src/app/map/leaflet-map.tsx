@@ -14,8 +14,8 @@ interface MapPost {
   created_at: string;
   status: string;
   location_label: string | null;
-  location_lat: number;
-  location_lng: number;
+  location_fuzzed_lat: number;
+  location_fuzzed_lng: number;
 }
 
 interface LeafletMapProps {
@@ -82,7 +82,7 @@ export default function LeafletMap({ posts, selected, onSelect }: LeafletMapProp
 
     posts.forEach((post) => {
       const isSelected = selected?.id === post.id;
-      const marker = L.marker([post.location_lat, post.location_lng], {
+      const marker = L.marker([post.location_fuzzed_lat, post.location_fuzzed_lng], {
         icon: makeIcon(post.type, isSelected),
         zIndexOffset: isSelected ? 1000 : 0,
       })
@@ -96,7 +96,7 @@ export default function LeafletMap({ posts, selected, onSelect }: LeafletMapProp
   // Pan to selected
   useEffect(() => {
     if (selected && mapRef.current) {
-      mapRef.current.panTo([selected.location_lat, selected.location_lng], { animate: true, duration: 0.5 });
+      mapRef.current.panTo([selected.location_fuzzed_lat, selected.location_fuzzed_lng], { animate: true, duration: 0.5 });
     }
   }, [selected]);
 

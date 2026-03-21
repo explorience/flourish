@@ -21,26 +21,44 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
   const [contactMethod, setContactMethod] = useState<ContactMethod>('app');
   const [contactValue, setContactValue] = useState('');
   const [neighbourhood, setNeighbourhood] = useState('');
+  const [crossStreet, setCrossStreet] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async () => {
     if (!type || !title.trim() || !contactName.trim()) return;
     setSubmitting(true);
+
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     const hood = LONDON_NEIGHBOURHOODS.find(n => n.name === neighbourhood);
-    const { error } = await supabase.from('posts').insert({
-      type, title: title.trim(), details: details.trim() || null,
-      category, urgency, contact_name: contactName.trim(),
-      contact_method: contactMethod, contact_value: contactValue.trim() || null,
-      source: 'web' as const,
-      user_id: user?.id || null,
-      location_label: hood?.name || null,
-      location_lat: hood?.lat || null,
-      location_lng: hood?.lng || null,
+
+    // Use API route so geocoding runs server-side
+    const res = await fetch('/api/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type,
+        title: title.trim(),
+        details: details.trim() || null,
+        category,
+        urgency,
+        contact_name: contactName.trim(),
+        contact_method: contactMethod,
+        contact_value: contactValue.trim() || null,
+        source: 'web',
+        user_id: user?.id || null,
+        location_label: crossStreet.trim() || hood?.name || null,
+        location_crossstreet: crossStreet.trim() || null,
+        location_lat: crossStreet.trim() ? null : (hood?.lat || null),
+        location_lng: crossStreet.trim() ? null : (hood?.lng || null),
+      }),
     });
-    if (!error) { setSubmitted(true); setTimeout(onClose, 2000); }
+
+    if (res.ok) {
+      setSubmitted(true);
+      setTimeout(onClose, 2000);
+    }
     setSubmitting(false);
   };
 
@@ -52,8 +70,8 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
       <div className="w-full max-w-lg max-h-[85vh] overflow-y-auto animate-slide-up sm:rounded-md" style={{ background: 'var(--card)' }} onClick={(e) => e.stopPropagation()}>
         {submitted ? (
           <div className="text-center py-20 px-6">
-            <p className="text-xl font-bold uppercase tracking-wide mb-3" style={{ ...ds, color: 'var(--ink)' }}>Shared with your neighbours</p>
-            <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>Your {type} is now visible to the community.</p>
+            <p className="text-xl font-bold uppercase tracking-wide mb-3" style={{ ...ds, color: 'var(--ink)' }}>Shared with the community</p>
+            <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>Your {type} is now live on the board.</p>
           </div>
         ) : (
           <>
@@ -110,7 +128,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                     autoFocus
                   />
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>Details (optional)</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>Details <span className="normal-case tracking-normal font-normal" style={{ color: 'var(--ink-muted)' }}>(optional)</span></label>
                     <textarea value={details} onChange={(e) => setDetails(e.target.value)}
                       className="w-full px-4 py-3 text-sm focus:outline-none resize-none"
                       style={{ background: '#fff', border: '1px solid var(--border-card)', color: 'var(--ink)' }}
@@ -139,15 +157,39 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                       ))}
                     </div>
                   </div>
+
+                  {/* Location — cross-street OR neighbourhood picker */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>Neighbourhood <span className="normal-case tracking-normal font-normal" style={{ color: 'var(--ink-muted)' }}>(optional — shows on map)</span></label>
-                    <select value={neighbourhood} onChange={(e) => setNeighbourhood(e.target.value)}
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-1" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>
+                      Whereabouts? <span className="normal-case tracking-normal font-normal" style={{ color: 'var(--ink-muted)' }}>(optional — places a pin on the map)</span>
+                    </label>
+                    <p className="text-xs mb-2" style={{ color: 'var(--ink-muted)', fontSize: '0.68rem' }}>
+                      Nearest cross-street gives the most useful location. We never show your exact address — only an approximate area.
+                    </p>
+                    <input
+                      type="text"
+                      value={crossStreet}
+                      onChange={(e) => { setCrossStreet(e.target.value); if (e.target.value) setNeighbourhood(''); }}
+                      className="w-full px-4 py-3 text-sm focus:outline-none mb-2"
+                      style={{ background: '#fff', border: '1px solid var(--border-card)', color: 'var(--ink)' }}
+                      placeholder="e.g. Dundas & Adelaide, or near Victoria Park"
+                    />
+                    <div className="flex items-center gap-2 text-xs my-2" style={{ color: 'var(--ink-muted)' }}>
+                      <div className="flex-1 h-px" style={{ background: 'var(--border-card)' }} />
+                      <span>or pick a neighbourhood</span>
+                      <div className="flex-1 h-px" style={{ background: 'var(--border-card)' }} />
+                    </div>
+                    <select
+                      value={neighbourhood}
+                      onChange={(e) => { setNeighbourhood(e.target.value); if (e.target.value) setCrossStreet(''); }}
                       className="w-full px-4 py-3 text-sm focus:outline-none appearance-none"
-                      style={{ background: '#fff', border: '1px solid var(--border-card)', color: neighbourhood ? 'var(--ink)' : 'var(--ink-muted)', fontFamily: 'var(--font-body)' }}>
+                      style={{ background: '#fff', border: '1px solid var(--border-card)', color: neighbourhood ? 'var(--ink)' : 'var(--ink-muted)', fontFamily: 'var(--font-body)' }}
+                    >
                       <option value="">Select a neighbourhood...</option>
                       {LONDON_NEIGHBOURHOODS.map(n => <option key={n.name} value={n.name}>{n.name}</option>)}
                     </select>
                   </div>
+
                   <button onClick={() => setStep(3)} disabled={!title.trim()}
                     className="w-full flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-all"
                     style={{ background: 'var(--ink)', color: 'var(--card)', ...ds }}
@@ -183,6 +225,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                       />
                     )}
                   </div>
+
                   {/* Preview */}
                   <div className="p-4" style={{ background: 'rgba(26,42,32,0.05)', border: '1px dashed var(--border-card)' }}>
                     <p className="text-xs uppercase tracking-wider font-bold mb-1" style={{ ...ds, color: 'var(--ink-muted)', fontSize: '0.55rem' }}>Preview</p>
@@ -191,12 +234,16 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                         {type === 'need' ? 'Looking for' : 'Offering'}:
                       </span>{' '}{title || '...'}
                     </p>
-                    <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>by {contactName || '...'}</p>
+                    <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>
+                      by {contactName || '...'}
+                      {(crossStreet || neighbourhood) && <span> · {crossStreet || neighbourhood}</span>}
+                    </p>
                   </div>
+
                   <button onClick={handleSubmit} disabled={submitting || !contactName.trim()}
                     className="w-full py-4 text-sm font-bold uppercase tracking-wider disabled:opacity-40 transition-all"
                     style={{ background: type === 'need' ? 'var(--need)' : 'var(--offer)', color: 'var(--card)', ...ds }}
-                  >{submitting ? 'Posting...' : 'Share with neighbours'}</button>
+                  >{submitting ? 'Posting...' : 'Share with the community'}</button>
                 </div>
               )}
             </div>
