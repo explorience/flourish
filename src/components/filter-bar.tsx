@@ -17,46 +17,38 @@ export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategory
 
   return (
     <div className="space-y-3 animate-fade-up">
-      {/* Type filter */}
       <div className="flex items-center gap-2 overflow-x-auto scroll-fade pb-1">
-        <FilterPill
-          active={typeFilter === 'all'}
-          onClick={() => onTypeChange('all')}
-          label="All"
-        />
+        <Pill active={typeFilter === 'all'} onClick={() => onTypeChange('all')} label="All" />
         {POST_TYPES.map((t) => (
-          <FilterPill
+          <Pill
             key={t.value}
             active={typeFilter === t.value}
             onClick={() => onTypeChange(t.value)}
             label={`${t.label}s`}
-            activeColor={t.value === 'need' ? 'bg-[hsl(18,60%,52%)] text-white' : 'bg-[hsl(145,30%,42%)] text-white'}
+            activeColor={t.value === 'need' ? 'var(--need)' : 'var(--offer)'}
           />
         ))}
-        
-        <div className="h-4 w-px bg-[hsl(35,20%,85%)] mx-1 flex-shrink-0" />
-        
+        <div className="w-px h-4 flex-shrink-0" style={{ background: 'var(--border)' }} />
         {CATEGORIES.map((c) => (
-          <FilterPill
+          <Pill
             key={c.value}
             active={categoryFilter === c.value}
             onClick={() => onCategoryChange(categoryFilter === c.value ? 'all' : c.value)}
             label={c.label}
-            size="small"
+            small
           />
         ))}
       </div>
 
       {isFiltered && (
-        <div className="flex items-center justify-between text-xs text-[hsl(25,12%,55%)]">
-          <span>
-            Showing {filteredCount} of {totalCount}
-          </span>
+        <div className="flex items-center justify-between text-xs" style={{ color: 'var(--sub)' }}>
+          <span>{filteredCount} of {totalCount}</span>
           <button
             onClick={() => { onTypeChange('all'); onCategoryChange('all'); }}
-            className="text-[hsl(25,45%,35%)] hover:text-[hsl(25,45%,25%)] font-medium"
+            className="font-medium hover:underline"
+            style={{ color: 'var(--heading)' }}
           >
-            Clear filters
+            Clear
           </button>
         </div>
       )}
@@ -64,23 +56,25 @@ export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategory
   );
 }
 
-function FilterPill({ active, onClick, label, activeColor, size = 'normal' }: {
+function Pill({ active, onClick, label, activeColor, small }: {
   active: boolean;
   onClick: () => void;
   label: string;
   activeColor?: string;
-  size?: 'normal' | 'small';
+  small?: boolean;
 }) {
-  const sizeClasses = size === 'small' ? 'px-3 py-1.5 text-xs' : 'px-4 py-2 text-sm';
-  
+  const size = small ? 'px-3 py-1 text-xs' : 'px-3.5 py-1.5 text-xs';
   return (
     <button
       onClick={onClick}
-      className={`${sizeClasses} rounded-full font-medium whitespace-nowrap transition-all flex-shrink-0 ${
-        active
-          ? (activeColor || 'bg-[hsl(25,45%,30%)] text-white')
-          : 'bg-white/80 text-[hsl(25,15%,45%)] border border-[hsl(35,20%,87%)] hover:border-[hsl(35,25%,78%)] hover:bg-white'
-      }`}
+      className={`${size} font-bold uppercase tracking-wider whitespace-nowrap flex-shrink-0 transition-all`}
+      style={{
+        fontFamily: 'var(--font-display)',
+        fontSize: small ? '0.6rem' : '0.65rem',
+        background: active ? (activeColor || 'var(--card)') : 'transparent',
+        color: active ? (activeColor ? 'var(--card)' : 'var(--ink)') : 'var(--sub)',
+        border: `1.5px solid ${active ? (activeColor || 'var(--card)') : 'var(--border)'}`,
+      }}
     >
       {label}
     </button>

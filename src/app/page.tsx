@@ -20,33 +20,32 @@ export default async function Home() {
     .eq('status', 'active');
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen" style={{ background: 'var(--bg)' }}>
       <Header />
 
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[hsl(35,40%,92%)] via-[hsl(39,50%,96%)] to-transparent" />
-        <div className="relative max-w-2xl mx-auto px-5 pt-12 pb-10 text-center">
-          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-[hsl(25,30%,18%)] leading-[1.1] mb-4">
-            {APP_NAME}
-          </h1>
-          <p className="text-sm uppercase tracking-[0.2em] text-[hsl(25,15%,55%)] font-medium mb-5">
-            {APP_TAGLINE}
+      <section className="text-center px-5 pt-12 pb-8">
+        <h1
+          className="text-5xl sm:text-6xl font-extrabold uppercase tracking-wide leading-none mb-2"
+          style={{ color: 'var(--heading)', fontFamily: 'var(--font-display)' }}
+        >
+          {APP_NAME}
+        </h1>
+        <p
+          className="text-sm italic mb-6"
+          style={{ color: 'var(--sub)', fontFamily: 'var(--font-serif)' }}
+        >
+          {APP_DESCRIPTION}
+        </p>
+        {count !== null && count > 0 && (
+          <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>
+            {count} active {count === 1 ? 'post' : 'posts'} from your neighbours
           </p>
-          <p className="text-lg text-[hsl(25,20%,40%)] leading-relaxed max-w-md mx-auto mb-8" style={{ fontFamily: 'var(--font-display)' }}>
-            {APP_DESCRIPTION}
-          </p>
-          
-          {count !== null && count > 0 && (
-            <p className="text-sm text-[hsl(25,15%,55%)]">
-              {count} active {count === 1 ? 'post' : 'posts'} from your neighbours
-            </p>
-          )}
-        </div>
+        )}
       </section>
 
       {/* Feed */}
-      <section className="max-w-2xl mx-auto px-5 pb-24">
+      <section className="max-w-xl mx-auto px-5 pb-24">
         <PostFeed initialPosts={posts || []} />
       </section>
     </main>

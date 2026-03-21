@@ -10,11 +10,15 @@ export function CreatePostButton() {
     <>
       <button
         onClick={() => setShowForm(true)}
-        className="px-6 py-3 bg-[hsl(25,45%,30%)] hover:bg-[hsl(25,45%,25%)] text-[hsl(39,50%,96%)] rounded-xl font-medium text-sm transition-colors"
+        className="px-6 py-3 text-xs font-bold uppercase tracking-wider transition-colors"
+        style={{
+          background: 'var(--card)',
+          color: 'var(--ink)',
+          fontFamily: 'var(--font-display)',
+        }}
       >
         Share something
       </button>
-
       {showForm && <CreatePostForm onClose={() => setShowForm(false)} />}
     </>
   );

@@ -19,8 +19,8 @@ export const POST_TYPES: { value: PostType; label: string; action: string; color
   { value: 'offer', label: 'Offer', action: 'I can offer something', color: 'text-[hsl(145,30%,42%)]', bgColor: 'bg-[hsl(145,30%,42%)]' },
 ];
 
-export const APP_NAME = 'Mutual Exchange';
+export const APP_NAME = 'The Porch';
 export const APP_TAGLINE = 'London, Ontario';
-export const APP_DESCRIPTION = 'A neighbourhood board for sharing what we have and asking for what we need.';
+export const APP_DESCRIPTION = 'Share what you have. Ask for what you need.';
 
 export const POST_EXPIRY_DAYS = 30; // Auto-expire posts after 30 days

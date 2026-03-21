@@ -1,11 +1,11 @@
 {
-  "name": "Mutual Exchange",
-  "short_name": "Exchange",
-  "description": "Share what you have. Ask for what you need. A neighbourhood board for London, Ontario.",
+  "name": "The Porch",
+  "short_name": "The Porch",
+  "description": "Share what you have. Ask for what you need.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#e8e2d6",
-  "theme_color": "#1a1a1a",
+  "background_color": "#1a2a20",
+  "theme_color": "#1a2a20",
   "orientation": "portrait-primary",
   "icons": [
     {
