@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Taster Round 3 - Go Wild</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Syne:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', system-ui; background: #111; color: #ddd; }
+
+.intro {
+  max-width: 600px; margin: 0 auto; padding: 72px 24px 40px; text-align: center;
+}
+.intro h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: #fff; margin-bottom: 12px; font-weight: 400; }
+.intro p { font-size: 0.95rem; color: #777; line-height: 1.6; }
+
+.directions { display: flex; flex-direction: column; gap: 72px; padding: 32px 24px 120px; max-width: 1200px; margin: 0 auto; }
+.direction { background: #1a1a1a; border-radius: 20px; overflow: hidden; border: 1px solid #2a2a2a; }
+.direction-header { padding: 28px 36px; border-bottom: 1px solid #2a2a2a; }
+.direction-header h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: #fff; margin-bottom: 6px; font-weight: 400; }
+.direction-header p { color: #777; font-size: 0.82rem; line-height: 1.5; }
+.direction-header .fonts { margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #555; }
+
+@media (max-width: 640px) {
+  .preview { padding: 28px 16px !important; }
+  .direction-header { padding: 20px 16px; }
+}
+
+/* ================================
+   A: NEWSPRINT STACK
+   Newspaper-dense, Playfair + Inter Tight, stacked tight
+   ================================ */
+.dA .preview {
+  background: #f0ebe0;
+  padding: 36px;
+  font-family: 'Inter Tight', sans-serif;
+}
+.dA .masthead {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-bottom: 3px double #1a1a1a; padding-bottom: 12px; margin-bottom: 16px;
+}
+.dA .masthead h1 {
+  font-family: 'Playfair Display', serif; font-size: 2.4rem; color: #1a1a1a;
+  font-weight: 700; letter-spacing: -0.02em;
+}
+.dA .masthead .loc {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: #888;
+}
+.dA .tagline {
+  font-family: 'Playfair Display', serif; font-style: italic;
+  font-size: 0.9rem; color: #777; text-align: center;
+  border-bottom: 1px solid #ccc5b5; padding-bottom: 12px; margin-bottom: 20px;
+}
+.dA .grid { display: flex; gap: 16px; flex-wrap: wrap; }
+.dA .card {
+  flex: 1; min-width: 220px; background: #faf7f0; border: 1px solid #d0c9ba;
+  padding: 16px; position: relative;
+}
+.dA .card .type {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.58rem;
+  text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;
+  display: inline-block; padding: 2px 8px;
+}
+.dA .card .type.need { background: #c0613e; color: #faf7f0; }
+.dA .card .type.offer { background: #2a2a2a; color: #faf7f0; }
+.dA .card h3 {
+  font-family: 'Playfair Display', serif; font-size: 1.1rem; color: #1a1a1a;
+  margin-bottom: 6px; font-weight: 600; line-height: 1.25;
+}
+.dA .card .detail { font-size: 0.8rem; color: #555; line-height: 1.5; margin-bottom: 10px; }
+.dA .card .meta {
+  font-size: 0.68rem; color: #999; display: flex; gap: 6px;
+  border-top: 1px solid #e0d9ca; padding-top: 8px; margin-bottom: 10px;
+}
+.dA .card .btn {
+  width: 100%; padding: 8px; border: 1.5px solid #1a1a1a; background: transparent;
+  font-family: 'Inter Tight', sans-serif; font-size: 0.75rem; font-weight: 600;
+  cursor: pointer; transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.1em;
+}
+.dA .card .btn:hover { background: #1a1a1a; color: #faf7f0; }
+.dA .card .btn.need { border-color: #c0613e; color: #c0613e; }
+.dA .card .btn.need:hover { background: #c0613e; color: #fff; }
+
+/* ================================
+   B: SPLIT TONE
+   Left color bar, Crimson Pro + Space Grotesk, warm/cool split
+   ================================ */
+.dB .preview {
+  background: #f7f4ef;
+  padding: 36px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.dB .header {
+  display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px;
+}
+.dB .header h1 {
+  font-family: 'Crimson Pro', serif; font-size: 2.8rem; color: #222;
+  font-weight: 300; letter-spacing: -0.03em;
+}
+.dB .header .loc {
+  font-size: 0.72rem; color: #aaa; text-transform: uppercase; letter-spacing: 0.15em;
+}
+.dB .tagline {
+  font-family: 'Crimson Pro', serif; font-style: italic;
+  font-size: 0.95rem; color: #888; margin-bottom: 24px;
+}
+.dB .card {
+  display: flex; max-width: 520px; margin-bottom: 14px;
+  background: #fff; overflow: hidden; border: 1px solid #e0dbd2;
+  transition: transform 0.2s;
+}
+.dB .card:hover { transform: translateX(4px); }
+.dB .card .side {
+  width: 6px; flex-shrink: 0;
+}
+.dB .card .side.need { background: #c0613e; }
+.dB .card .side.offer { background: #3a7a5a; }
+.dB .card .content { padding: 16px 20px; flex: 1; }
+.dB .card .type {
+  font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em;
+  margin-bottom: 6px; font-weight: 600;
+}
+.dB .card .type.need { color: #c0613e; }
+.dB .card .type.offer { color: #3a7a5a; }
+.dB .card h3 {
+  font-family: 'Crimson Pro', serif; font-size: 1.2rem; color: #222;
+  margin-bottom: 4px; font-weight: 400;
+}
+.dB .card .detail { font-size: 0.82rem; color: #666; line-height: 1.5; margin-bottom: 10px; }
+.dB .card .bottom {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.dB .card .meta { font-size: 0.7rem; color: #aaa; }
+.dB .card .btn {
+  padding: 6px 18px; border: none; border-radius: 2px;
+  font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; color: #fff;
+}
+.dB .card .btn.need { background: #c0613e; }
+.dB .card .btn.need:hover { background: #a85030; }
+.dB .card .btn.offer { background: #3a7a5a; }
+.dB .card .btn.offer:hover { background: #2e6248; }
+
+/* ================================
+   C: COLLAGE BOARD
+   Overlapping cards, Syne + Libre Baskerville, tape/pin energy
+   ================================ */
+.dC .preview {
+  background: #e8e2d6;
+  padding: 36px;
+  font-family: 'DM Sans', sans-serif;
+  position: relative;
+  min-height: 600px;
+}
+.dC .title-block {
+  text-align: center; margin-bottom: 32px;
+}
+.dC .title-block h1 {
+  font-family: 'Syne', sans-serif; font-size: 2.6rem; color: #1a1a1a;
+  font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+  line-height: 1;
+}
+.dC .title-block .sub {
+  font-family: 'Libre Baskerville', serif; font-style: italic;
+  font-size: 0.95rem; color: #777; margin-top: 4px;
+}
+.dC .board { position: relative; max-width: 520px; margin: 0 auto; }
+.dC .card {
+  background: #fffef6; padding: 20px; border: 1px solid #ccc5b5;
+  box-shadow: 2px 3px 8px rgba(0,0,0,0.06);
+  margin-bottom: 12px; position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.dC .card:nth-child(1) { transform: rotate(-0.8deg); }
+.dC .card:nth-child(2) { transform: rotate(0.5deg); margin-left: 20px; }
+.dC .card:hover { transform: rotate(0deg) scale(1.01); box-shadow: 4px 6px 16px rgba(0,0,0,0.1); z-index: 2; }
+.dC .card .tape {
+  position: absolute; top: -6px; left: 40%;
+  width: 60px; height: 14px; background: rgba(200,180,140,0.6);
+  transform: rotate(-2deg);
+}
+.dC .card:nth-child(2) .tape { left: 30%; transform: rotate(1deg); background: rgba(160,190,170,0.5); }
+.dC .card .type {
+  font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px;
+}
+.dC .card .type.need { color: #c0613e; }
+.dC .card .type.offer { color: #2a6a4a; }
+.dC .card h3 {
+  font-family: 'Libre Baskerville', serif; font-size: 1.15rem; color: #1a1a1a;
+  margin-bottom: 6px; font-weight: 400; line-height: 1.3;
+}
+.dC .card .detail { font-size: 0.82rem; color: #555; line-height: 1.5; margin-bottom: 10px; }
+.dC .card .bottom {
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px dashed #ccc5b5; padding-top: 10px;
+}
+.dC .card .meta { font-size: 0.7rem; color: #999; }
+.dC .card .btn {
+  padding: 7px 20px; border: 2px solid; background: transparent;
+  font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  cursor: pointer; transition: all 0.2s;
+}
+.dC .card .btn.need { border-color: #c0613e; color: #c0613e; }
+.dC .card .btn.need:hover { background: #c0613e; color: #fff; }
+.dC .card .btn.offer { border-color: #2a6a4a; color: #2a6a4a; }
+.dC .card .btn.offer:hover { background: #2a6a4a; color: #fff; }
+
+/* ================================
+   D: DARK MAGAZINE
+   Rich dark, Instrument Serif + DM Sans, color pops, magazine grid
+   ================================ */
+.dD .preview {
+  background: #18161a;
+  padding: 36px;
+  font-family: 'DM Sans', sans-serif;
+}
+.dD .masthead {
+  margin-bottom: 24px;
+}
+.dD .masthead .loc {
+  font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.3em; color: #555;
+  margin-bottom: 4px;
+}
+.dD .masthead h1 {
+  font-family: 'Instrument Serif', serif; font-size: 3rem; color: #f0e8da;
+  font-weight: 400; line-height: 1;
+}
+.dD .masthead .rule {
+  height: 2px; background: linear-gradient(90deg, #d4845a, #6aaa7a); margin-top: 12px;
+  max-width: 200px;
+}
+.dD .masthead .tagline {
+  font-family: 'Instrument Serif', serif; font-style: italic;
+  font-size: 0.9rem; color: #6a6060; margin-top: 12px;
+}
+.dD .grid { display: flex; gap: 14px; flex-wrap: wrap; }
+.dD .card {
+  flex: 1; min-width: 230px; background: #222028;
+  border: 1px solid #2e2a32; padding: 20px;
+  transition: border-color 0.3s;
+}
+.dD .card:hover { border-color: #4a4450; }
+.dD .card .accent { height: 3px; margin-bottom: 14px; border-radius: 2px; }
+.dD .card .accent.need { background: linear-gradient(90deg, #d4845a, transparent); }
+.dD .card .accent.offer { background: linear-gradient(90deg, #6aaa7a, transparent); }
+.dD .card .type {
+  font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.2em;
+  margin-bottom: 8px;
+}
+.dD .card .type.need { color: #d4845a; }
+.dD .card .type.offer { color: #6aaa7a; }
+.dD .card h3 {
+  font-family: 'Instrument Serif', serif; font-size: 1.2rem; color: #f0e8da;
+  margin-bottom: 6px; font-weight: 400; line-height: 1.3;
+}
+.dD .card .detail { font-size: 0.82rem; color: #7a7278; line-height: 1.5; margin-bottom: 12px; }
+.dD .card .meta { font-size: 0.68rem; color: #4a4448; margin-bottom: 12px; }
+.dD .card .btn {
+  width: 100%; padding: 9px; border: none;
+  font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; border-radius: 4px;
+}
+.dD .card .btn.need { background: #d4845a; color: #18161a; }
+.dD .card .btn.need:hover { background: #e8a070; }
+.dD .card .btn.offer { background: #6aaa7a; color: #18161a; }
+.dD .card .btn.offer:hover { background: #8ac49a; }
+
+/* ================================
+   E: BRUTALIST WARM
+   Raw concrete + copper, Playfair bold + JetBrains Mono, thick dividers
+   ================================ */
+.dE .preview {
+  background: #d8d2c8;
+  padding: 36px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.dE .header {
+  border-bottom: 5px solid #2a2420; padding-bottom: 16px; margin-bottom: 20px;
+}
+.dE .header .loc {
+  font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.35em; color: #8a8278;
+}
+.dE .header h1 {
+  font-family: 'Playfair Display', serif; font-size: 3.5rem; color: #2a2420;
+  font-weight: 800; line-height: 0.95; margin-top: 4px;
+}
+.dE .header .tagline {
+  font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300;
+  font-size: 1rem; color: #6a6258; margin-top: 8px;
+}
+.dE .card {
+  max-width: 520px; margin-bottom: 4px;
+  background: #ece8e0; padding: 18px 20px;
+  border-left: 5px solid;
+  transition: background 0.2s;
+}
+.dE .card:hover { background: #f0ece4; }
+.dE .card.need-card { border-left-color: #b05a38; }
+.dE .card.offer-card { border-left-color: #3a7a5a; }
+.dE .card .top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.dE .card .type {
+  font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.2em; font-weight: 500;
+}
+.dE .card .type.need { color: #b05a38; }
+.dE .card .type.offer { color: #3a7a5a; }
+.dE .card .meta-inline { font-size: 0.65rem; color: #8a8278; }
+.dE .card h3 {
+  font-family: 'Playfair Display', serif; font-size: 1.2rem; color: #2a2420;
+  margin-bottom: 4px; font-weight: 600; line-height: 1.25;
+}
+.dE .card .detail { font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: #5a5248; line-height: 1.5; margin-bottom: 10px; }
+.dE .card .bottom { display: flex; justify-content: space-between; align-items: center; }
+.dE .card .responses { font-size: 0.65rem; color: #8a8278; }
+.dE .card .btn {
+  padding: 7px 22px; border: 2px solid #2a2420; background: transparent;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  cursor: pointer; transition: all 0.15s;
+  color: #2a2420;
+}
+.dE .card .btn:hover { background: #2a2420; color: #ece8e0; }
+.dE .divider { height: 2px; background: #c8c0b4; max-width: 520px; }
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>Round Three</h1>
+  <p>Wilder now. Different font pairings, different densities, different layouts. Same two posts.</p>
+</div>
+
+<div class="directions">
+
+  <!-- A: NEWSPRINT STACK -->
+  <div class="direction dA">
+    <div class="direction-header">
+      <h2>A. Newsprint Stack</h2>
+      <p>Newspaper-dense two-column grid, double-rule masthead, small type, everything earns its space.</p>
+      <div class="fonts">Playfair Display + Inter Tight + JetBrains Mono</div>
+    </div>
+    <div class="preview">
+      <div class="masthead">
+        <h1>The Porch</h1>
+        <span class="loc">London, ON</span>
+      </div>
+      <div class="tagline">Share what you have. Ask for what you need.</div>
+      <div class="grid">
+        <div class="card">
+          <span class="type need">Need</span>
+          <h3>Ride to Victoria Hospital on Tuesday</h3>
+          <div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div>
+          <div class="meta"><span>Sarah</span> &mdash; <span>2h ago</span> &mdash; <span>Services</span></div>
+          <button class="btn need">I can help</button>
+        </div>
+        <div class="card">
+          <span class="type offer">Offer</span>
+          <h3>Winter coats, kids sizes 6-8</h3>
+          <div class="detail">Three gently used coats from our girls. Good condition. Free to anyone who needs them.</div>
+          <div class="meta"><span>Marcus</span> &mdash; <span>5h ago</span> &mdash; <span>Items</span></div>
+          <button class="btn">Interested</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B: SPLIT TONE -->
+  <div class="direction dB">
+    <div class="direction-header">
+      <h2>B. Split Tone</h2>
+      <p>Left colour bar marks type, compact rows, lightweight serif. Scannable and dense without clutter.</p>
+      <div class="fonts">Crimson Pro + Space Grotesk</div>
+    </div>
+    <div class="preview">
+      <div class="header">
+        <h1>The Porch</h1>
+        <span class="loc">London, ON</span>
+      </div>
+      <div class="tagline">Share what you have. Ask for what you need.</div>
+      <div class="card">
+        <div class="side need"></div>
+        <div class="content">
+          <span class="type need">Need</span>
+          <h3>Ride to Victoria Hospital on Tuesday</h3>
+          <div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div>
+          <div class="bottom">
+            <span class="meta">Sarah &mdash; 2h ago &mdash; Services</span>
+            <button class="btn need">I can help</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="side offer"></div>
+        <div class="content">
+          <span class="type offer">Offer</span>
+          <h3>Winter coats, kids sizes 6-8</h3>
+          <div class="detail">Three gently used coats from our girls. Good condition. Free to anyone who needs them.</div>
+          <div class="bottom">
+            <span class="meta">Marcus &mdash; 5h ago &mdash; Items</span>
+            <button class="btn offer">Interested</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C: COLLAGE BOARD -->
+  <div class="direction dC">
+    <div class="direction-header">
+      <h2>C. Collage Board</h2>
+      <p>Slightly overlapping, tape strips, tilted cards, corkboard texture. Physical and playful.</p>
+      <div class="fonts">Syne (bold display) + Libre Baskerville (body)</div>
+    </div>
+    <div class="preview">
+      <div class="title-block">
+        <h1>THE PORCH</h1>
+        <div class="sub">share what you have, ask for what you need</div>
+      </div>
+      <div class="board">
+        <div class="card">
+          <div class="tape"></div>
+          <span class="type need">Need</span>
+          <h3>Ride to Victoria Hospital on Tuesday</h3>
+          <div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div>
+          <div class="bottom">
+            <span class="meta">Sarah &mdash; 2h ago</span>
+            <button class="btn need">I can help</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="tape"></div>
+          <span class="type offer">Offer</span>
+          <h3>Winter coats, kids sizes 6-8</h3>
+          <div class="detail">Three gently used coats from our girls. Good condition. Free to anyone who needs them.</div>
+          <div class="bottom">
+            <span class="meta">Marcus &mdash; 5h ago</span>
+            <button class="btn offer">Interested</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D: DARK MAGAZINE -->
+  <div class="direction dD">
+    <div class="direction-header">
+      <h2>D. Dark Magazine</h2>
+      <p>Rich dark purple-black, gradient accents, magazine two-column grid, full-bleed colour pops.</p>
+      <div class="fonts">Instrument Serif + DM Sans</div>
+    </div>
+    <div class="preview">
+      <div class="masthead">
+        <div class="loc">London, Ontario</div>
+        <h1>The Porch</h1>
+        <div class="rule"></div>
+        <div class="tagline">Share what you have. Ask for what you need.</div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="accent need"></div>
+          <span class="type need">Need</span>
+          <h3>Ride to Victoria Hospital on Tuesday</h3>
+          <div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div>
+          <div class="meta">Sarah &mdash; 2h ago &mdash; Services</div>
+          <button class="btn need">I can help</button>
+        </div>
+        <div class="card">
+          <div class="accent offer"></div>
+          <span class="type offer">Offer</span>
+          <h3>Winter coats, kids sizes 6-8</h3>
+          <div class="detail">Three gently used coats from our girls. Good condition. Free to anyone who needs them.</div>
+          <div class="meta">Marcus &mdash; 5h ago &mdash; Items</div>
+          <button class="btn offer">Interested</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E: BRUTALIST WARM -->
+  <div class="direction dE">
+    <div class="direction-header">
+      <h2>E. Brutalist Warm</h2>
+      <p>Raw concrete palette, thick left borders, stacked list with no gaps, monospace meta. Dense and grounded.</p>
+      <div class="fonts">Playfair Display (heavy) + JetBrains Mono + DM Sans (body)</div>
+    </div>
+    <div class="preview">
+      <div class="header">
+        <div class="loc">London, Ontario</div>
+        <h1>The Porch</h1>
+        <div class="tagline">Share what you have. Ask for what you need.</div>
+      </div>
+      <div class="card need-card">
+        <div class="top">
+          <span class="type need">Need</span>
+          <span class="meta-inline">Sarah &mdash; 2h ago &mdash; Services</span>
+        </div>
+        <h3>Ride to Victoria Hospital on Tuesday</h3>
+        <div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div>
+        <div class="bottom">
+          <span class="responses">3 responses</span>
+          <button class="btn">I can help</button>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="card offer-card">
+        <div class="top">
+          <span class="type offer">Offer</span>
+          <span class="meta-inline">Marcus &mdash; 5h ago &mdash; Items</span>
+        </div>
+        <h3>Winter coats, kids sizes 6-8</h3>
+        <div class="detail">Three gently used coats from our girls. Good condition. Free to anyone who needs them.</div>
+        <div class="bottom">
+          <span class="responses">1 response</span>
+          <button class="btn">Interested</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
