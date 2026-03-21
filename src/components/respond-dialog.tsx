@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import type { Post } from '@/types/database';
 import { X } from 'lucide-react';
@@ -16,6 +17,24 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!open) return;
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) {
+        onClose();
+        router.push('/auth?next=/');
+      } else {
+        setUserId(data.user.id);
+        // Pre-fill name from metadata if available
+        const metaName = data.user.user_metadata?.name;
+        if (metaName && !name) setName(metaName);
+      }
+    });
+  }, [open]);
 
   if (!open) return null;
   const isNeed = post.type === 'need';
@@ -29,6 +48,7 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
       post_id: post.id,
       responder_name: name.trim(),
       message: message.trim() || null,
+      user_id: userId,
     });
     if (!error) {
       fetch('/api/notify', {

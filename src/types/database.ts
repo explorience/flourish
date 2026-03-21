@@ -39,6 +39,24 @@ export interface PostWithResponses extends Post {
   responses: Response[];
 }
 
+export interface Thread {
+  id: string;
+  post_id: string;
+  poster_id: string;
+  responder_id: string;
+  created_at: string;
+  last_message_at: string;
+}
+
+export interface Message {
+  id: string;
+  thread_id: string;
+  sender_id: string;
+  content: string;
+  read: boolean;
+  created_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {

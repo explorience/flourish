@@ -2,22 +2,65 @@
 
 import { useState, useEffect } from 'react';
 import { CreatePostForm } from './create-post-form';
-import { Search, Map, User } from 'lucide-react';
+import { Search, Map, User, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
 export function Header() {
   const [showCreate, setShowCreate] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [unread, setUnread] = useState(0);
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => setIsLoggedIn(!!user));
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setIsLoggedIn(!!user);
+      setUserId(user?.id || null);
+    });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setIsLoggedIn(!!session?.user);
+      setUserId(session?.user?.id || null);
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  // Fetch + subscribe to unread count when logged in
+  useEffect(() => {
+    if (!userId) { setUnread(0); return; }
+    const supabase = createClient();
+
+    const fetchUnread = async () => {
+      // Get thread IDs the user is in
+      const { data: threads } = await supabase
+        .from('threads')
+        .select('id')
+        .or(`poster_id.eq.${userId},responder_id.eq.${userId}`);
+
+      if (!threads?.length) { setUnread(0); return; }
+      const threadIds = threads.map(t => t.id);
+
+      const { count } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .in('thread_id', threadIds)
+        .eq('read', false)
+        .neq('sender_id', userId);
+
+      setUnread(count || 0);
+    };
+
+    fetchUnread();
+
+    // Subscribe to new messages
+    const channel = supabase
+      .channel('header-unread')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, fetchUnread)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'messages' }, fetchUnread)
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [userId]);
 
   return (
     <>
@@ -25,7 +68,7 @@ export function Header() {
         className="sticky top-0 z-40 backdrop-blur-xl border-b"
         style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}
       >
-        <div className="max-w-xl mx-auto px-5 h-13 flex items-center justify-between">
+        <div className="w-full px-5 h-13 flex items-center justify-between">
           <Link
             href="/"
             className="text-xs font-bold uppercase tracking-widest"
@@ -41,6 +84,27 @@ export function Header() {
             <Link href="/map" className="p-2 rounded transition-colors" style={{ color: 'var(--sub)' }}>
               <Map className="w-4 h-4" />
             </Link>
+            {isLoggedIn && (
+              <Link href="/messages" className="relative p-2 rounded transition-colors" style={{ color: unread > 0 ? 'var(--offer)' : 'var(--sub)' }}>
+                <MessageSquare className="w-4 h-4" />
+                {unread > 0 && (
+                  <span
+                    className="absolute top-1 right-1 flex items-center justify-center text-white font-bold"
+                    style={{
+                      background: 'var(--need)',
+                      borderRadius: '999px',
+                      fontSize: '0.5rem',
+                      minWidth: '14px',
+                      height: '14px',
+                      padding: '0 3px',
+                      fontFamily: 'var(--font-display)',
+                    }}
+                  >
+                    {unread > 9 ? '9+' : unread}
+                  </span>
+                )}
+              </Link>
+            )}
             <Link href={isLoggedIn ? '/account' : '/auth'} className="p-2 rounded transition-colors" style={{ color: isLoggedIn ? 'var(--offer)' : 'var(--sub)' }}>
               <User className="w-4 h-4" />
             </Link>

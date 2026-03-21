@@ -30,7 +30,7 @@ export default async function PostDetail({ params }: { params: { id: string } })
       <div className="max-w-xl mx-auto px-5 py-8">
         {/* Status */}
         {post.status === 'fulfilled' && (
-          <div className="mb-6 p-4 text-center text-sm" style={{ background: 'rgba(58,106,74,0.15)', color: 'var(--offer)' }}>Fulfilled</div>
+          <div className="mb-6 p-4 text-center text-sm" style={{ background: 'rgba(58,106,74,0.15)', color: 'var(--offer)' }}>Fulfilled ✓</div>
         )}
         {post.status === 'expired' && (
           <div className="mb-6 p-4 text-center text-sm" style={{ background: 'rgba(122,138,120,0.15)', color: 'var(--ink-muted)' }}>Expired</div>
@@ -67,7 +67,7 @@ export default async function PostDetail({ params }: { params: { id: string } })
           </div>
         )}
 
-        {/* Contact */}
+        {/* Contact info (if public method chosen) */}
         {post.contact_method !== 'app' && post.contact_value && (
           <div className="mb-8 p-4" style={{ background: 'rgba(240,236,224,0.08)', border: '1px dashed var(--border)' }}>
             <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--sub)', fontSize: '0.6rem' }}>Contact</p>
@@ -78,26 +78,6 @@ export default async function PostDetail({ params }: { params: { id: string } })
         )}
 
         <PostDetailClient post={post} />
-
-        {/* Responses */}
-        {post.responses && post.responses.length > 0 && (
-          <div className="mt-10">
-            <h2 className="text-sm font-bold uppercase tracking-wide mb-4" style={{ fontFamily: 'var(--font-display)', color: 'var(--heading)' }}>
-              Responses ({post.responses.length})
-            </h2>
-            <div className="space-y-2 stagger-children">
-              {post.responses.map((r: any) => (
-                <div key={r.id} className="p-4" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium" style={{ color: 'var(--ink)' }}>{r.responder_name}</span>
-                    <span className="text-xs" style={{ color: 'var(--ink-muted)' }}>{formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}</span>
-                  </div>
-                  {r.message && <p className="text-sm" style={{ color: 'var(--ink-light)' }}>{r.message}</p>}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </main>
   );

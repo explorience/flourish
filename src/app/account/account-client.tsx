@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
-import { CheckCircle, XCircle, LogOut, MessageCircle } from 'lucide-react';
+import { CheckCircle, XCircle, LogOut, MessageCircle, MessageSquare } from 'lucide-react';
 import type { PostWithResponses } from '@/types/database';
 import type { User } from '@supabase/supabase-js';
 import Link from 'next/link';
@@ -110,8 +110,16 @@ export function AccountClient({ user, posts }: { user: User; posts: PostWithResp
         </div>
       )}
 
+      {/* Messages */}
+      <div className="mt-8 pt-6" style={{ borderTop: '1px solid var(--border)' }}>
+        <Link href="/messages" className="inline-flex items-center gap-2 px-4 py-3 text-xs font-bold uppercase tracking-wider transition-all w-full"
+          style={{ ...ds, background: 'var(--card)', color: 'var(--ink)', border: '1px solid var(--border)' }}>
+          <MessageSquare className="w-4 h-4" /> My Messages
+        </Link>
+      </div>
+
       {/* Sign out */}
-      <div className="mt-10 pt-6" style={{ borderTop: '1px solid var(--border)' }}>
+      <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--border)' }}>
         <button onClick={signOut} className="inline-flex items-center gap-2 text-xs transition-colors"
           style={{ color: 'var(--ink-muted)' }}>
           <LogOut className="w-4 h-4" /> Sign out
