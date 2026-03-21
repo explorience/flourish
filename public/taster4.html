@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Taster Round 4 - Collage Colours</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', system-ui; background: #111; color: #ddd; }
+
+.intro {
+  max-width: 600px; margin: 0 auto; padding: 72px 24px 40px; text-align: center;
+}
+.intro h1 { font-family: 'Syne', sans-serif; font-size: 2.2rem; color: #fff; margin-bottom: 12px; font-weight: 800; text-transform: uppercase; }
+.intro p { font-size: 0.95rem; color: #777; line-height: 1.6; }
+
+.directions { display: flex; flex-direction: column; gap: 72px; padding: 32px 24px 120px; max-width: 1200px; margin: 0 auto; }
+.direction { background: #1a1a1a; border-radius: 20px; overflow: hidden; border: 1px solid #2a2a2a; }
+.direction-header { padding: 28px 36px; border-bottom: 1px solid #2a2a2a; }
+.direction-header h2 { font-family: 'Syne', sans-serif; font-size: 1.3rem; color: #fff; margin-bottom: 6px; font-weight: 700; }
+.direction-header p { color: #777; font-size: 0.82rem; line-height: 1.5; }
+
+@media (max-width: 640px) {
+  .preview { padding: 28px 16px !important; }
+  .direction-header { padding: 20px 16px; }
+}
+
+/* SHARED COLLAGE STRUCTURE */
+.preview { padding: 36px; font-family: 'DM Sans', sans-serif; }
+.title-block { text-align: center; margin-bottom: 32px; }
+.title-block h1 {
+  font-family: 'Syne', sans-serif; font-size: 2.6rem;
+  font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;
+}
+.title-block .sub {
+  font-family: 'Libre Baskerville', serif; font-style: italic; font-size: 0.95rem; margin-top: 4px;
+}
+.board { position: relative; max-width: 520px; margin: 0 auto; }
+.card {
+  padding: 20px; margin-bottom: 12px; position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:nth-child(1) { transform: rotate(-0.8deg); }
+.card:nth-child(2) { transform: rotate(0.5deg); margin-left: 20px; }
+.card:hover { transform: rotate(0deg) scale(1.01); z-index: 2; }
+.card .tape {
+  position: absolute; top: -6px; left: 40%;
+  width: 60px; height: 14px; transform: rotate(-2deg);
+}
+.card:nth-child(2) .tape { left: 30%; transform: rotate(1deg); }
+.card .type {
+  font-family: 'Syne', sans-serif; font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px;
+}
+.card h3 {
+  font-family: 'Libre Baskerville', serif; font-size: 1.15rem;
+  margin-bottom: 6px; font-weight: 400; line-height: 1.3;
+}
+.card .detail { font-size: 0.82rem; line-height: 1.5; margin-bottom: 10px; }
+.card .bottom {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 10px;
+}
+.card .meta { font-size: 0.7rem; }
+.card .btn {
+  padding: 7px 20px; border: 2px solid; background: transparent;
+  font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  cursor: pointer; transition: all 0.2s;
+}
+
+/* ================================
+   1: CORK + EARTH (warm neutrals, terracotta/olive)
+   ================================ */
+.d1 .preview { background: #e8e2d6; }
+.d1 .title-block h1 { color: #1a1a1a; }
+.d1 .title-block .sub { color: #777; }
+.d1 .card { background: #fffef6; border: 1px solid #ccc5b5; box-shadow: 2px 3px 8px rgba(0,0,0,0.06); }
+.d1 .card:hover { box-shadow: 4px 6px 16px rgba(0,0,0,0.1); }
+.d1 .card .tape { background: rgba(200,180,140,0.6); }
+.d1 .card:nth-child(2) .tape { background: rgba(160,190,170,0.5); }
+.d1 .card .type.need { color: #c0613e; }
+.d1 .card .type.offer { color: #2a6a4a; }
+.d1 .card h3 { color: #1a1a1a; }
+.d1 .card .detail { color: #555; }
+.d1 .card .bottom { border-top: 1px dashed #ccc5b5; }
+.d1 .card .meta { color: #999; }
+.d1 .card .btn.need { border-color: #c0613e; color: #c0613e; }
+.d1 .card .btn.need:hover { background: #c0613e; color: #fff; }
+.d1 .card .btn.offer { border-color: #2a6a4a; color: #2a6a4a; }
+.d1 .card .btn.offer:hover { background: #2a6a4a; color: #fff; }
+
+/* ================================
+   2: MIDNIGHT GARDEN (deep blue-black, gold/sage)
+   ================================ */
+.d2 .preview { background: #1a1e2a; }
+.d2 .title-block h1 { color: #e8dcc0; }
+.d2 .title-block .sub { color: #6a7088; }
+.d2 .card { background: #222838; border: 1px solid #2e3448; box-shadow: 2px 3px 12px rgba(0,0,0,0.2); }
+.d2 .card:hover { box-shadow: 4px 6px 20px rgba(0,0,0,0.3); }
+.d2 .card .tape { background: rgba(200,180,120,0.3); }
+.d2 .card:nth-child(2) .tape { background: rgba(140,180,150,0.25); }
+.d2 .card .type.need { color: #d4a050; }
+.d2 .card .type.offer { color: #6aaa7a; }
+.d2 .card h3 { color: #e8dcc0; }
+.d2 .card .detail { color: #7a8098; }
+.d2 .card .bottom { border-top: 1px dashed #2e3448; }
+.d2 .card .meta { color: #4a5068; }
+.d2 .card .btn.need { border-color: #d4a050; color: #d4a050; }
+.d2 .card .btn.need:hover { background: #d4a050; color: #1a1e2a; }
+.d2 .card .btn.offer { border-color: #6aaa7a; color: #6aaa7a; }
+.d2 .card .btn.offer:hover { background: #6aaa7a; color: #1a1e2a; }
+
+/* ================================
+   3: FADED DENIM (dusty blue, rust/cream)
+   ================================ */
+.d3 .preview { background: #d5dae2; }
+.d3 .title-block h1 { color: #2a3040; }
+.d3 .title-block .sub { color: #7a8498; }
+.d3 .card { background: #f0f2f5; border: 1px solid #b8c0cc; box-shadow: 2px 3px 8px rgba(40,50,70,0.08); }
+.d3 .card:hover { box-shadow: 4px 6px 16px rgba(40,50,70,0.12); }
+.d3 .card .tape { background: rgba(180,160,130,0.5); }
+.d3 .card:nth-child(2) .tape { background: rgba(140,160,180,0.4); }
+.d3 .card .type.need { color: #b85a3a; }
+.d3 .card .type.offer { color: #3a6a7a; }
+.d3 .card h3 { color: #2a3040; }
+.d3 .card .detail { color: #5a6478; }
+.d3 .card .bottom { border-top: 1px dashed #b8c0cc; }
+.d3 .card .meta { color: #8a94a8; }
+.d3 .card .btn.need { border-color: #b85a3a; color: #b85a3a; }
+.d3 .card .btn.need:hover { background: #b85a3a; color: #fff; }
+.d3 .card .btn.offer { border-color: #3a6a7a; color: #3a6a7a; }
+.d3 .card .btn.offer:hover { background: #3a6a7a; color: #fff; }
+
+/* ================================
+   4: BURNT SIENNA (warm ochre bg, deep brown, brick/forest)
+   ================================ */
+.d4 .preview { background: #ddd0b8; }
+.d4 .title-block h1 { color: #2a2018; }
+.d4 .title-block .sub { color: #8a7a60; }
+.d4 .card { background: #f5eed8; border: 1px solid #c0b498; box-shadow: 2px 3px 8px rgba(60,40,20,0.08); }
+.d4 .card:hover { box-shadow: 4px 6px 16px rgba(60,40,20,0.12); }
+.d4 .card .tape { background: rgba(180,140,80,0.45); }
+.d4 .card:nth-child(2) .tape { background: rgba(100,140,100,0.35); }
+.d4 .card .type.need { color: #a04828; }
+.d4 .card .type.offer { color: #2a6a3a; }
+.d4 .card h3 { color: #2a2018; }
+.d4 .card .detail { color: #5a4e38; }
+.d4 .card .bottom { border-top: 1px dashed #c0b498; }
+.d4 .card .meta { color: #9a8e78; }
+.d4 .card .btn.need { border-color: #a04828; color: #a04828; }
+.d4 .card .btn.need:hover { background: #a04828; color: #f5eed8; }
+.d4 .card .btn.offer { border-color: #2a6a3a; color: #2a6a3a; }
+.d4 .card .btn.offer:hover { background: #2a6a3a; color: #f5eed8; }
+
+/* ================================
+   5: CAMPFIRE DARK (charcoal, ember orange, moss)
+   ================================ */
+.d5 .preview { background: #1e1c18; }
+.d5 .title-block h1 { color: #f0e0c8; }
+.d5 .title-block .sub { color: #6a5e4a; }
+.d5 .card { background: #2a2620; border: 1px solid #3a3428; box-shadow: 2px 3px 12px rgba(0,0,0,0.25); }
+.d5 .card:hover { box-shadow: 4px 6px 20px rgba(0,0,0,0.35); }
+.d5 .card .tape { background: rgba(200,140,60,0.3); }
+.d5 .card:nth-child(2) .tape { background: rgba(100,160,100,0.25); }
+.d5 .card .type.need { color: #e0844a; }
+.d5 .card .type.offer { color: #5aaa6a; }
+.d5 .card h3 { color: #f0e0c8; }
+.d5 .card .detail { color: #8a7e68; }
+.d5 .card .bottom { border-top: 1px dashed #3a3428; }
+.d5 .card .meta { color: #5a5440; }
+.d5 .card .btn.need { border-color: #e0844a; color: #e0844a; }
+.d5 .card .btn.need:hover { background: #e0844a; color: #1e1c18; }
+.d5 .card .btn.offer { border-color: #5aaa6a; color: #5aaa6a; }
+.d5 .card .btn.offer:hover { background: #5aaa6a; color: #1e1c18; }
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>Round Four</h1>
+  <p>Collage Board locked in. Five colour worlds. Same structure, same fonts, different moods entirely.</p>
+</div>
+
+<div class="directions">
+
+  <!-- 1: CORK + EARTH -->
+  <div class="direction d1">
+    <div class="direction-header">
+      <h2>1. Cork + Earth</h2>
+      <p>The original. Warm cork background, cream cards, terracotta needs, olive offers.</p>
+    </div>
+    <div class="preview">
+      <div class="title-block">
+        <h1>THE PORCH</h1>
+        <div class="sub">share what you have, ask for what you need</div>
+      </div>
+      <div class="board">
+        <div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah &mdash; 2h ago</span><button class="btn need">I can help</button></div></div>
+        <div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats from our girls. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus &mdash; 5h ago</span><button class="btn offer">Interested</button></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2: MIDNIGHT GARDEN -->
+  <div class="direction d2">
+    <div class="direction-header">
+      <h2>2. Midnight Garden</h2>
+      <p>Deep blue-black night, gold and sage accents. Intimate, like a late-night kitchen table.</p>
+    </div>
+    <div class="preview">
+      <div class="title-block">
+        <h1>THE PORCH</h1>
+        <div class="sub">share what you have, ask for what you need</div>
+      </div>
+      <div class="board">
+        <div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah &mdash; 2h ago</span><button class="btn need">I can help</button></div></div>
+        <div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats from our girls. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus &mdash; 5h ago</span><button class="btn offer">Interested</button></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3: FADED DENIM -->
+  <div class="direction d3">
+    <div class="direction-header">
+      <h2>3. Faded Denim</h2>
+      <p>Dusty blue-grey, cool and worn-in. Rust for needs, teal for offers. Like a favourite old jacket.</p>
+    </div>
+    <div class="preview">
+      <div class="title-block">
+        <h1>THE PORCH</h1>
+        <div class="sub">share what you have, ask for what you need</div>
+      </div>
+      <div class="board">
+        <div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah &mdash; 2h ago</span><button class="btn need">I can help</button></div></div>
+        <div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats from our girls. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus &mdash; 5h ago</span><button class="btn offer">Interested</button></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4: BURNT SIENNA -->
+  <div class="direction d4">
+    <div class="direction-header">
+      <h2>4. Burnt Sienna</h2>
+      <p>Warm ochre background, deep brown ink, brick red needs, forest offers. Sun-baked and grounded.</p>
+    </div>
+    <div class="preview">
+      <div class="title-block">
+        <h1>THE PORCH</h1>
+        <div class="sub">share what you have, ask for what you need</div>
+      </div>
+      <div class="board">
+        <div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah &mdash; 2h ago</span><button class="btn need">I can help</button></div></div>
+        <div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats from our girls. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus &mdash; 5h ago</span><button class="btn offer">Interested</button></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5: CAMPFIRE DARK -->
+  <div class="direction d5">
+    <div class="direction-header">
+      <h2>5. Campfire Dark</h2>
+      <p>Charcoal warmth, ember orange needs, moss green offers. Like gathering around a fire at night.</p>
+    </div>
+    <div class="preview">
+      <div class="title-block">
+        <h1>THE PORCH</h1>
+        <div class="sub">share what you have, ask for what you need</div>
+      </div>
+      <div class="board">
+        <div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah &mdash; 2h ago</span><button class="btn need">I can help</button></div></div>
+        <div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats from our girls. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus &mdash; 5h ago</span><button class="btn offer">Interested</button></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
