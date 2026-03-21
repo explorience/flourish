@@ -45,7 +45,7 @@ export default async function Home() {
       </section>
 
       {/* Feed */}
-      <section className="max-w-xl mx-auto px-5 pb-24">
+      <section className="w-full px-4 sm:px-6 lg:px-8 pb-24">
         <PostFeed initialPosts={posts || []} />
       </section>
     </main>

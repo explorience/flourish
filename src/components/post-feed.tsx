@@ -73,9 +73,18 @@ export function PostFeed({ initialPosts }: PostFeedProps) {
           {posts.length === 0 && <CreatePostButton />}
         </div>
       ) : (
-        <div className="space-y-3 mt-5 stagger-children">
+        <div
+          className="mt-5"
+          style={{
+            columnCount: 'auto',
+            columnWidth: '280px',
+            columnGap: '16px',
+          }}
+        >
           {filtered.map((post, i) => (
-            <PostCard key={post.id} post={post} index={i} />
+            <div key={post.id} style={{ breakInside: 'avoid', marginBottom: '16px' }}>
+              <PostCard post={post} index={i} />
+            </div>
           ))}
         </div>
       )}

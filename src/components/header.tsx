@@ -45,7 +45,7 @@ export function Header() {
               <User className="w-4 h-4" />
             </Link>
             <button
-              onClick={() => setShowCreate(true)}
+              onClick={() => isLoggedIn ? setShowCreate(true) : window.location.href = '/auth?next=/'}
               className="ml-1 px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors"
               style={{
                 background: 'var(--card)',
