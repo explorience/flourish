@@ -93,7 +93,6 @@ export default async function PostDetail({ params }: { params: { id: string } })
                     <span className="text-xs" style={{ color: 'var(--ink-muted)' }}>{formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}</span>
                   </div>
                   {r.message && <p className="text-sm" style={{ color: 'var(--ink-light)' }}>{r.message}</p>}
-                  {r.responder_contact && <p className="text-xs mt-2" style={{ color: 'var(--ink-muted)' }}>{r.responder_contact}</p>}
                 </div>
               ))}
             </div>

@@ -13,7 +13,6 @@ interface RespondDialogProps {
 
 export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
   const [name, setName] = useState('');
-  const [contact, setContact] = useState('');
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -29,7 +28,6 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
     const { error } = await supabase.from('responses').insert({
       post_id: post.id,
       responder_name: name.trim(),
-      responder_contact: contact.trim() || null,
       message: message.trim() || null,
     });
     if (!error) {
@@ -39,12 +37,11 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
         body: JSON.stringify({
           postId: post.id,
           responderName: name.trim(),
-          responderContact: contact.trim() || null,
           responderMessage: message.trim() || null,
         }),
       }).catch(() => {});
       setSubmitted(true);
-      setTimeout(() => { setSubmitted(false); setName(''); setContact(''); setMessage(''); onClose(); }, 2000);
+      setTimeout(() => { setSubmitted(false); setName(''); setMessage(''); onClose(); }, 2000);
     }
     setSubmitting(false);
   };
@@ -70,8 +67,7 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <Field label="Your name" value={name} onChange={setName} placeholder="First name" required autoFocus />
-              <Field label="How to reach you" value={contact} onChange={setContact} placeholder="Phone, email, or other" optional />
-              <Field label="Message" value={message} onChange={setMessage} placeholder="Anything you want them to know..." optional textarea />
+              <Field label="Message" value={message} onChange={setMessage} placeholder="Anything you want them to know... you can include your contact info here if you'd like." optional textarea />
               <div className="flex gap-3 pt-1">
                 <button type="button" onClick={onClose} className="flex-1 py-3 text-xs font-bold uppercase tracking-wider" style={{ border: '1.5px solid var(--border-card)', color: 'var(--ink-light)' }}>Cancel</button>
                 <button type="submit" disabled={submitting || !name.trim()} className="flex-1 py-3 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-colors" style={{ background: isNeed ? 'var(--need)' : 'var(--offer)', color: 'var(--card)', fontFamily: 'var(--font-display)' }}>
