@@ -19,7 +19,7 @@ export const POST_TYPES: { value: PostType; label: string; action: string; color
   { value: 'offer', label: 'Offer', action: 'I can offer something', color: 'text-[hsl(145,30%,42%)]', bgColor: 'bg-[hsl(145,30%,42%)]' },
 ];
 
-export const APP_NAME = 'The Porch';
+export const APP_NAME = 'Flourish';
 export const APP_TAGLINE = 'London, Ontario';
 export const APP_DESCRIPTION = 'Share what you have. Ask for what you need.';
 

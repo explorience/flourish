@@ -8,9 +8,9 @@ function getSupabase() {
   );
 }
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://exchange.clawyard.dev';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://flourish.ourlondon.xyz';
 
-const SYSTEM_PROMPT = `You are the SMS assistant for Plenty, a community exchange board for people in London, Ontario. People text you to post needs and offers to the community board.
+const SYSTEM_PROMPT = `You are the SMS assistant for Flourish, a community exchange board for people in London, Ontario. People text you to post needs and offers to the community board.
 
 Your job is to have a warm, brief conversation to gather what they want to post. You are friendly, neighbourly, and concise - every message costs them time to read on a small screen.
 
@@ -48,7 +48,7 @@ Only include the JSON when you're ready to post AND the user has confirmed. The 
 When you just want to chat/ask questions, respond with plain text only - no JSON.
 
 EXAMPLES OF GOOD RESPONSES:
-- "Hey! Welcome to Mutual Exchange. What's your first name?"
+- "Hey! Welcome to Flourish. What's your first name?"
 - "Hi Sarah! What can I do for you - need something or have something to offer?"
 - "Got it - a ride to Vic Hospital on Tuesday afternoon. Want me to post that?"
 - "Posted! I'll text you when someone responds."`;
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
   const phone = formData.get('From') as string || '';
 
   if (!body || !phone) {
-    return twiml('Text us to get started with Mutual Exchange.');
+    return twiml('Text us to get started with Flourish.');
   }
 
   // Look up user
@@ -154,7 +154,7 @@ export async function POST(req: NextRequest) {
   // Create the post if LLM returned action data
   if (postData) {
     const userName = user?.name || 'Neighbour';
-    const APP_ORIGIN = process.env.NEXT_PUBLIC_APP_URL || 'https://exchange.clawyard.dev';
+    const APP_ORIGIN = process.env.NEXT_PUBLIC_APP_URL || 'https://flourish.ourlondon.xyz';
 
     // Use the posts API route so geocoding runs
     const postRes = await fetch(`${APP_ORIGIN}/api/posts`, {

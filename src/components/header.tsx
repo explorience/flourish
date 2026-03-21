@@ -31,7 +31,7 @@ export function Header() {
             className="text-xs font-bold uppercase tracking-widest"
             style={{ color: 'var(--heading)', fontFamily: 'var(--font-display)' }}
           >
-            The Porch
+            Flourish
           </Link>
 
           <div className="flex items-center gap-1">

@@ -9,7 +9,7 @@ export async function geocodeCrossStreet(crossStreet: string): Promise<{ lat: nu
   try {
     const res = await fetch(url, {
       headers: {
-        'User-Agent': 'Plenty-Community-App/1.0 (exchange.clawyard.dev)',
+        'User-Agent': 'Flourish-Community-App/1.0 (flourish.ourlondon.xyz)',
         'Accept-Language': 'en',
       },
     });

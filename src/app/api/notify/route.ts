@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   try {
     const { postId, responderName, responderContact, responderMessage } = await req.json();
     const supabase = getSupabase();
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://exchange.clawyard.dev';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://flourish.ourlondon.xyz';
 
     const { data: post } = await supabase
       .from('posts')
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 
       if (accountSid && authToken && twilioPhone) {
         const message = [
-          `Someone responded to your Plenty post: "${post.title}"`,
+          `Someone responded to your Flourish post: "${post.title}"`,
           responderName ? `From: ${responderName}` : null,
           responderMessage ? `"${responderMessage.slice(0, 100)}"` : null,
           responderContact ? `Reach them at: ${responderContact}` : null,

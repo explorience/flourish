@@ -18,8 +18,8 @@ export async function sendEmail(params: SendEmailParams): Promise<boolean> {
     return false;
   }
 
-  const fromEmail = process.env.BREVO_FROM_EMAIL || 'noreply@exchange.clawyard.dev';
-  const fromName = process.env.BREVO_FROM_NAME || 'Plenty';
+  const fromEmail = process.env.BREVO_FROM_EMAIL || 'noreply@flourish.ourlondon.xyz';
+  const fromName = process.env.BREVO_FROM_NAME || 'Flourish';
 
   try {
     const res = await fetch(BREVO_API, {
@@ -112,8 +112,8 @@ export function responseNotificationEmail({
     </div>
 
     <div class="footer">
-      <p>This is a notification from <a href="https://exchange.clawyard.dev">Plenty</a>, a community exchange board for London, Ontario.</p>
-      <p>You received this because someone responded to your post. No account needed to use Plenty.</p>
+      <p>This is a notification from <a href="https://flourish.ourlondon.xyz">Flourish</a>, a community exchange board for London, Ontario.</p>
+      <p>You received this because someone responded to your post. No account needed to use Flourish.</p>
     </div>
   </div>
 </body>
@@ -126,8 +126,8 @@ ${responderName} responded to your ${postType}: "${postTitle}"
 ${responderMessage ? `Their message: "${responderMessage}"\n\n` : ''}${responderContact ? `How to reach them: ${responderContact}\n\n` : ''}View your post: ${postUrl}
 
 ---
-Plenty — community exchange board for London, ON
-exchange.clawyard.dev`;
+Flourish — community exchange board for London, ON
+flourish.ourlondon.xyz`;
 
   return { subject, html, text };
 }
@@ -146,7 +146,7 @@ export function postConfirmationEmail({
   postType: 'need' | 'offer';
   postUrl: string;
 }) {
-  const subject = `Your ${postType} is live on Plenty`;
+  const subject = `Your ${postType} is live on Flourish`;
 
   const html = `
 <!DOCTYPE html>
@@ -174,7 +174,7 @@ export function postConfirmationEmail({
       <a href="${postUrl}" class="cta">View your post &rarr;</a>
     </div>
     <div class="footer">
-      <p><a href="https://exchange.clawyard.dev">Plenty</a> — community exchange board for London, ON</p>
+      <p><a href="https://flourish.ourlondon.xyz">Flourish</a> — community exchange board for London, ON</p>
     </div>
   </div>
 </body>
@@ -189,7 +189,7 @@ View it here: ${postUrl}
 We'll email you when someone responds.
 
 ---
-Plenty — exchange.clawyard.dev`;
+Flourish — flourish.ourlondon.xyz`;
 
   return { subject, html, text };
 }

@@ -24,7 +24,7 @@ export default async function AuthPage() {
           <div className="text-center mb-10">
             <h1 className="text-4xl font-extrabold uppercase tracking-wide mb-2"
               style={{ fontFamily: 'var(--font-display)', color: 'var(--heading)' }}>
-              The Porch
+              Flourish
             </h1>
             <p className="text-sm italic" style={{ fontFamily: 'var(--font-serif)', color: 'var(--sub)' }}>
               Sign in to manage your posts

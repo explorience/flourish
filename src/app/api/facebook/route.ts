@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
     const emoji = post.type === 'need' ? '🙏' : '💚';
     const typeLabel = post.type === 'need' ? 'NEED' : 'OFFER';
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://exchange.clawyard.dev';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://flourish.ourlondon.xyz';
 
     const message = [
       `${emoji} ${typeLabel}: ${post.title}`,
