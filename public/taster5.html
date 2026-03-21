@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Taster Round 5 - 10 More Colours</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', system-ui; background: #111; color: #ddd; }
+.intro { max-width: 600px; margin: 0 auto; padding: 72px 24px 40px; text-align: center; }
+.intro h1 { font-family: 'Syne', sans-serif; font-size: 2.2rem; color: #fff; margin-bottom: 12px; font-weight: 800; text-transform: uppercase; }
+.intro p { font-size: 0.95rem; color: #777; line-height: 1.6; }
+.directions { display: flex; flex-direction: column; gap: 64px; padding: 32px 24px 120px; max-width: 1200px; margin: 0 auto; }
+.direction { background: #1a1a1a; border-radius: 20px; overflow: hidden; border: 1px solid #2a2a2a; }
+.direction-header { padding: 24px 36px; border-bottom: 1px solid #2a2a2a; }
+.direction-header h2 { font-family: 'Syne', sans-serif; font-size: 1.2rem; color: #fff; margin-bottom: 4px; font-weight: 700; }
+.direction-header p { color: #666; font-size: 0.8rem; }
+@media (max-width: 640px) { .preview { padding: 28px 16px !important; } .direction-header { padding: 20px 16px; } }
+
+/* SHARED */
+.preview { padding: 36px; font-family: 'DM Sans', sans-serif; }
+.title-block { text-align: center; margin-bottom: 28px; }
+.title-block h1 { font-family: 'Syne', sans-serif; font-size: 2.4rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1; }
+.title-block .sub { font-family: 'Libre Baskerville', serif; font-style: italic; font-size: 0.9rem; margin-top: 4px; }
+.board { max-width: 520px; margin: 0 auto; }
+.card { padding: 18px; margin-bottom: 10px; position: relative; transition: transform 0.2s, box-shadow 0.2s; }
+.card:nth-child(1) { transform: rotate(-0.8deg); }
+.card:nth-child(2) { transform: rotate(0.5deg); margin-left: 16px; }
+.card:hover { transform: rotate(0deg) scale(1.01); z-index: 2; }
+.card .tape { position: absolute; top: -6px; left: 40%; width: 55px; height: 13px; transform: rotate(-2deg); }
+.card:nth-child(2) .tape { left: 30%; transform: rotate(1deg); }
+.card .type { font-family: 'Syne', sans-serif; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 7px; }
+.card h3 { font-family: 'Libre Baskerville', serif; font-size: 1.1rem; margin-bottom: 5px; font-weight: 400; line-height: 1.3; }
+.card .detail { font-size: 0.8rem; line-height: 1.5; margin-bottom: 8px; }
+.card .bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; }
+.card .meta { font-size: 0.68rem; }
+.card .btn { padding: 6px 18px; border: 2px solid; background: transparent; font-family: 'Syne', sans-serif; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s; }
+
+/* 6: SAGE MORNING - soft sage green, warm white, clay/plum */
+.d6 .preview { background: #d4ddd2; }
+.d6 .title-block h1 { color: #2a3028; }
+.d6 .title-block .sub { color: #6a7a68; }
+.d6 .card { background: #f4f7f2; border: 1px solid #b0bca8; box-shadow: 2px 3px 8px rgba(30,40,30,0.07); }
+.d6 .card:hover { box-shadow: 4px 6px 16px rgba(30,40,30,0.11); }
+.d6 .card .tape { background: rgba(170,180,150,0.5); }
+.d6 .card:nth-child(2) .tape { background: rgba(190,170,160,0.4); }
+.d6 .card .type.need { color: #a05040; }
+.d6 .card .type.offer { color: #5a4a70; }
+.d6 .card h3 { color: #2a3028; }
+.d6 .card .detail { color: #4a5848; }
+.d6 .card .bottom { border-top: 1px dashed #b0bca8; }
+.d6 .card .meta { color: #8a9a88; }
+.d6 .card .btn.need { border-color: #a05040; color: #a05040; }
+.d6 .card .btn.need:hover { background: #a05040; color: #fff; }
+.d6 .card .btn.offer { border-color: #5a4a70; color: #5a4a70; }
+.d6 .card .btn.offer:hover { background: #5a4a70; color: #fff; }
+
+/* 7: LAVENDER DUSK - muted purple-grey, peach/indigo */
+.d7 .preview { background: #d8d2de; }
+.d7 .title-block h1 { color: #2a2430; }
+.d7 .title-block .sub { color: #7a7088; }
+.d7 .card { background: #f2f0f5; border: 1px solid #b8b0c4; box-shadow: 2px 3px 8px rgba(40,30,50,0.07); }
+.d7 .card:hover { box-shadow: 4px 6px 16px rgba(40,30,50,0.11); }
+.d7 .card .tape { background: rgba(190,170,200,0.45); }
+.d7 .card:nth-child(2) .tape { background: rgba(200,180,170,0.4); }
+.d7 .card .type.need { color: #c07050; }
+.d7 .card .type.offer { color: #4a5a8a; }
+.d7 .card h3 { color: #2a2430; }
+.d7 .card .detail { color: #5a5068; }
+.d7 .card .bottom { border-top: 1px dashed #b8b0c4; }
+.d7 .card .meta { color: #8a8298; }
+.d7 .card .btn.need { border-color: #c07050; color: #c07050; }
+.d7 .card .btn.need:hover { background: #c07050; color: #fff; }
+.d7 .card .btn.offer { border-color: #4a5a8a; color: #4a5a8a; }
+.d7 .card .btn.offer:hover { background: #4a5a8a; color: #fff; }
+
+/* 8: SANDSTONE - pale warm sand, dark brown ink, brick/jade */
+.d8 .preview { background: #e2dace; }
+.d8 .title-block h1 { color: #1e1a14; }
+.d8 .title-block .sub { color: #8a7e68; }
+.d8 .card { background: #f8f4ea; border: 1px solid #c4b8a0; box-shadow: 2px 3px 8px rgba(40,30,10,0.06); }
+.d8 .card:hover { box-shadow: 4px 6px 16px rgba(40,30,10,0.1); }
+.d8 .card .tape { background: rgba(200,180,140,0.5); }
+.d8 .card:nth-child(2) .tape { background: rgba(140,170,150,0.4); }
+.d8 .card .type.need { color: #a84420; }
+.d8 .card .type.offer { color: #2a7a5a; }
+.d8 .card h3 { color: #1e1a14; }
+.d8 .card .detail { color: #5a5040; }
+.d8 .card .bottom { border-top: 1px dashed #c4b8a0; }
+.d8 .card .meta { color: #9a9080; }
+.d8 .card .btn.need { border-color: #a84420; color: #a84420; }
+.d8 .card .btn.need:hover { background: #a84420; color: #f8f4ea; }
+.d8 .card .btn.offer { border-color: #2a7a5a; color: #2a7a5a; }
+.d8 .card .btn.offer:hover { background: #2a7a5a; color: #f8f4ea; }
+
+/* 9: DEEP FOREST - dark forest green, cream cards, gold/coral */
+.d9 .preview { background: #1a2a20; }
+.d9 .title-block h1 { color: #e0d8c0; }
+.d9 .title-block .sub { color: #5a7a60; }
+.d9 .card { background: #f0ece0; border: 1px solid #3a5a40; box-shadow: 2px 3px 12px rgba(0,0,0,0.2); }
+.d9 .card:hover { box-shadow: 4px 6px 20px rgba(0,0,0,0.25); }
+.d9 .card .tape { background: rgba(200,180,100,0.4); }
+.d9 .card:nth-child(2) .tape { background: rgba(160,120,100,0.35); }
+.d9 .card .type.need { color: #d07040; }
+.d9 .card .type.offer { color: #3a6a4a; }
+.d9 .card h3 { color: #1a2a20; }
+.d9 .card .detail { color: #4a5a48; }
+.d9 .card .bottom { border-top: 1px dashed #b8c0a8; }
+.d9 .card .meta { color: #7a8a78; }
+.d9 .card .btn.need { border-color: #d07040; color: #d07040; }
+.d9 .card .btn.need:hover { background: #d07040; color: #f0ece0; }
+.d9 .card .btn.offer { border-color: #3a6a4a; color: #3a6a4a; }
+.d9 .card .btn.offer:hover { background: #3a6a4a; color: #f0ece0; }
+
+/* 10: PLUM NIGHT - deep plum, warm cream cards, amber/teal */
+.d10 .preview { background: #221a28; }
+.d10 .title-block h1 { color: #e8d8c8; }
+.d10 .title-block .sub { color: #6a5878; }
+.d10 .card { background: #f5f0e6; border: 1px solid #3a2e42; box-shadow: 2px 3px 12px rgba(0,0,0,0.2); }
+.d10 .card:hover { box-shadow: 4px 6px 20px rgba(0,0,0,0.3); }
+.d10 .card .tape { background: rgba(200,170,100,0.35); }
+.d10 .card:nth-child(2) .tape { background: rgba(120,180,160,0.3); }
+.d10 .card .type.need { color: #d08840; }
+.d10 .card .type.offer { color: #3a8a7a; }
+.d10 .card h3 { color: #2a2030; }
+.d10 .card .detail { color: #5a5060; }
+.d10 .card .bottom { border-top: 1px dashed #c8c0b0; }
+.d10 .card .meta { color: #8a8290; }
+.d10 .card .btn.need { border-color: #d08840; color: #d08840; }
+.d10 .card .btn.need:hover { background: #d08840; color: #f5f0e6; }
+.d10 .card .btn.offer { border-color: #3a8a7a; color: #3a8a7a; }
+.d10 .card .btn.offer:hover { background: #3a8a7a; color: #f5f0e6; }
+
+/* 11: ROSE CLAY - dusky pink, warm off-white, wine/olive */
+.d11 .preview { background: #ddd0cc; }
+.d11 .title-block h1 { color: #2a2024; }
+.d11 .title-block .sub { color: #8a7078; }
+.d11 .card { background: #f8f2ee; border: 1px solid #c0b0aa; box-shadow: 2px 3px 8px rgba(50,30,30,0.06); }
+.d11 .card:hover { box-shadow: 4px 6px 16px rgba(50,30,30,0.1); }
+.d11 .card .tape { background: rgba(200,170,160,0.5); }
+.d11 .card:nth-child(2) .tape { background: rgba(160,180,160,0.4); }
+.d11 .card .type.need { color: #8a3a3a; }
+.d11 .card .type.offer { color: #5a6a3a; }
+.d11 .card h3 { color: #2a2024; }
+.d11 .card .detail { color: #5a4a4e; }
+.d11 .card .bottom { border-top: 1px dashed #c0b0aa; }
+.d11 .card .meta { color: #9a8a8e; }
+.d11 .card .btn.need { border-color: #8a3a3a; color: #8a3a3a; }
+.d11 .card .btn.need:hover { background: #8a3a3a; color: #fff; }
+.d11 .card .btn.offer { border-color: #5a6a3a; color: #5a6a3a; }
+.d11 .card .btn.offer:hover { background: #5a6a3a; color: #fff; }
+
+/* 12: STORM GREY - cool dark grey, pale cards, electric orange/cyan */
+.d12 .preview { background: #2a2e34; }
+.d12 .title-block h1 { color: #e8e4e0; }
+.d12 .title-block .sub { color: #6a7078; }
+.d12 .card { background: #f0eeea; border: 1px solid #4a4e54; box-shadow: 2px 3px 12px rgba(0,0,0,0.15); }
+.d12 .card:hover { box-shadow: 4px 6px 20px rgba(0,0,0,0.2); }
+.d12 .card .tape { background: rgba(220,140,60,0.35); }
+.d12 .card:nth-child(2) .tape { background: rgba(60,180,180,0.3); }
+.d12 .card .type.need { color: #d07030; }
+.d12 .card .type.offer { color: #2a8a8a; }
+.d12 .card h3 { color: #2a2e34; }
+.d12 .card .detail { color: #5a5e64; }
+.d12 .card .bottom { border-top: 1px dashed #c0beb8; }
+.d12 .card .meta { color: #8a8e94; }
+.d12 .card .btn.need { border-color: #d07030; color: #d07030; }
+.d12 .card .btn.need:hover { background: #d07030; color: #f0eeea; }
+.d12 .card .btn.offer { border-color: #2a8a8a; color: #2a8a8a; }
+.d12 .card .btn.offer:hover { background: #2a8a8a; color: #f0eeea; }
+
+/* 13: HONEY + INK - deep warm black, honey gold, eucalyptus */
+.d13 .preview { background: #1a1810; }
+.d13 .title-block h1 { color: #e8d098; }
+.d13 .title-block .sub { color: #6a5a38; }
+.d13 .card { background: #2a2618; border: 1px solid #3a3420; box-shadow: 2px 3px 12px rgba(0,0,0,0.3); }
+.d13 .card:hover { box-shadow: 4px 6px 20px rgba(0,0,0,0.4); }
+.d13 .card .tape { background: rgba(220,180,80,0.25); }
+.d13 .card:nth-child(2) .tape { background: rgba(100,160,120,0.2); }
+.d13 .card .type.need { color: #e8b040; }
+.d13 .card .type.offer { color: #5aaa78; }
+.d13 .card h3 { color: #f0e0c0; }
+.d13 .card .detail { color: #8a7a58; }
+.d13 .card .bottom { border-top: 1px dashed #3a3420; }
+.d13 .card .meta { color: #5a5030; }
+.d13 .card .btn.need { border-color: #e8b040; color: #e8b040; }
+.d13 .card .btn.need:hover { background: #e8b040; color: #1a1810; }
+.d13 .card .btn.offer { border-color: #5aaa78; color: #5aaa78; }
+.d13 .card .btn.offer:hover { background: #5aaa78; color: #1a1810; }
+
+/* 14: CHALK + CHARCOAL - off-white, charcoal cards, red/teal pop */
+.d14 .preview { background: #f0ece4; }
+.d14 .title-block h1 { color: #2a2a28; }
+.d14 .title-block .sub { color: #8a8880; }
+.d14 .card { background: #2a2a28; border: 1px solid #3a3a38; box-shadow: 2px 3px 8px rgba(0,0,0,0.1); }
+.d14 .card:hover { box-shadow: 4px 6px 16px rgba(0,0,0,0.15); }
+.d14 .card .tape { background: rgba(200,80,60,0.4); }
+.d14 .card:nth-child(2) .tape { background: rgba(60,160,150,0.35); }
+.d14 .card .type.need { color: #e06040; }
+.d14 .card .type.offer { color: #40b0a0; }
+.d14 .card h3 { color: #f0ece4; }
+.d14 .card .detail { color: #8a8880; }
+.d14 .card .bottom { border-top: 1px dashed #3a3a38; }
+.d14 .card .meta { color: #5a5a58; }
+.d14 .card .btn.need { border-color: #e06040; color: #e06040; }
+.d14 .card .btn.need:hover { background: #e06040; color: #2a2a28; }
+.d14 .card .btn.offer { border-color: #40b0a0; color: #40b0a0; }
+.d14 .card .btn.offer:hover { background: #40b0a0; color: #2a2a28; }
+
+/* 15: TERRACOTTA NIGHT - dark terracotta, pale blush cards, copper/sage */
+.d15 .preview { background: #2a1e18; }
+.d15 .title-block h1 { color: #f0d8c0; }
+.d15 .title-block .sub { color: #7a5a40; }
+.d15 .card { background: #f5ece2; border: 1px solid #4a3428; box-shadow: 2px 3px 12px rgba(0,0,0,0.2); }
+.d15 .card:hover { box-shadow: 4px 6px 20px rgba(0,0,0,0.25); }
+.d15 .card .tape { background: rgba(200,140,80,0.35); }
+.d15 .card:nth-child(2) .tape { background: rgba(130,170,130,0.3); }
+.d15 .card .type.need { color: #c06830; }
+.d15 .card .type.offer { color: #4a8a58; }
+.d15 .card h3 { color: #2a1e18; }
+.d15 .card .detail { color: #5a4a3a; }
+.d15 .card .bottom { border-top: 1px dashed #c8b8a0; }
+.d15 .card .meta { color: #8a7a68; }
+.d15 .card .btn.need { border-color: #c06830; color: #c06830; }
+.d15 .card .btn.need:hover { background: #c06830; color: #f5ece2; }
+.d15 .card .btn.offer { border-color: #4a8a58; color: #4a8a58; }
+.d15 .card .btn.offer:hover { background: #4a8a58; color: #f5ece2; }
+</style>
+</head>
+<body>
+<div class="intro">
+  <h1>Round Five</h1>
+  <p>Ten more colour worlds. Same Collage Board, same Syne + Libre Baskerville. Just vibes.</p>
+</div>
+<div class="directions">
+
+<div class="direction d6"><div class="direction-header"><h2>6. Sage Morning</h2><p>Soft sage green, warm white cards, clay needs, plum offers</p></div><div class="preview"><div class="title-block"><h1>THE PORCH</h1><div class="sub">share what you have, ask for what you need</div></div><div class="board"><div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah — 2h ago</span><button class="btn need">I can help</button></div></div><div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus — 5h ago</span><button class="btn offer">Interested</button></div></div></div></div></div>
+
+<div class="direction d7"><div class="direction-header"><h2>7. Lavender Dusk</h2><p>Muted purple-grey, peach needs, indigo offers</p></div><div class="preview"><div class="title-block"><h1>THE PORCH</h1><div class="sub">share what you have, ask for what you need</div></div><div class="board"><div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah — 2h ago</span><button class="btn need">I can help</button></div></div><div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus — 5h ago</span><button class="btn offer">Interested</button></div></div></div></div></div>
+
+<div class="direction d8"><div class="direction-header"><h2>8. Sandstone</h2><p>Pale warm sand, dark brown ink, brick red needs, jade offers</p></div><div class="preview"><div class="title-block"><h1>THE PORCH</h1><div class="sub">share what you have, ask for what you need</div></div><div class="board"><div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah — 2h ago</span><button class="btn need">I can help</button></div></div><div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus — 5h ago</span><button class="btn offer">Interested</button></div></div></div></div></div>
+
+<div class="direction d9"><div class="direction-header"><h2>9. Deep Forest</h2><p>Dark forest green background, cream cards floating on top, gold needs, coral/forest offers</p></div><div class="preview"><div class="title-block"><h1>THE PORCH</h1><div class="sub">share what you have, ask for what you need</div></div><div class="board"><div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah — 2h ago</span><button class="btn need">I can help</button></div></div><div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus — 5h ago</span><button class="btn offer">Interested</button></div></div></div></div></div>
+
+<div class="direction d10"><div class="direction-header"><h2>10. Plum Night</h2><p>Deep plum background, warm cream cards, amber needs, teal offers</p></div><div class="preview"><div class="title-block"><h1>THE PORCH</h1><div class="sub">share what you have, ask for what you need</div></div><div class="board"><div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah — 2h ago</span><button class="btn need">I can help</button></div></div><div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus — 5h ago</span><button class="btn offer">Interested</button></div></div></div></div></div>
+
+<div class="direction d11"><div class="direction-header"><h2>11. Rose Clay</h2><p>Dusky pink, warm off-white cards, wine red needs, olive offers</p></div><div class="preview"><div class="title-block"><h1>THE PORCH</h1><div class="sub">share what you have, ask for what you need</div></div><div class="board"><div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah — 2h ago</span><button class="btn need">I can help</button></div></div><div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus — 5h ago</span><button class="btn offer">Interested</button></div></div></div></div></div>
+
+<div class="direction d12"><div class="direction-header"><h2>12. Storm Grey</h2><p>Cool dark grey, pale cards, electric orange needs, cyan offers</p></div><div class="preview"><div class="title-block"><h1>THE PORCH</h1><div class="sub">share what you have, ask for what you need</div></div><div class="board"><div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah — 2h ago</span><button class="btn need">I can help</button></div></div><div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus — 5h ago</span><button class="btn offer">Interested</button></div></div></div></div></div>
+
+<div class="direction d13"><div class="direction-header"><h2>13. Honey + Ink</h2><p>Deep warm black, honey gold headings, gold needs, eucalyptus offers. Luxe.</p></div><div class="preview"><div class="title-block"><h1>THE PORCH</h1><div class="sub">share what you have, ask for what you need</div></div><div class="board"><div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah — 2h ago</span><button class="btn need">I can help</button></div></div><div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus — 5h ago</span><button class="btn offer">Interested</button></div></div></div></div></div>
+
+<div class="direction d14"><div class="direction-header"><h2>14. Chalk + Charcoal</h2><p>Light background, DARK cards (inverted). Red and teal pops. Surprising.</p></div><div class="preview"><div class="title-block"><h1>THE PORCH</h1><div class="sub">share what you have, ask for what you need</div></div><div class="board"><div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah — 2h ago</span><button class="btn need">I can help</button></div></div><div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus — 5h ago</span><button class="btn offer">Interested</button></div></div></div></div></div>
+
+<div class="direction d15"><div class="direction-header"><h2>15. Terracotta Night</h2><p>Dark terracotta background, pale blush cards, copper needs, sage offers</p></div><div class="preview"><div class="title-block"><h1>THE PORCH</h1><div class="sub">share what you have, ask for what you need</div></div><div class="board"><div class="card"><div class="tape"></div><span class="type need">Need</span><h3>Ride to Victoria Hospital on Tuesday</h3><div class="detail">East London near Adelaide. 2pm appointment, done by 3:30. Happy to chip in for gas.</div><div class="bottom"><span class="meta">Sarah — 2h ago</span><button class="btn need">I can help</button></div></div><div class="card"><div class="tape"></div><span class="type offer">Offer</span><h3>Winter coats, kids sizes 6-8</h3><div class="detail">Three gently used coats. Good condition. Free to anyone who needs them.</div><div class="bottom"><span class="meta">Marcus — 5h ago</span><button class="btn offer">Interested</button></div></div></div></div></div>
+
+</div>
+</body>
+</html>
