@@ -82,7 +82,13 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
             <span style={{ fontWeight: 500, color: 'var(--ink-light)' }}>{post.contact_name}</span>
             <span> &mdash; </span>
             <span>{timeAgo}</span>
-            {categoryInfo && (
+            {post.location_label && (
+              <>
+                <span> &mdash; </span>
+                <span>{post.location_label}</span>
+              </>
+            )}
+            {!post.location_label && categoryInfo && (
               <>
                 <span> &mdash; </span>
                 <span>{categoryInfo.label}</span>

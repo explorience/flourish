@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { CATEGORIES, URGENCIES } from '@/lib/constants';
+import { CATEGORIES, URGENCIES, LONDON_NEIGHBOURHOODS } from '@/lib/constants';
 import type { PostType, Category, Urgency, ContactMethod } from '@/types/database';
 import { X, ArrowRight, ArrowLeft } from 'lucide-react';
 
@@ -20,6 +20,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
   const [contactName, setContactName] = useState('');
   const [contactMethod, setContactMethod] = useState<ContactMethod>('app');
   const [contactValue, setContactValue] = useState('');
+  const [neighbourhood, setNeighbourhood] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -27,11 +28,17 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
     if (!type || !title.trim() || !contactName.trim()) return;
     setSubmitting(true);
     const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    const hood = LONDON_NEIGHBOURHOODS.find(n => n.name === neighbourhood);
     const { error } = await supabase.from('posts').insert({
       type, title: title.trim(), details: details.trim() || null,
       category, urgency, contact_name: contactName.trim(),
       contact_method: contactMethod, contact_value: contactValue.trim() || null,
       source: 'web' as const,
+      user_id: user?.id || null,
+      location_label: hood?.name || null,
+      location_lat: hood?.lat || null,
+      location_lng: hood?.lng || null,
     });
     if (!error) { setSubmitted(true); setTimeout(onClose, 2000); }
     setSubmitting(false);
@@ -131,6 +138,15 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                         >{u.label}</button>
                       ))}
                     </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>Neighbourhood <span className="normal-case tracking-normal font-normal" style={{ color: 'var(--ink-muted)' }}>(optional — shows on map)</span></label>
+                    <select value={neighbourhood} onChange={(e) => setNeighbourhood(e.target.value)}
+                      className="w-full px-4 py-3 text-sm focus:outline-none appearance-none"
+                      style={{ background: '#fff', border: '1px solid var(--border-card)', color: neighbourhood ? 'var(--ink)' : 'var(--ink-muted)', fontFamily: 'var(--font-body)' }}>
+                      <option value="">Select a neighbourhood...</option>
+                      {LONDON_NEIGHBOURHOODS.map(n => <option key={n.name} value={n.name}>{n.name}</option>)}
+                    </select>
                   </div>
                   <button onClick={() => setStep(3)} disabled={!title.trim()}
                     className="w-full flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-all"

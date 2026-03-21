@@ -1,12 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CreatePostForm } from './create-post-form';
-import { Search } from 'lucide-react';
+import { Search, Map, User } from 'lucide-react';
 import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
 
 export function Header() {
   const [showCreate, setShowCreate] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => setIsLoggedIn(!!user));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setIsLoggedIn(!!session?.user);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   return (
     <>
@@ -23,25 +34,26 @@ export function Header() {
             The Porch
           </Link>
 
-          <div className="flex items-center gap-3">
-            <Link
-              href="/search"
-              className="p-2 rounded transition-colors"
-              style={{ color: 'var(--sub)' }}
-            >
+          <div className="flex items-center gap-1">
+            <Link href="/search" className="p-2 rounded transition-colors" style={{ color: 'var(--sub)' }}>
               <Search className="w-4 h-4" />
             </Link>
-
+            <Link href="/map" className="p-2 rounded transition-colors" style={{ color: 'var(--sub)' }}>
+              <Map className="w-4 h-4" />
+            </Link>
+            <Link href={isLoggedIn ? '/account' : '/auth'} className="p-2 rounded transition-colors" style={{ color: isLoggedIn ? 'var(--offer)' : 'var(--sub)' }}>
+              <User className="w-4 h-4" />
+            </Link>
             <button
               onClick={() => setShowCreate(true)}
-              className="px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors"
+              className="ml-1 px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors"
               style={{
                 background: 'var(--card)',
                 color: 'var(--ink)',
                 fontFamily: 'var(--font-display)',
               }}
             >
-              New post
+              Post
             </button>
           </div>
         </div>

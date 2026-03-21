@@ -18,6 +18,10 @@ export interface Post {
   source: PostSource;
   source_phone: string | null;
   status: PostStatus;
+  user_id: string | null;
+  location_label: string | null;
+  location_lat: number | null;
+  location_lng: number | null;
   created_at: string;
   updated_at: string;
 }
