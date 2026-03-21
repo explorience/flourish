@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { CATEGORIES, URGENCIES, LONDON_NEIGHBOURHOODS } from '@/lib/constants';
+import { CATEGORIES, URGENCIES } from '@/lib/constants';
 import type { PostType, Category, Urgency, ContactMethod } from '@/types/database';
 import { X, ArrowRight, ArrowLeft } from 'lucide-react';
 
@@ -20,7 +20,6 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
   const [contactName, setContactName] = useState('');
   const [contactMethod, setContactMethod] = useState<ContactMethod>('app');
   const [contactValue, setContactValue] = useState('');
-  const [neighbourhood, setNeighbourhood] = useState('');
   const [crossStreet, setCrossStreet] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -31,7 +30,6 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
 
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    const hood = LONDON_NEIGHBOURHOODS.find(n => n.name === neighbourhood);
 
     // Use API route so geocoding runs server-side
     const res = await fetch('/api/posts', {
@@ -48,10 +46,8 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
         contact_value: contactValue.trim() || null,
         source: 'web',
         user_id: user?.id || null,
-        location_label: crossStreet.trim() || hood?.name || null,
+        location_label: crossStreet.trim() || null,
         location_crossstreet: crossStreet.trim() || null,
-        location_lat: crossStreet.trim() ? null : (hood?.lat || null),
-        location_lng: crossStreet.trim() ? null : (hood?.lng || null),
       }),
     });
 
@@ -158,36 +154,22 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                     </div>
                   </div>
 
-                  {/* Location — cross-street OR neighbourhood picker */}
+                  {/* Location — cross-street only */}
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider mb-1" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>
                       Whereabouts? <span className="normal-case tracking-normal font-normal" style={{ color: 'var(--ink-muted)' }}>(optional — places a pin on the map)</span>
                     </label>
                     <p className="text-xs mb-2" style={{ color: 'var(--ink-muted)', fontSize: '0.68rem' }}>
-                      Nearest cross-street gives the most useful location. We never show your exact address — only an approximate area.
+                      Nearest cross-street or landmark. We never show your exact location — only an approximate area.
                     </p>
                     <input
                       type="text"
                       value={crossStreet}
-                      onChange={(e) => { setCrossStreet(e.target.value); if (e.target.value) setNeighbourhood(''); }}
-                      className="w-full px-4 py-3 text-sm focus:outline-none mb-2"
+                      onChange={(e) => setCrossStreet(e.target.value)}
+                      className="w-full px-4 py-3 text-sm focus:outline-none"
                       style={{ background: '#fff', border: '1px solid var(--border-card)', color: 'var(--ink)' }}
                       placeholder="e.g. Dundas & Adelaide, or near Victoria Park"
                     />
-                    <div className="flex items-center gap-2 text-xs my-2" style={{ color: 'var(--ink-muted)' }}>
-                      <div className="flex-1 h-px" style={{ background: 'var(--border-card)' }} />
-                      <span>or pick a neighbourhood</span>
-                      <div className="flex-1 h-px" style={{ background: 'var(--border-card)' }} />
-                    </div>
-                    <select
-                      value={neighbourhood}
-                      onChange={(e) => { setNeighbourhood(e.target.value); if (e.target.value) setCrossStreet(''); }}
-                      className="w-full px-4 py-3 text-sm focus:outline-none appearance-none"
-                      style={{ background: '#fff', border: '1px solid var(--border-card)', color: neighbourhood ? 'var(--ink)' : 'var(--ink-muted)', fontFamily: 'var(--font-body)' }}
-                    >
-                      <option value="">Select a neighbourhood...</option>
-                      {LONDON_NEIGHBOURHOODS.map(n => <option key={n.name} value={n.name}>{n.name}</option>)}
-                    </select>
                   </div>
 
                   <button onClick={() => setStep(3)} disabled={!title.trim()}
@@ -236,7 +218,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                     </p>
                     <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>
                       by {contactName || '...'}
-                      {(crossStreet || neighbourhood) && <span> · {crossStreet || neighbourhood}</span>}
+                      {crossStreet && <span> · {crossStreet}</span>}
                     </p>
                   </div>
 
