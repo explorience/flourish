@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Taster - Pick Your Vibe</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400&family=DM+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=Caveat:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: #1a1a1a;
+  color: #e0e0e0;
+  padding: 0;
+}
+
+.intro {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 80px 24px 48px;
+  text-align: center;
+}
+.intro h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 2.5rem;
+  color: #fff;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+.intro p {
+  font-size: 1.1rem;
+  color: #999;
+  line-height: 1.6;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.directions {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  padding: 40px 24px 120px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.direction {
+  background: #222;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid #333;
+}
+.direction-header {
+  padding: 32px 40px;
+  border-bottom: 1px solid #333;
+}
+.direction-header h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.direction-header p {
+  color: #888;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.direction-header .tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.direction-header .tag {
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  background: #333;
+  color: #aaa;
+}
+
+.preview {
+  padding: 48px 40px;
+}
+
+/* ================================
+   DIRECTION 1: WARM EARTH
+   Handmade, organic, neighbourhood notice board
+   ================================ */
+.d1 .preview {
+  background: #faf6f0;
+  font-family: 'DM Sans', sans-serif;
+}
+.d1 .hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.d1 .hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 2.2rem;
+  color: #3d2c1e;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.d1 .hero .sub {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #9a8570;
+}
+.d1 .hero .desc {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  color: #6b5744;
+  margin-top: 12px;
+  font-size: 1.05rem;
+}
+.d1 .card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e8dfd4;
+  overflow: hidden;
+  max-width: 480px;
+  margin: 0 auto 24px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.d1 .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(100,70,30,0.08);
+}
+.d1 .card .bar { height: 4px; }
+.d1 .card .bar.need { background: linear-gradient(90deg, #c2704e, #d4956a); }
+.d1 .card .bar.offer { background: linear-gradient(90deg, #5a8a6a, #7ab08a); }
+.d1 .card .body { padding: 20px 24px; }
+.d1 .card .type {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.d1 .card .type.need { background: #fdf0ea; color: #a0563a; }
+.d1 .card .type.offer { background: #edf5ef; color: #3d6b4a; }
+.d1 .card h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.15rem;
+  color: #3d2c1e;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.d1 .card .detail { color: #7a6b5d; font-size: 0.88rem; line-height: 1.5; margin-bottom: 12px; }
+.d1 .card .meta { font-size: 0.78rem; color: #a89a8c; display: flex; gap: 8px; align-items: center; }
+.d1 .card .footer {
+  padding: 14px 24px;
+  background: #fdfaf7;
+  border-top: 1px solid #f0e8de;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.d1 .btn {
+  padding: 10px 24px;
+  border-radius: 12px;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.d1 .btn.need { background: #c2704e; color: #fff; }
+.d1 .btn.need:hover { background: #a85e3f; }
+.d1 .btn.offer { background: #5a8a6a; color: #fff; }
+.d1 .btn.offer:hover { background: #4a7558; }
+.d1 .responses { font-size: 0.8rem; color: #a89a8c; }
+
+/* ================================
+   DIRECTION 2: MODERNIST ZINE
+   High contrast, bold typography, editorial
+   ================================ */
+.d2 .preview {
+  background: #f5f0e8;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.d2 .hero {
+  margin-bottom: 40px;
+}
+.d2 .hero h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 3.5rem;
+  color: #1a1a1a;
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.d2 .hero .sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: #888;
+}
+.d2 .hero .desc {
+  margin-top: 16px;
+  font-size: 0.95rem;
+  color: #555;
+  max-width: 400px;
+  border-left: 3px solid #1a1a1a;
+  padding-left: 16px;
+}
+.d2 .card {
+  background: #fff;
+  max-width: 480px;
+  margin-bottom: 20px;
+  border: 2px solid #1a1a1a;
+  position: relative;
+  transition: transform 0.15s ease;
+}
+.d2 .card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 #1a1a1a;
+}
+.d2 .card .body { padding: 24px; }
+.d2 .card .type {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 12px;
+  display: inline-block;
+  padding: 3px 10px;
+}
+.d2 .card .type.need { background: #1a1a1a; color: #f5f0e8; }
+.d2 .card .type.offer { background: #f5f0e8; color: #1a1a1a; border: 1px solid #1a1a1a; }
+.d2 .card h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.4rem;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+.d2 .card .detail { color: #666; font-size: 0.85rem; line-height: 1.5; margin-bottom: 16px; }
+.d2 .card .meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: #999;
+  display: flex;
+  gap: 12px;
+}
+.d2 .card .footer {
+  padding: 16px 24px;
+  border-top: 2px solid #1a1a1a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.d2 .btn {
+  padding: 10px 28px;
+  border: 2px solid #1a1a1a;
+  background: #1a1a1a;
+  color: #f5f0e8;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.d2 .btn:hover { background: #f5f0e8; color: #1a1a1a; }
+.d2 .btn.offer { background: #f5f0e8; color: #1a1a1a; }
+.d2 .btn.offer:hover { background: #1a1a1a; color: #f5f0e8; }
+.d2 .responses { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: #999; }
+
+/* ================================
+   DIRECTION 3: SOFT MEADOW
+   Gentle, rounded, pastel, community garden
+   ================================ */
+.d3 .preview {
+  background: linear-gradient(180deg, #f0f7f2 0%, #fafcfa 100%);
+  font-family: 'Outfit', sans-serif;
+}
+.d3 .hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.d3 .hero h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2rem;
+  color: #2d4a3e;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.d3 .hero .sub {
+  font-size: 0.85rem;
+  color: #7fa894;
+  font-weight: 400;
+}
+.d3 .hero .desc {
+  margin-top: 16px;
+  font-size: 0.95rem;
+  color: #5a7e6d;
+  font-weight: 300;
+}
+.d3 .card {
+  background: #fff;
+  border-radius: 24px;
+  max-width: 480px;
+  margin: 0 auto 20px;
+  box-shadow: 0 2px 16px rgba(45,74,62,0.06);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+.d3 .card:hover {
+  box-shadow: 0 8px 32px rgba(45,74,62,0.1);
+}
+.d3 .card .body { padding: 24px 28px; }
+.d3 .card .type {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.d3 .card .type.need { background: #fff3ed; color: #c47a54; }
+.d3 .card .type.offer { background: #edf7f0; color: #4a8a5e; }
+.d3 .card .type .dot { width: 6px; height: 6px; border-radius: 50%; }
+.d3 .card .type.need .dot { background: #c47a54; }
+.d3 .card .type.offer .dot { background: #4a8a5e; }
+.d3 .card h3 {
+  font-size: 1.1rem;
+  color: #2d4a3e;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.d3 .card .detail { color: #6b8e7e; font-size: 0.85rem; line-height: 1.6; margin-bottom: 14px; font-weight: 300; }
+.d3 .card .meta { font-size: 0.75rem; color: #9ab8a8; display: flex; gap: 8px; }
+.d3 .card .footer {
+  padding: 16px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.d3 .btn {
+  padding: 10px 24px;
+  border-radius: 100px;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.3s;
+}
+.d3 .btn.need { background: #c47a54; color: #fff; }
+.d3 .btn.need:hover { background: #b06a46; }
+.d3 .btn.offer { background: #4a8a5e; color: #fff; }
+.d3 .btn.offer:hover { background: #3d7550; }
+.d3 .responses { font-size: 0.75rem; color: #9ab8a8; }
+
+/* ================================
+   DIRECTION 4: HANDWRITTEN BULLETIN
+   Sketchbook, imperfect, human, handwriting
+   ================================ */
+.d4 .preview {
+  background: #fffef8;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 31px, #e8e4da 31px, #e8e4da 32px);
+  font-family: 'DM Sans', sans-serif;
+}
+.d4 .hero {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-top: 8px;
+}
+.d4 .hero h1 {
+  font-family: 'Caveat', cursive;
+  font-size: 3rem;
+  color: #2c2c2c;
+  font-weight: 600;
+  margin-bottom: 4px;
+  transform: rotate(-1deg);
+}
+.d4 .hero .sub {
+  font-family: 'Caveat', cursive;
+  font-size: 1.2rem;
+  color: #888;
+}
+.d4 .hero .desc {
+  font-family: 'Caveat', cursive;
+  margin-top: 8px;
+  font-size: 1.1rem;
+  color: #666;
+}
+.d4 .card {
+  background: #fffdf5;
+  max-width: 480px;
+  margin: 0 auto 20px;
+  border: 1px solid #d4cfc4;
+  border-radius: 2px;
+  box-shadow: 2px 2px 0 #eae5da;
+  position: relative;
+  transform: rotate(-0.3deg);
+  transition: transform 0.2s;
+}
+.d4 .card:nth-child(2) { transform: rotate(0.5deg); }
+.d4 .card:hover { transform: rotate(0deg) scale(1.01); }
+.d4 .pin {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #e85050, #c03030);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+.d4 .card:nth-child(2) .pin { background: radial-gradient(circle at 40% 40%, #4a90d9, #3070b0); }
+.d4 .card .body { padding: 28px 24px 16px; }
+.d4 .card .type {
+  font-family: 'Caveat', cursive;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+.d4 .card .type.need { color: #c05040; }
+.d4 .card .type.offer { color: #408060; }
+.d4 .card h3 {
+  font-family: 'Caveat', cursive;
+  font-size: 1.5rem;
+  color: #2c2c2c;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.d4 .card .detail {
+  color: #666;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.d4 .card .meta { font-size: 0.78rem; color: #aaa; display: flex; gap: 8px; }
+.d4 .card .footer {
+  padding: 12px 24px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.d4 .btn {
+  font-family: 'Caveat', cursive;
+  padding: 8px 24px;
+  border: 2px solid;
+  background: transparent;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+.d4 .btn.need { border-color: #c05040; color: #c05040; }
+.d4 .btn.need:hover { background: #c05040; color: #fff; }
+.d4 .btn.offer { border-color: #408060; color: #408060; }
+.d4 .btn.offer:hover { background: #408060; color: #fff; }
+.d4 .responses { font-family: 'Caveat', cursive; font-size: 1rem; color: #aaa; }
+
+/* ================================
+   DIRECTION 5: DUSK WARMTH
+   Dark warm, campfire, intimate, night market
+   ================================ */
+.d5 .preview {
+  background: #1e1b18;
+  font-family: 'DM Sans', sans-serif;
+}
+.d5 .hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.d5 .hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem;
+  color: #f0e6d6;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+.d5 .hero .sub {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: #8a7a66;
+}
+.d5 .hero .desc {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  margin-top: 16px;
+  font-size: 1rem;
+  color: #a08e78;
+}
+.d5 .card {
+  background: #28241f;
+  border-radius: 20px;
+  border: 1px solid #3a342c;
+  max-width: 480px;
+  margin: 0 auto 20px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.d5 .card:hover { border-color: #5a4e3e; }
+.d5 .card .glow {
+  height: 3px;
+}
+.d5 .card .glow.need { background: linear-gradient(90deg, #d4845a, #e8a070 50%, transparent); }
+.d5 .card .glow.offer { background: linear-gradient(90deg, #6aaa7a, #8ac49a 50%, transparent); }
+.d5 .card .body { padding: 22px 24px; }
+.d5 .card .type {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+.d5 .card .type.need { color: #d4845a; }
+.d5 .card .type.offer { color: #6aaa7a; }
+.d5 .card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  color: #f0e6d6;
+  margin-bottom: 6px;
+  font-weight: 400;
+}
+.d5 .card .detail { color: #9a8a78; font-size: 0.85rem; line-height: 1.6; margin-bottom: 14px; }
+.d5 .card .meta { font-size: 0.75rem; color: #6a5e50; display: flex; gap: 10px; }
+.d5 .card .footer {
+  padding: 16px 24px;
+  border-top: 1px solid #332e28;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.d5 .btn {
+  padding: 10px 24px;
+  border-radius: 12px;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.d5 .btn.need { background: #d4845a; color: #1e1b18; }
+.d5 .btn.need:hover { background: #e8a070; }
+.d5 .btn.offer { background: #6aaa7a; color: #1e1b18; }
+.d5 .btn.offer:hover { background: #8ac49a; }
+.d5 .responses { font-size: 0.75rem; color: #5a5040; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .preview { padding: 32px 20px; }
+  .direction-header { padding: 24px 20px; }
+  .d2 .hero h1 { font-size: 2.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>Design Taster</h1>
+  <p>Same content, five different directions. Tell me which ones pull you in, which ones repel you, and why. Gut reactions are more useful than analysis.</p>
+</div>
+
+<div class="directions">
+
+  <!-- DIRECTION 1: WARM EARTH -->
+  <div class="direction d1">
+    <div class="direction-header">
+      <h2>1. Warm Earth</h2>
+      <p>Handmade feel, earthy tones, serif headings, soft borders. Like a well-loved community centre noticeboard.</p>
+      <div class="tags">
+        <span class="tag">organic</span>
+        <span class="tag">serif</span>
+        <span class="tag">earthy</span>
+        <span class="tag">warm cream</span>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="hero">
+        <div class="sub">London, Ontario</div>
+        <h1>The Porch</h1>
+        <div class="desc">Share what you have. Ask for what you need.</div>
+      </div>
+      <div class="card">
+        <div class="bar need"></div>
+        <div class="body">
+          <span class="type need">Looking for</span>
+          <h3>Ride to Victoria Hospital on Tuesday</h3>
+          <div class="detail">I'm in east London near Adelaide. Appointment at 2pm, should be done by 3:30. Happy to chip in for gas.</div>
+          <div class="meta"><span>Sarah</span><span>/</span><span>2 hours ago</span><span>/</span><span>Services</span></div>
+        </div>
+        <div class="footer">
+          <button class="btn need">I can help</button>
+          <span class="responses">3 responses</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="bar offer"></div>
+        <div class="body">
+          <span class="type offer">Offering</span>
+          <h3>Winter coats, kids sizes 6-8</h3>
+          <div class="detail">Three gently used coats from our girls. Good condition, warm. Free to anyone who needs them.</div>
+          <div class="meta"><span>Marcus</span><span>/</span><span>5 hours ago</span><span>/</span><span>Items</span></div>
+        </div>
+        <div class="footer">
+          <button class="btn offer">Interested</button>
+          <span class="responses">1 response</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIRECTION 2: MODERNIST ZINE -->
+  <div class="direction d2">
+    <div class="direction-header">
+      <h2>2. Modernist Zine</h2>
+      <p>High contrast, bold editorial typography, hard edges, monospace accents. Like a printed broadsheet or indie zine.</p>
+      <div class="tags">
+        <span class="tag">bold</span>
+        <span class="tag">editorial</span>
+        <span class="tag">high contrast</span>
+        <span class="tag">monospace</span>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="hero">
+        <div class="sub">London, Ontario</div>
+        <h1>The Porch</h1>
+        <div class="desc">A neighbourhood board for sharing what we have and asking for what we need.</div>
+      </div>
+      <div class="card">
+        <div class="body">
+          <span class="type need">NEED</span>
+          <h3>Ride to Victoria Hospital on Tuesday</h3>
+          <div class="detail">I'm in east London near Adelaide. Appointment at 2pm, should be done by 3:30. Happy to chip in for gas.</div>
+          <div class="meta"><span>Sarah</span><span>&mdash;</span><span>2h ago</span><span>&mdash;</span><span>Services</span></div>
+        </div>
+        <div class="footer">
+          <button class="btn need">I can help</button>
+          <span class="responses">3 responses</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="body">
+          <span class="type offer">OFFER</span>
+          <h3>Winter coats, kids sizes 6-8</h3>
+          <div class="detail">Three gently used coats from our girls. Good condition, warm. Free to anyone who needs them.</div>
+          <div class="meta"><span>Marcus</span><span>&mdash;</span><span>5h ago</span><span>&mdash;</span><span>Items</span></div>
+        </div>
+        <div class="footer">
+          <button class="btn offer">Interested</button>
+          <span class="responses">1 response</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIRECTION 3: SOFT MEADOW -->
+  <div class="direction d3">
+    <div class="direction-header">
+      <h2>3. Soft Meadow</h2>
+      <p>Gentle, airy, lots of white space, rounded everything, pastel greens. Like a community garden on a quiet morning.</p>
+      <div class="tags">
+        <span class="tag">gentle</span>
+        <span class="tag">sans-serif</span>
+        <span class="tag">rounded</span>
+        <span class="tag">pastel green</span>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="hero">
+        <h1>The Porch</h1>
+        <div class="sub">London, Ontario</div>
+        <div class="desc">Share what you have. Ask for what you need.</div>
+      </div>
+      <div class="card">
+        <div class="body">
+          <span class="type need"><span class="dot"></span> Looking for</span>
+          <h3>Ride to Victoria Hospital on Tuesday</h3>
+          <div class="detail">I'm in east London near Adelaide. Appointment at 2pm, should be done by 3:30. Happy to chip in for gas.</div>
+          <div class="meta"><span>Sarah</span><span>&middot;</span><span>2 hours ago</span><span>&middot;</span><span>Services</span></div>
+        </div>
+        <div class="footer">
+          <button class="btn need">I can help</button>
+          <span class="responses">3 responses</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="body">
+          <span class="type offer"><span class="dot"></span> Offering</span>
+          <h3>Winter coats, kids sizes 6-8</h3>
+          <div class="detail">Three gently used coats from our girls. Good condition, warm. Free to anyone who needs them.</div>
+          <div class="meta"><span>Marcus</span><span>&middot;</span><span>5 hours ago</span><span>&middot;</span><span>Items</span></div>
+        </div>
+        <div class="footer">
+          <button class="btn offer">Interested</button>
+          <span class="responses">1 response</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIRECTION 4: HANDWRITTEN BULLETIN -->
+  <div class="direction d4">
+    <div class="direction-header">
+      <h2>4. Handwritten Bulletin</h2>
+      <p>Notebook paper, handwriting font, push pins, slightly crooked cards. Like actual notes pinned to a corkboard.</p>
+      <div class="tags">
+        <span class="tag">handwritten</span>
+        <span class="tag">sketchbook</span>
+        <span class="tag">imperfect</span>
+        <span class="tag">physical</span>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="hero">
+        <h1>The Porch</h1>
+        <div class="sub">London, Ontario</div>
+        <div class="desc">share what you have, ask for what you need</div>
+      </div>
+      <div class="card">
+        <div class="pin"></div>
+        <div class="body">
+          <span class="type need">looking for...</span>
+          <h3>Ride to Victoria Hospital on Tuesday</h3>
+          <div class="detail">I'm in east London near Adelaide. Appointment at 2pm, should be done by 3:30. Happy to chip in for gas.</div>
+          <div class="meta"><span>Sarah</span><span>&mdash;</span><span>2 hours ago</span></div>
+        </div>
+        <div class="footer">
+          <button class="btn need">I can help!</button>
+          <span class="responses">3 people responded</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="pin"></div>
+        <div class="body">
+          <span class="type offer">offering...</span>
+          <h3>Winter coats, kids sizes 6-8</h3>
+          <div class="detail">Three gently used coats from our girls. Good condition, warm. Free to anyone who needs them.</div>
+          <div class="meta"><span>Marcus</span><span>&mdash;</span><span>5 hours ago</span></div>
+        </div>
+        <div class="footer">
+          <button class="btn offer">I'm interested!</button>
+          <span class="responses">1 person responded</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIRECTION 5: DUSK WARMTH -->
+  <div class="direction d5">
+    <div class="direction-header">
+      <h2>5. Dusk Warmth</h2>
+      <p>Dark warm background, amber and moss accents, intimate glow. Like a night market or campfire gathering.</p>
+      <div class="tags">
+        <span class="tag">dark mode</span>
+        <span class="tag">intimate</span>
+        <span class="tag">amber glow</span>
+        <span class="tag">night market</span>
+      </div>
+    </div>
+    <div class="preview">
+      <div class="hero">
+        <div class="sub">London, Ontario</div>
+        <h1>The Porch</h1>
+        <div class="desc">Share what you have. Ask for what you need.</div>
+      </div>
+      <div class="card">
+        <div class="glow need"></div>
+        <div class="body">
+          <span class="type need">Looking for</span>
+          <h3>Ride to Victoria Hospital on Tuesday</h3>
+          <div class="detail">I'm in east London near Adelaide. Appointment at 2pm, should be done by 3:30. Happy to chip in for gas.</div>
+          <div class="meta"><span>Sarah</span><span>/</span><span>2 hours ago</span><span>/</span><span>Services</span></div>
+        </div>
+        <div class="footer">
+          <button class="btn need">I can help</button>
+          <span class="responses">3 responses</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="glow offer"></div>
+        <div class="body">
+          <span class="type offer">Offering</span>
+          <h3>Winter coats, kids sizes 6-8</h3>
+          <div class="detail">Three gently used coats from our girls. Good condition, warm. Free to anyone who needs them.</div>
+          <div class="meta"><span>Marcus</span><span>/</span><span>5 hours ago</span><span>/</span><span>Items</span></div>
+        </div>
+        <div class="footer">
+          <button class="btn offer">Interested</button>
+          <span class="responses">1 response</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
