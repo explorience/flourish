@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { geocodeCrossStreet, fuzzCoordinates } from '@/lib/geocode';
+import { sendEmail, postConfirmationEmail } from '@/lib/email';
 
 function getSupabase() {
   return createClient(
@@ -66,6 +67,19 @@ export async function POST(req: NextRequest) {
       await supabase.from('posts')
         .update({ location_fuzzed_lat, location_fuzzed_lng })
         .eq('id', post.id);
+    }
+
+    // Send confirmation email if poster provided email
+    if (post && contact_method === 'email' && contact_value) {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://exchange.clawyard.dev';
+      const { subject, html, text } = postConfirmationEmail({
+        posterName: contact_name,
+        postTitle: title,
+        postType: type,
+        postUrl: `${appUrl}/post/${post.id}`,
+      });
+      sendEmail({ to: { email: contact_value, name: contact_name }, subject, html, text })
+        .catch(() => {}); // fire-and-forget
     }
 
     return NextResponse.json({ ok: true, post: { ...post, location_fuzzed_lat, location_fuzzed_lng } });
