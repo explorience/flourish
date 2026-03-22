@@ -2,7 +2,7 @@ import type { Category, Urgency, PostType } from '@/types/database';
 
 export const CATEGORIES: { value: Category; label: string; icon: string }[] = [
   { value: 'items', label: 'Items', icon: 'package' },
-  { value: 'services', label: 'Services', icon: 'hand-helping' },
+  { value: 'services', label: 'Svcs', icon: 'hand-helping' },
   { value: 'skills', label: 'Skills', icon: 'lightbulb' },
   { value: 'space', label: 'Space', icon: 'home' },
   { value: 'other', label: 'Other', icon: 'sparkles' },
