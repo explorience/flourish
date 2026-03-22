@@ -16,26 +16,25 @@ export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategory
   const isFiltered = typeFilter !== 'all' || categoryFilter !== 'all';
 
   return (
-    <div className="space-y-3 animate-fade-up">
-      <div className="flex items-center justify-center gap-2 flex-wrap pb-1">
-        <Pill active={typeFilter === 'all'} onClick={() => onTypeChange('all')} label="All" />
+    <div className="space-y-2 animate-fade-up">
+      {/* Type filters + category filters on one row on mobile */}
+      <div className="flex items-center justify-center gap-x-4 gap-y-2 flex-wrap pb-1">
         {POST_TYPES.map((t) => (
-          <Pill
+          <Tag
             key={t.value}
             active={typeFilter === t.value}
-            onClick={() => onTypeChange(t.value)}
+            onClick={() => onTypeChange(typeFilter === t.value ? 'all' : t.value)}
             label={`${t.label}s`}
             activeColor={t.value === 'need' ? 'var(--need)' : 'var(--offer)'}
           />
         ))}
-        <div className="w-px h-4 flex-shrink-0 mx-3" style={{ background: 'var(--border)' }} />
+        <div className="w-px h-3 flex-shrink-0" style={{ background: 'var(--border)' }} />
         {CATEGORIES.map((c) => (
-          <Pill
+          <Tag
             key={c.value}
             active={categoryFilter === c.value}
             onClick={() => onCategoryChange(categoryFilter === c.value ? 'all' : c.value)}
             label={c.label}
-            small
           />
         ))}
       </div>
@@ -56,24 +55,29 @@ export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategory
   );
 }
 
-function Pill({ active, onClick, label, activeColor, small }: {
+function Tag({ active, onClick, label, activeColor }: {
   active: boolean;
   onClick: () => void;
   label: string;
   activeColor?: string;
-  small?: boolean;
 }) {
-  const size = small ? 'px-3.5 py-1.5 text-xs' : 'px-4 py-2 text-xs';
   return (
     <button
       onClick={onClick}
-      className={`${size} font-bold uppercase tracking-wider whitespace-nowrap flex-shrink-0 transition-all`}
+      className="font-bold uppercase tracking-wider whitespace-nowrap flex-shrink-0 transition-all"
       style={{
         fontFamily: 'var(--font-display)',
-        fontSize: small ? '0.68rem' : '0.72rem',
-        background: active ? (activeColor || 'var(--card)') : 'transparent',
-        color: active ? (activeColor ? 'var(--card)' : 'var(--ink)') : 'var(--sub)',
-        border: `1.5px solid ${active ? (activeColor || 'var(--card)') : 'var(--border)'}`,
+        fontSize: '0.65rem',
+        letterSpacing: '0.08em',
+        color: active
+          ? (activeColor || 'var(--heading)')
+          : 'var(--ink)',
+        opacity: active ? 1 : 0.55,
+        textDecoration: active ? 'underline' : 'none',
+        textUnderlineOffset: '3px',
+        background: 'transparent',
+        border: 'none',
+        padding: '2px 0',
       }}
     >
       {label}

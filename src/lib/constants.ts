@@ -40,7 +40,7 @@ export const LONDON_NEIGHBOURHOODS = [
   { name: 'Westminster', lat: 42.9380, lng: -81.2650 },
   { name: 'Lambeth', lat: 42.9180, lng: -81.2650 },
   { name: 'Fanshawe', lat: 43.0200, lng: -81.2400 },
-  { name: 'White Hills', lat: 43.0050, lng: -81.2500 },
+
   { name: 'Medway', lat: 43.0300, lng: -81.2900 },
   { name: 'Stoney Creek', lat: 43.0000, lng: -81.2200 },
   { name: 'Huron Heights', lat: 43.0010, lng: -81.2850 },
