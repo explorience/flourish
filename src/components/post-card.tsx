@@ -74,46 +74,48 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
         )}
 
         {/* Footer */}
-        <div
-          className="flex items-center justify-between pt-2"
-          style={{ borderTop: '1px dashed var(--border-card)' }}
-        >
-          <div className="flex items-center gap-1 text-xs" style={{ color: 'var(--ink-light)', fontSize: '0.75rem' }}>
+        <div className="pt-2" style={{ borderTop: '1px dashed var(--border-card)' }}>
+          {/* Meta row */}
+          <div className="flex items-center gap-1 flex-wrap mb-2" style={{ color: 'var(--ink-light)', fontSize: '0.72rem' }}>
             <span style={{ fontWeight: 600, color: 'var(--ink)' }}>{post.contact_name}</span>
-            <span> &mdash; </span>
+            <span>&mdash;</span>
             <span>{timeAgo}</span>
             {post.location_label && (
               <>
-                <span> &mdash; </span>
-                <span>{post.location_label}</span>
+                <span>&mdash;</span>
+                <span className="truncate" style={{ maxWidth: '120px' }}>{post.location_label}</span>
               </>
             )}
             {!post.location_label && categoryInfo && (
               <>
-                <span> &mdash; </span>
+                <span>&mdash;</span>
                 <span>{categoryInfo.label}</span>
               </>
             )}
             {post.source === 'sms' && (
-              <span
-                className="ml-1 px-1.5 py-0.5 uppercase tracking-wider"
-                style={{ fontSize: '0.55rem', background: 'rgba(58,106,74,0.15)', color: 'var(--offer)' }}
-              >
+              <span className="px-1.5 py-0.5 uppercase tracking-wider"
+                style={{ fontSize: '0.55rem', background: 'rgba(58,106,74,0.15)', color: 'var(--offer)' }}>
                 sms
+              </span>
+            )}
+            {post.responses.length > 0 && (
+              <span style={{ color: 'var(--ink-muted)', fontSize: '0.68rem' }}>
+                &mdash; {post.responses.length} {post.responses.length === 1 ? 'response' : 'responses'}
               </span>
             )}
           </div>
 
+          {/* Action button */}
           <button
             onClick={() => setShowRespond(true)}
-            className="px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all"
+            className="w-full py-2 text-xs font-bold uppercase tracking-wider transition-all"
             style={{
               border: `2px solid ${isNeed ? 'var(--need)' : 'var(--offer)'}`,
               color: isNeed ? 'var(--need)' : 'var(--offer)',
               background: 'transparent',
               fontFamily: 'var(--font-display)',
-              fontSize: '0.68rem',
-              letterSpacing: '0.08em',
+              fontSize: '0.7rem',
+              letterSpacing: '0.1em',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = isNeed ? 'var(--need)' : 'var(--offer)';
@@ -124,15 +126,9 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
               e.currentTarget.style.color = isNeed ? 'var(--need)' : 'var(--offer)';
             }}
           >
-            {isNeed ? 'I can help' : 'Interested'}
+            {isNeed ? 'I can help' : 'I\'m interested'}
           </button>
         </div>
-
-        {post.responses.length > 0 && (
-          <div className="text-xs mt-2" style={{ color: 'var(--ink-muted)', fontSize: '0.68rem' }}>
-            {post.responses.length} {post.responses.length === 1 ? 'response' : 'responses'}
-          </div>
-        )}
       </article>
 
       <RespondDialog
