@@ -24,13 +24,14 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
   return (
     <>
       <article
-        className={`card-tilt ${tiltClass} ${marginClass} relative`}
+        className={`card-tilt ${tiltClass} ${marginClass} relative cursor-pointer`}
         style={{
           background: 'var(--card)',
           border: '1px solid var(--border)',
           boxShadow: '2px 3px 12px rgba(0,0,0,0.2)',
           padding: '18px 20px',
         }}
+        onClick={() => window.location.href = `/post/${post.id}`}
       >
         {/* Tape strip */}
         <div className={`tape ${isNeed ? 'tape-need' : 'tape-offer'}`} />
@@ -107,7 +108,7 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
 
           {/* Action button */}
           <button
-            onClick={() => setShowRespond(true)}
+            onClick={(e) => { e.stopPropagation(); setShowRespond(true); }}
             className="w-full py-2 text-xs font-bold uppercase tracking-wider transition-all"
             style={{
               border: `2px solid ${isNeed ? 'var(--need)' : 'var(--offer)'}`,
