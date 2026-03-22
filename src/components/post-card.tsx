@@ -18,8 +18,8 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
   const categoryInfo = CATEGORIES.find((c) => c.value === post.category);
   const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true });
   const isNeed = post.type === 'need';
-  const tiltClass = '';
-  const marginClass = '';
+  const tiltClass = index % 2 === 0 ? 'card-rotate-left' : 'card-rotate-right';
+  const marginClass = index % 2 === 1 ? 'ml-4' : '';
 
   return (
     <>

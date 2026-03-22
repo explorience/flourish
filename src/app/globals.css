@@ -55,18 +55,16 @@
 
 /* Card tilt and lift */
 .card-tilt {
-  transform: none !important;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .card-tilt:hover {
-  transform: translateY(-2px) scale(1.005);
-  box-shadow: 4px 8px 24px rgba(0,0,0,0.28) !important;
+  transform: rotate(0deg) scale(1.01);
   box-shadow: 4px 6px 20px rgba(0,0,0,0.25);
   z-index: 2;
 }
 
-.card-rotate-left { }
-.card-rotate-right { }
+.card-rotate-left { transform: rotate(-0.6deg); }
+.card-rotate-right { transform: rotate(0.4deg); }
 
 /* Tape strip */
 .tape {
