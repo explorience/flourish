@@ -176,7 +176,7 @@ export async function POST(req: NextRequest) {
       .eq('phone', phone);
   }
 
-  return twiml(text);
+  return twiml(text || 'Got it! Text us anytime.');
 }
 
 async function callMiniMax(messages: { role: string; content: string }[]): Promise<string | null> {
@@ -218,7 +218,9 @@ function stripThinking(response: string): { visible: string; thinking: string } 
   // Strip <think>...</think> blocks — M2.7 reasoning model includes these
   const thinkMatch = response.match(/<think>([\s\S]*?)<\/think>/i);
   const thinking = thinkMatch ? thinkMatch[1].trim() : '';
-  const visible = response.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+  let visible = response.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+  // Strip markdown bold/italic — SMS doesn't render it, looks like noise
+  visible = visible.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1');
   return { visible, thinking };
 }
 
