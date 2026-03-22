@@ -111,15 +111,16 @@ export async function POST(req: NextRequest) {
   }
 
   // Check if the LLM wants to create a post
-  const { text, postData } = parseResponse(llmResponse);
+  const { text, thinking, postData } = parseResponse(llmResponse);
 
-  // Save this exchange to conversation history
+  // Save this exchange to conversation history (thinking logged for QA, not sent to user)
   await supabase.from('sms_sessions').insert({
     phone,
     state: postData ? 'posted' : 'chatting',
     data: {
       user_message: body,
       assistant_message: text,
+      thinking: thinking || null,
     },
   });
 
@@ -130,16 +131,25 @@ export async function POST(req: NextRequest) {
   
   // Try to learn the user's name from their messages
   if (user && !user.name && sessions && sessions.length >= 1) {
-    // The second message is likely their name if we just asked
     const prevData = sessions[sessions.length - 1]?.data as any;
     if (prevData?.assistant_message?.toLowerCase().includes('name')) {
-      const possibleName = body.split(' ')[0].replace(/[^a-zA-Z]/g, '');
-      if (possibleName.length >= 2 && possibleName.length <= 20) {
-        await supabase.from('sms_users').update({ name: possibleName }).eq('phone', phone);
+      // Handle "My name is X", "I'm X", "It's X", or just "X"
+      const namePatterns = [
+        /(?:my name is|i'm|i am|it'?s|call me)\s+([a-zA-Z]+)/i,
+        /^([a-zA-Z]+)$/,  // single word reply
+      ];
+      let extractedName = '';
+      for (const pattern of namePatterns) {
+        const match = body.match(pattern);
+        if (match?.[1] && match[1].length >= 2 && match[1].length <= 20) {
+          extractedName = match[1];
+          break;
+        }
+      }
+      if (extractedName) {
+        await supabase.from('sms_users').update({ name: extractedName }).eq('phone', phone);
       }
     }
-  } else if (!user) {
-    // Will be handled next message
   }
 
   // Create the post if LLM returned action data
@@ -215,21 +225,31 @@ async function callMiniMax(messages: { role: string; content: string }[]): Promi
   }
 }
 
-function parseResponse(response: string): { text: string; postData: any | null } {
+function stripThinking(response: string): { visible: string; thinking: string } {
+  // Strip <think>...</think> blocks — M2.7 reasoning model includes these
+  const thinkMatch = response.match(/<think>([\s\S]*?)<\/think>/i);
+  const thinking = thinkMatch ? thinkMatch[1].trim() : '';
+  const visible = response.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+  return { visible, thinking };
+}
+
+function parseResponse(response: string): { text: string; thinking: string; postData: any | null } {
+  const { visible, thinking } = stripThinking(response);
+
   // Look for JSON action block at the end of the response
-  const jsonMatch = response.match(/\{[\s]*"action"[\s]*:[\s]*"post".*\}$/m);
+  const jsonMatch = visible.match(/\{[\s]*"action"[\s]*:[\s]*"post".*\}$/m);
   
   if (jsonMatch) {
     try {
       const postData = JSON.parse(jsonMatch[0]);
-      const text = response.slice(0, response.lastIndexOf(jsonMatch[0])).trim();
-      return { text: text || 'Posted!', postData };
+      const text = visible.slice(0, visible.lastIndexOf(jsonMatch[0])).trim();
+      return { text: text || 'Posted!', thinking, postData };
     } catch {
-      return { text: response, postData: null };
+      return { text: visible, thinking, postData: null };
     }
   }
 
-  return { text: response, postData: null };
+  return { text: visible, thinking, postData: null };
 }
 
 function twiml(message: string) {
