@@ -67,10 +67,10 @@ export async function POST(req: NextRequest) {
     return twiml('Text us to get started with Flourish.');
   }
 
-  // Look up user in unified profiles table
+  // Look up user in sms_users table (temporary — profiles migration pending)
   const { data: user } = await supabase
-    .from('profiles')
-    .select('id, display_name, phone, user_id')
+    .from('sms_users')
+    .select('id, name, phone')
     .eq('phone', phone)
     .single();
 
@@ -83,8 +83,8 @@ export async function POST(req: NextRequest) {
     .limit(20);
 
   // Build message history for the LLM
-  const userContext = user?.display_name && user.display_name !== 'Neighbour'
-    ? `The user's name is ${user.display_name}. They've used the service before.`
+  const userContext = user?.name
+    ? `The user's name is ${user.name}. They've used the service before.`
     : `This is a new user. We don't know their name yet.`;
 
   const messages: { role: string; content: string }[] = [
@@ -128,27 +128,22 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  // Upsert profile record (SMS users get a profile row immediately)
+  // Upsert sms_users record
   if (!user) {
-    await supabase.from('profiles').insert({
-      id: crypto.randomUUID(),
-      phone,
-      display_name: 'Neighbour',
-      created_via: 'sms',
-    });
+    await supabase.from('sms_users').insert({ phone });
   }
 
   // Let the LLM tell us the name via learnedName in the response JSON
-  if (postData?.learnedName && (!user?.display_name || user.display_name === 'Neighbour')) {
+  if (postData?.learnedName && !user?.name) {
     const n = postData.learnedName.trim();
     if (n.length >= 2 && n.length <= 40) {
-      await supabase.from('profiles').update({ display_name: n }).eq('phone', phone);
+      await supabase.from('sms_users').update({ name: n }).eq('phone', phone);
     }
   }
 
   // Create the post if LLM returned action data
   if (postData) {
-    const userName = user?.display_name || 'Neighbour';
+    const userName = user?.name || 'Neighbour';
     const APP_ORIGIN = process.env.NEXT_PUBLIC_APP_URL || 'https://flourish.ourlondon.xyz';
 
     // Use the posts API route so geocoding runs
@@ -176,8 +171,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Update last_active
-    await supabase.from('profiles')
-      .update({ updated_at: new Date().toISOString() })
+    await supabase.from('sms_users')
+      .update({ last_active_at: new Date().toISOString() })
       .eq('phone', phone);
   }
 
