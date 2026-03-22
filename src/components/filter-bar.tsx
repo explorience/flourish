@@ -17,7 +17,7 @@ export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategory
 
   return (
     <div className="space-y-3 animate-fade-up">
-      <div className="flex items-center gap-2 flex-wrap pb-1">
+      <div className="flex items-center justify-center gap-2 flex-wrap pb-1">
         <Pill active={typeFilter === 'all'} onClick={() => onTypeChange('all')} label="All" />
         {POST_TYPES.map((t) => (
           <Pill

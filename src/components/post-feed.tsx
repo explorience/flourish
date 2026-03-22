@@ -47,8 +47,7 @@ export function PostFeed({ initialPosts }: PostFeedProps) {
   });
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="w-full max-w-7xl">
+    <div className="w-full max-w-7xl mx-auto">
       <FilterBar
         typeFilter={typeFilter}
         categoryFilter={categoryFilter}
@@ -89,7 +88,6 @@ export function PostFeed({ initialPosts }: PostFeedProps) {
           ))}
         </div>
       )}
-      </div>
     </div>
   );
 }
