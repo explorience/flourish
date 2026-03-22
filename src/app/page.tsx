@@ -38,10 +38,20 @@ export default async function Home() {
           {APP_DESCRIPTION}
         </p>
         {count !== null && count > 0 && (
-          <p className="text-sm" style={{ color: 'var(--ink-light)' }}>
+          <p className="text-sm mb-6" style={{ color: 'var(--ink-light)' }}>
             {count} active {count === 1 ? 'post' : 'posts'} from your neighbours
           </p>
         )}
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
+          <a href="/auth" className="px-8 py-3 text-sm font-bold uppercase tracking-wider transition-colors"
+            style={{ background: 'var(--card)', color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
+            Post something
+          </a>
+          <a href="/map" className="px-8 py-3 text-sm font-bold uppercase tracking-wider transition-colors"
+            style={{ border: '1.5px solid rgba(232,224,204,0.2)', color: 'var(--heading)', fontFamily: 'var(--font-display)' }}>
+            View map
+          </a>
+        </div>
       </section>
 
       {/* Feed */}
