@@ -18,7 +18,7 @@ export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategory
   return (
     <div className="space-y-2 animate-fade-up">
       {/* Type filters + category filters on one row on mobile */}
-      <div className="flex items-center justify-center gap-x-3 flex-nowrap overflow-x-auto pb-1 w-full" style={{ scrollbarWidth: 'none' }}>
+      <div className="flex items-center justify-center gap-x-2 flex-nowrap overflow-x-auto pb-1 w-full" style={{ scrollbarWidth: 'none' }}>
         {POST_TYPES.map((t) => (
           <Tag
             key={t.value}
