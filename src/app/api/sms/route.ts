@@ -45,6 +45,8 @@ When you have enough information to create a post, respond with a JSON block at 
 
 Only include the JSON when you're ready to post AND the user has confirmed. The JSON must be on its own line at the very end.
 
+LEARNING THE USER'S NAME: Whenever you become confident you know the user's first name (from any phrasing — "I'm Heenal", "call me H", "it's Priya", "Heenal here", etc.), add "learnedName":"FirstName" to ANY JSON block you send. If you're not confident, omit it. You only need to include it once.
+
 When you just want to chat/ask questions, respond with plain text only - no JSON.
 
 EXAMPLES OF GOOD RESPONSES:
@@ -124,31 +126,16 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  // If new user and LLM asked for name, try to extract name from context
+  // Upsert user record
   if (!user) {
     await supabase.from('sms_users').insert({ phone });
   }
-  
-  // Try to learn the user's name from their messages
-  if (user && !user.name && sessions && sessions.length >= 1) {
-    const prevData = sessions[sessions.length - 1]?.data as any;
-    if (prevData?.assistant_message?.toLowerCase().includes('name')) {
-      // Handle "My name is X", "I'm X", "It's X", or just "X"
-      const namePatterns = [
-        /(?:my name is|i'm|i am|it'?s|call me)\s+([a-zA-Z]+)/i,
-        /^([a-zA-Z]+)$/,  // single word reply
-      ];
-      let extractedName = '';
-      for (const pattern of namePatterns) {
-        const match = body.match(pattern);
-        if (match?.[1] && match[1].length >= 2 && match[1].length <= 20) {
-          extractedName = match[1];
-          break;
-        }
-      }
-      if (extractedName) {
-        await supabase.from('sms_users').update({ name: extractedName }).eq('phone', phone);
-      }
+
+  // Let the LLM tell us the name via learnedName in the response JSON
+  if ((!user || !user.name) && postData?.learnedName) {
+    const n = postData.learnedName.trim();
+    if (n.length >= 2 && n.length <= 40) {
+      await supabase.from('sms_users').update({ name: n }).eq('phone', phone);
     }
   }
 
@@ -236,12 +223,14 @@ function stripThinking(response: string): { visible: string; thinking: string } 
 function parseResponse(response: string): { text: string; thinking: string; postData: any | null } {
   const { visible, thinking } = stripThinking(response);
 
-  // Look for JSON action block at the end of the response
-  const jsonMatch = visible.match(/\{[\s]*"action"[\s]*:[\s]*"post".*\}$/m);
+  // Look for any JSON block at the end of the response
+  const jsonMatch = visible.match(/\{[^{}]*\}$/m);
   
   if (jsonMatch) {
     try {
-      const postData = JSON.parse(jsonMatch[0]);
+      const parsed = JSON.parse(jsonMatch[0]);
+      // Only treat as postData if it has action:"post"
+      const postData = parsed.action === 'post' ? parsed : (parsed.learnedName ? { learnedName: parsed.learnedName } : null);
       const text = visible.slice(0, visible.lastIndexOf(jsonMatch[0])).trim();
       return { text: text || 'Posted!', thinking, postData };
     } catch {
