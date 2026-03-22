@@ -32,7 +32,7 @@ export default async function Home() {
           {APP_NAME}
         </h1>
         <p
-          className="text-xl sm:text-2xl mb-6"
+          className="text-base sm:text-xl mb-6"
           style={{ color: 'var(--sub)', fontFamily: 'var(--font-serif)' }}
         >
           {APP_DESCRIPTION}
