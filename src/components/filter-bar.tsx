@@ -28,7 +28,7 @@ export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategory
             activeColor={t.value === 'need' ? 'var(--need)' : 'var(--offer)'}
           />
         ))}
-        <div className="w-px h-4 flex-shrink-0" style={{ background: 'var(--border)' }} />
+        <div className="w-px h-4 flex-shrink-0 mx-3" style={{ background: 'var(--border)' }} />
         {CATEGORIES.map((c) => (
           <Pill
             key={c.value}
