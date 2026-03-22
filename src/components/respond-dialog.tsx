@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import type { Post } from '@/types/database';
 import { X } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 interface RespondDialogProps {
   post: Post;
@@ -51,6 +52,14 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
       user_id: userId,
     });
     if (!error) {
+      setSubmitted(true);
+      confetti({
+        particleCount: 60,
+        spread: 55,
+        origin: { y: 0.7 },
+        colors: ['#d07040', '#3a6a4a', '#e8e0c8', '#6aaa7a'],
+        disableForReducedMotion: true,
+      });
       fetch('/api/notify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -60,8 +69,7 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
           responderMessage: message.trim() || null,
         }),
       }).catch(() => {});
-      setSubmitted(true);
-      setTimeout(() => { setSubmitted(false); setName(''); setMessage(''); onClose(); }, 2000);
+      setTimeout(() => { setSubmitted(false); setName(''); setMessage(''); onClose(); }, 2500);
     }
     setSubmitting(false);
   };
@@ -71,8 +79,14 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
       <div className="w-full max-w-md animate-slide-up sm:rounded-md" style={{ background: 'var(--card)' }} onClick={(e) => e.stopPropagation()}>
         {submitted ? (
           <div className="text-center py-16 px-6">
-            <p className="text-lg font-bold uppercase tracking-wide" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>Response sent</p>
-            <p className="text-sm mt-2" style={{ color: 'var(--ink-light)' }}>{post.contact_name} will be notified.</p>
+            <div className="text-3xl mb-4">🤝</div>
+            <p className="text-lg font-bold uppercase tracking-wide mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+              {isNeed ? 'You\'re offering to help' : 'You\'re interested'}
+            </p>
+            <p className="text-sm leading-relaxed" style={{ fontFamily: 'var(--font-serif)', color: 'var(--ink-light)', fontStyle: 'italic' }}>
+              {post.contact_name} will hear from you soon.
+            </p>
+            <p className="text-xs mt-4" style={{ color: 'var(--ink-muted)' }}>This is how communities work.</p>
           </div>
         ) : (
           <div className="p-6">

@@ -18,7 +18,12 @@ export default async function PostDetail({ params }: { params: { id: string } })
   const isNeed = post.type === 'need';
 
   return (
-    <main className="min-h-screen" style={{ background: 'var(--bg)' }}>
+    <main className="min-h-screen" style={{
+      background: 'var(--bg)',
+      backgroundImage: isNeed
+        ? 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(208,112,64,0.12) 0%, transparent 70%)'
+        : 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(58,106,74,0.18) 0%, transparent 70%)',
+    }}>
       <header className="sticky top-0 z-40 backdrop-blur-xl border-b" style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}>
         <div className="max-w-xl mx-auto px-5 h-13 flex items-center">
           <Link href="/" className="inline-flex items-center gap-2 text-xs" style={{ color: 'var(--sub)' }}>

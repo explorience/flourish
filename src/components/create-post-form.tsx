@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { CATEGORIES, URGENCIES } from '@/lib/constants';
 import type { PostType, Category, Urgency, ContactMethod } from '@/types/database';
 import { X, ArrowRight, ArrowLeft } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 interface CreatePostFormProps {
   onClose: () => void;
@@ -53,7 +54,15 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
 
     if (res.ok) {
       setSubmitted(true);
-      setTimeout(onClose, 2000);
+      // Confetti burst — earthy greens and oranges to match the palette
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#d07040', '#3a6a4a', '#e8e0c8', '#6aaa7a', '#f0ece0'],
+        disableForReducedMotion: true,
+      });
+      setTimeout(onClose, 2500);
     }
     setSubmitting(false);
   };
