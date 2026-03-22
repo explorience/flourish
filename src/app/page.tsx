@@ -32,21 +32,23 @@ export default async function Home() {
           {APP_NAME}
         </h1>
         <p
-          className="text-sm italic mb-6"
+          className="text-base mb-6"
           style={{ color: 'var(--sub)', fontFamily: 'var(--font-serif)' }}
         >
           {APP_DESCRIPTION}
         </p>
         {count !== null && count > 0 && (
-          <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>
+          <p className="text-sm" style={{ color: 'var(--ink-light)' }}>
             {count} active {count === 1 ? 'post' : 'posts'} from your neighbours
           </p>
         )}
       </section>
 
       {/* Feed */}
-      <section className="w-full px-4 sm:px-6 lg:px-8 pb-24">
-        <PostFeed initialPosts={posts || []} />
+      <section className="w-full px-4 sm:px-6 lg:px-8 pb-24 flex flex-col items-center">
+        <div className="w-full">
+          <PostFeed initialPosts={posts || []} />
+        </div>
       </section>
     </main>
   );

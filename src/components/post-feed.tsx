@@ -47,7 +47,8 @@ export function PostFeed({ initialPosts }: PostFeedProps) {
   });
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
+      <div className="w-full max-w-7xl">
       <FilterBar
         typeFilter={typeFilter}
         categoryFilter={categoryFilter}
@@ -58,7 +59,7 @@ export function PostFeed({ initialPosts }: PostFeedProps) {
       />
       
       {filtered.length === 0 ? (
-        <div className="text-center py-16 animate-fade-up">
+        <div className="text-center py-16 animate-fade-up w-full">
           <p
             className="text-xl font-bold uppercase tracking-wide mb-2"
             style={{ color: 'var(--heading)', fontFamily: 'var(--font-display)' }}
@@ -76,8 +77,8 @@ export function PostFeed({ initialPosts }: PostFeedProps) {
         <div
           className="mt-5"
           style={{
-            columnCount: 'auto',
-            columnWidth: '280px',
+            columnCount: 'auto' as any,
+            columnWidth: '300px',
             columnGap: '16px',
           }}
         >
@@ -88,6 +89,7 @@ export function PostFeed({ initialPosts }: PostFeedProps) {
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }

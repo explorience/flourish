@@ -67,7 +67,7 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
         {post.details && (
           <p
             className="text-sm leading-relaxed mb-2 line-clamp-2"
-            style={{ color: 'var(--ink-light)', fontSize: '0.82rem' }}
+            style={{ color: 'var(--ink)', fontSize: '0.88rem' }}
           >
             {post.details}
           </p>
@@ -78,8 +78,8 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
           className="flex items-center justify-between pt-2"
           style={{ borderTop: '1px dashed var(--border-card)' }}
         >
-          <div className="flex items-center gap-1 text-xs" style={{ color: 'var(--ink-muted)', fontSize: '0.7rem' }}>
-            <span style={{ fontWeight: 500, color: 'var(--ink-light)' }}>{post.contact_name}</span>
+          <div className="flex items-center gap-1 text-xs" style={{ color: 'var(--ink-light)', fontSize: '0.75rem' }}>
+            <span style={{ fontWeight: 600, color: 'var(--ink)' }}>{post.contact_name}</span>
             <span> &mdash; </span>
             <span>{timeAgo}</span>
             {post.location_label && (

@@ -63,14 +63,14 @@ function Pill({ active, onClick, label, activeColor, small }: {
   activeColor?: string;
   small?: boolean;
 }) {
-  const size = small ? 'px-3 py-1 text-xs' : 'px-3.5 py-1.5 text-xs';
+  const size = small ? 'px-3.5 py-1.5 text-xs' : 'px-4 py-2 text-xs';
   return (
     <button
       onClick={onClick}
       className={`${size} font-bold uppercase tracking-wider whitespace-nowrap flex-shrink-0 transition-all`}
       style={{
         fontFamily: 'var(--font-display)',
-        fontSize: small ? '0.6rem' : '0.65rem',
+        fontSize: small ? '0.68rem' : '0.72rem',
         background: active ? (activeColor || 'var(--card)') : 'transparent',
         color: active ? (activeColor ? 'var(--card)' : 'var(--ink)') : 'var(--sub)',
         border: `1.5px solid ${active ? (activeColor || 'var(--card)') : 'var(--border)'}`,
