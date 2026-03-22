@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flourish — Demo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #1a2a20;
+    --card: #f0ece0;
+    --ink: #2c3a2e;
+    --sub: #4a5c4e;
+    --muted: #7a8a78;
+    --need: #d07040;
+    --offer: #3a6a4a;
+    --heading: #e8e0cc;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--heading);
+    font-family: 'Syne', sans-serif;
+    overflow: hidden;
+  }
+
+  .slides { width: 100%; height: 100%; position: relative; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 60px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  /* Nav dots */
+  .dots {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px; z-index: 100;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(232,224,204,0.25);
+    cursor: pointer; transition: background 0.2s;
+  }
+  .dot.active { background: var(--heading); }
+
+  /* Nav arrows */
+  .nav-btn {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    background: rgba(240,236,224,0.1); border: none; color: var(--heading);
+    font-size: 28px; width: 48px; height: 48px;
+    cursor: pointer; z-index: 100; transition: background 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-btn:hover { background: rgba(240,236,224,0.2); }
+  .nav-prev { left: 16px; }
+  .nav-next { right: 16px; }
+
+  /* Slide number */
+  .slide-num {
+    position: fixed; top: 24px; right: 32px;
+    font-size: 11px; letter-spacing: 0.15em;
+    color: rgba(232,224,204,0.35);
+    font-family: 'Syne', sans-serif;
+    text-transform: uppercase;
+  }
+
+  /* ── Slide styles ── */
+
+  .tag {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; margin-bottom: 20px;
+    padding: 6px 16px;
+  }
+  .tag-need { background: rgba(208,112,64,0.2); color: var(--need); }
+  .tag-offer { background: rgba(58,106,74,0.2); color: #6aaa7a; }
+  .tag-neutral { background: rgba(232,224,204,0.1); color: var(--muted); }
+
+  h1 {
+    font-size: clamp(56px, 8vw, 96px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 0.95;
+    color: var(--heading);
+    text-align: center;
+  }
+
+  h2 {
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--heading);
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .serif {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(18px, 2.5vw, 28px);
+    color: #b0c4b2;
+    line-height: 1.6;
+    text-align: center;
+    max-width: 700px;
+  }
+
+  .big-serif {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(22px, 3vw, 36px);
+    color: var(--heading);
+    line-height: 1.5;
+    text-align: center;
+    max-width: 800px;
+  }
+
+  .divider {
+    width: 60px; height: 3px;
+    background: rgba(232,224,204,0.25);
+    margin: 28px auto;
+  }
+
+  /* Cards */
+  .cards {
+    display: flex; gap: 24px; margin-top: 32px;
+    flex-wrap: wrap; justify-content: center;
+    max-width: 960px;
+  }
+
+  .card {
+    background: var(--card); color: var(--ink);
+    padding: 28px 32px; min-width: 240px; flex: 1;
+    max-width: 320px;
+  }
+
+  .card-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .card h3 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 20px; font-weight: 400;
+    color: var(--ink); margin-bottom: 8px;
+  }
+
+  .card p {
+    font-size: 14px; color: var(--sub); line-height: 1.5;
+  }
+
+  /* Phone number */
+  .phone-big {
+    font-size: clamp(48px, 9vw, 120px);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: var(--heading);
+    line-height: 1;
+  }
+
+  .phone-label {
+    font-size: 14px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--muted);
+    margin-top: 16px; text-align: center;
+  }
+
+  /* QR + phone row */
+  .connect-row {
+    display: flex; gap: 80px; align-items: center;
+    justify-content: center; margin-top: 40px;
+    flex-wrap: wrap;
+  }
+
+  .connect-block { text-align: center; }
+
+  .qr-wrap {
+    background: var(--card); padding: 16px;
+    display: inline-block; margin-bottom: 12px;
+  }
+
+  .connect-label {
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .connect-value {
+    font-size: clamp(20px, 3.5vw, 40px);
+    font-weight: 800; letter-spacing: 0.03em;
+    color: var(--heading); margin-top: 6px;
+  }
+
+  /* Steps */
+  .steps {
+    display: flex; flex-direction: column; gap: 16px;
+    margin-top: 28px; max-width: 600px; width: 100%;
+  }
+
+  .step {
+    display: flex; align-items: flex-start; gap: 20px;
+  }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 40px; height: 40px;
+    background: rgba(232,224,204,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800;
+  }
+
+  .step-text { font-size: 20px; color: var(--heading); line-height: 1.4; }
+  .step-sub { font-size: 14px; color: var(--muted); margin-top: 2px; }
+
+  /* SMS demo */
+  .sms-demo {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(232,224,204,0.1);
+    padding: 28px 32px;
+    max-width: 520px; width: 100%;
+    margin-top: 28px;
+  }
+
+  .sms-row {
+    display: flex; gap: 12px; margin-bottom: 14px; align-items: flex-start;
+  }
+  .sms-row:last-child { margin-bottom: 0; }
+
+  .sms-who {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; width: 72px; flex-shrink: 0;
+    padding-top: 4px;
+  }
+  .sms-you { color: var(--need); }
+  .sms-app { color: #6aaa7a; }
+
+  .sms-bubble {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 15px; line-height: 1.5;
+    padding: 10px 16px;
+  }
+  .bubble-you { background: rgba(208,112,64,0.15); color: var(--heading); }
+  .bubble-app { background: rgba(58,106,74,0.15); color: var(--heading); }
+
+  /* Privacy */
+  .privacy-list {
+    list-style: none; margin-top: 28px;
+    display: flex; flex-direction: column; gap: 12px;
+    max-width: 600px; width: 100%;
+  }
+
+  .privacy-list li {
+    display: flex; align-items: baseline; gap: 14px;
+    font-size: 19px; color: var(--heading); line-height: 1.4;
+  }
+
+  .privacy-list li::before {
+    content: '✓';
+    color: #6aaa7a; font-weight: 700; font-size: 16px; flex-shrink: 0;
+  }
+
+  /* Tape accent */
+  .tape {
+    width: 80px; height: 22px;
+    background: rgba(208,112,64,0.25);
+    margin: 0 auto 24px;
+    transform: rotate(-1.5deg);
+  }
+
+  /* URL chip */
+  .url-chip {
+    display: inline-block;
+    background: rgba(232,224,204,0.12);
+    border: 1px solid rgba(232,224,204,0.2);
+    padding: 10px 24px;
+    font-size: 18px; letter-spacing: 0.05em;
+    color: var(--heading); margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="slides" id="slides">
+
+  <!-- SLIDE 1: Title -->
+  <div class="slide active">
+    <div class="tape"></div>
+    <h1>Flourish</h1>
+    <div class="divider"></div>
+    <p class="serif">A community exchange board for London, Ontario</p>
+    <div class="url-chip">flourish.ourlondon.xyz</div>
+  </div>
+
+  <!-- SLIDE 2: The idea -->
+  <div class="slide">
+    <div class="tag tag-neutral">The idea</div>
+    <p class="big-serif">One place where anyone in London can post what they need, or what they have to offer. Neighbours see it. Someone responds. Things happen.</p>
+    <div class="divider"></div>
+    <p class="serif">No algorithm. No ads. No account required to browse.</p>
+  </div>
+
+  <!-- SLIDE 3: What you can post -->
+  <div class="slide">
+    <div class="tag tag-neutral">What gets posted</div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-label" style="color: var(--need);">Need</div>
+        <h3>Ride to Vic Hospital Tuesday 2pm</h3>
+        <p>Sarah — Old South</p>
+      </div>
+      <div class="card">
+        <div class="card-label" style="color: #3a8a5a;">Offer</div>
+        <h3>Winter coats, kids sizes 6–8, free</h3>
+        <p>Marcus — Wortley Village</p>
+      </div>
+      <div class="card">
+        <div class="card-label" style="color: var(--need);">Need</div>
+        <h3>Help moving a couch this Saturday</h3>
+        <p>Priya — Downtown</p>
+      </div>
+      <div class="card">
+        <div class="card-label" style="color: #3a8a5a;">Offer</div>
+        <h3>Extra soup — made too much, come get some</h3>
+        <p>Dev — Old East Village</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Post by text message -->
+  <div class="slide">
+    <div class="tag tag-need">Text message channel</div>
+    <h2>Post by texting us</h2>
+    <div class="sms-demo">
+      <div class="sms-row">
+        <div class="sms-who sms-you">You</div>
+        <div class="sms-bubble bubble-you">Need a ride to Vic Hospital Tuesday</div>
+      </div>
+      <div class="sms-row">
+        <div class="sms-who sms-app">Flourish</div>
+        <div class="sms-bubble bubble-app">Any more details — like what time?</div>
+      </div>
+      <div class="sms-row">
+        <div class="sms-who sms-you">You</div>
+        <div class="sms-bubble bubble-you">2pm, done by 4</div>
+      </div>
+      <div class="sms-row">
+        <div class="sms-who sms-app">Flourish</div>
+        <div class="sms-bubble bubble-app">NEED: Ride to Vic Hospital Tues 2–4pm. Post this?</div>
+      </div>
+      <div class="sms-row">
+        <div class="sms-who sms-you">You</div>
+        <div class="sms-bubble bubble-you">Yes</div>
+      </div>
+      <div class="sms-row">
+        <div class="sms-who sms-app">Flourish</div>
+        <div class="sms-bubble bubble-app">Done! You'll get a text if someone can help.</div>
+      </div>
+    </div>
+    <p class="phone-label" style="margin-top: 24px;">Works in any language. No app. No data plan.</p>
+  </div>
+
+  <!-- SLIDE 5: Privacy -->
+  <div class="slide">
+    <div class="tag tag-offer">Privacy</div>
+    <h2>Built with care</h2>
+    <ul class="privacy-list">
+      <li>No account required to browse or respond</li>
+      <li>No addresses ever stored or shown — only approximate area</li>
+      <li>Phone numbers stored privately, never displayed publicly</li>
+      <li>Private in-app messaging between poster and responder</li>
+      <li>No tracking. No ads. No algorithmic feed.</li>
+    </ul>
+  </div>
+
+  <!-- SLIDE 6: Try it now — QR + phone -->
+  <div class="slide">
+    <div class="tag tag-neutral">Try it right now</div>
+    <div class="connect-row">
+      <div class="connect-block">
+        <div class="qr-wrap">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://flourish.ourlondon.xyz&bgcolor=f0ece0&color=1a2a20" width="200" height="200" alt="QR code for flourish.ourlondon.xyz" />
+        </div>
+        <div class="connect-label">Scan to open</div>
+        <div class="connect-value">flourish.ourlondon.xyz</div>
+      </div>
+
+      <div style="font-size: 40px; color: rgba(232,224,204,0.2); font-weight: 200;">or</div>
+
+      <div class="connect-block">
+        <div class="connect-label">Text a post to</div>
+        <div class="phone-big">(226)<br/>242-0489</div>
+        <div class="phone-label">Any language. No smartphone needed.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Controls -->
+<button class="nav-btn nav-prev" onclick="go(-1)">&#8592;</button>
+<button class="nav-btn nav-next" onclick="go(1)">&#8594;</button>
+<div class="slide-num" id="slide-num"></div>
+<div class="dots" id="dots"></div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  const numEl = document.getElementById('slide-num');
+  let current = 0;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => show(i);
+    dotsEl.appendChild(d);
+  });
+
+  function show(n) {
+    slides[current].classList.remove('active');
+    dotsEl.children[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dotsEl.children[current].classList.add('active');
+    numEl.textContent = (current + 1) + ' / ' + slides.length;
+  }
+
+  function go(dir) { show(current + dir); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') go(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(-1);
+  });
+
+  // Click anywhere on slide to advance
+  document.querySelectorAll('.slide').forEach(s => {
+    s.addEventListener('click', () => go(1));
+  });
+
+  show(0);
+</script>
+</body>
+</html>
