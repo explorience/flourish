@@ -79,22 +79,13 @@ export async function POST(req: NextRequest) {
     .limit(20);
 
   // Build message history for the LLM
-  const messages: { role: string; content: string }[] = [
-    { role: 'system', content: SYSTEM_PROMPT },
-  ];
+  const userContext = user?.name
+    ? `The user's name is ${user.name}. They've used the service before.`
+    : `This is a new user. We don't know their name yet.`;
 
-  // Add context about the user
-  if (user?.name) {
-    messages.push({
-      role: 'system',
-      content: `The user's name is ${user.name}. They've used the service before.`,
-    });
-  } else {
-    messages.push({
-      role: 'system',
-      content: `This is a new user. We don't know their name yet.`,
-    });
-  }
+  const messages: { role: string; content: string }[] = [
+    { role: 'system', content: `${SYSTEM_PROMPT}\n\n${userContext}` },
+  ];
 
   // Add conversation history
   if (sessions && sessions.length > 0) {
