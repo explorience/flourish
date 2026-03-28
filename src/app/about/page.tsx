@@ -211,7 +211,8 @@ export default function AboutPage() {
             className="text-base leading-relaxed mb-3"
             style={{ ...sr, color: 'var(--ink-light)' }}
           >
-            Flourish is built in the open and licensed under the MIT license. Anyone can inspect the code, suggest improvements, or run their own instance for their community.
+            Flourish is built in the open and licensed under the MIT license. Anyone can{' '}
+            <a href="https://github.com/explorience/flourish" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>inspect the code</a>, suggest improvements, or run their own instance for their community.
           </p>
           <p
             className="text-base leading-relaxed"
