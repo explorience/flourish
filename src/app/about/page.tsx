@@ -61,7 +61,7 @@ export default function AboutPage() {
             className="text-base leading-relaxed"
             style={{ ...sr, color: 'var(--ink-light)' }}
           >
-            There&apos;s no algorithm, no ads, no selling. Just people helping each other out. The kind of thing that used to happen naturally in tight-knit communities — now it can happen at a neighbourhood scale.
+            There&apos;s no algorithm, no ads, no selling. Just people helping each other out.
           </p>
         </div>
 
