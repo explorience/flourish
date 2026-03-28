@@ -1,0 +1,269 @@
+import { Header } from '@/components/header';
+
+export const metadata = {
+  title: 'Moderator Guide — Flourish',
+  description: 'Everything you need to know about moderating Flourish, a community exchange board for London, Ontario.',
+};
+
+export default function ModeratorGuidePage() {
+  const ds: React.CSSProperties = { fontFamily: 'var(--font-display)' };
+  const sr: React.CSSProperties = { fontFamily: 'var(--font-serif)' };
+
+  return (
+    <main className="min-h-screen" style={{ background: 'var(--bg)' }}>
+      <Header />
+
+      <div className="max-w-2xl mx-auto px-5 py-14">
+
+        {/* Title */}
+        <h1
+          className="text-2xl font-bold uppercase tracking-wide mb-2"
+          style={{ ...ds, color: 'var(--heading)' }}
+        >
+          Moderator Guide
+        </h1>
+        <p className="text-sm mb-12" style={{ ...sr, color: 'var(--ink-muted)', fontStyle: 'italic' }}>
+          Everything you need to know about keeping Flourish a safe, useful space for our community.
+        </p>
+
+
+        {/* ─── PART 1: WHAT IS FLOURISH ─── */}
+        <Section title="What is Flourish?">
+          <P>
+            Flourish is a free community exchange board for London, Ontario. Think of it as a
+            neighbourhood bulletin board — but online, and available to anyone in the city.
+          </P>
+          <P>
+            The idea is simple: people post what they <strong>need</strong> or what they can <strong>offer</strong>,
+            and neighbours connect with each other. No money changes hands (though it can if people agree to it).
+            It&apos;s about sharing resources, skills, time, and space within our community.
+          </P>
+          <P>
+            Examples of what people post:
+          </P>
+          <ul className="ml-5 space-y-1.5 mb-4" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+            <li><strong style={{ color: 'var(--need)' }}>Needs:</strong> &ldquo;Ride to appointment Tuesday&rdquo;, &ldquo;Looking for a winter coat, size M&rdquo;, &ldquo;Need help moving a couch&rdquo;</li>
+            <li><strong style={{ color: 'var(--offer)' }}>Offers:</strong> &ldquo;Free kids clothes, ages 4-6&rdquo;, &ldquo;Can help with basic plumbing&rdquo;, &ldquo;Spare room for short-term stay&rdquo;</li>
+          </ul>
+          <P>
+            Posts are organised into four categories: <strong>Items</strong>, <strong>Services</strong>,
+            {' '}<strong>Skills</strong>, and <strong>Space</strong>. Each post also has an urgency level
+            (urgent, this week, or flexible) so people can prioritise what needs attention now.
+          </P>
+        </Section>
+
+        <Section title="How it works for users">
+          <Step n={1} label="Browse the board">
+            Anyone can visit <a href="https://flourish.ourlondon.xyz" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>flourish.ourlondon.xyz</a> and
+            browse all active posts without an account. They can filter by needs vs offers, by category, or search for something specific.
+            There&apos;s also a map view showing approximate locations of posts.
+          </Step>
+          <Step n={2} label="Post something">
+            To create a post, you need to sign in with a magic link (a one-time code sent to your email — no password needed).
+            The posting form walks you through three steps: what type of post (need or offer), the details, and your first name.
+            All connections happen through the app — no personal phone numbers or emails are displayed publicly.
+          </Step>
+          <Step n={3} label="Connect with someone">
+            When you see a post you want to respond to, click &ldquo;I can help&rdquo; (for needs) or &ldquo;I&apos;m interested&rdquo; (for offers).
+            You enter your name and an optional message. The poster gets notified by email that someone responded,
+            and both people can then message each other through the app.
+          </Step>
+          <Step n={4} label="SMS posting">
+            People can also text the Flourish phone number to create posts without using the website at all.
+            This makes the board accessible to people who are more comfortable with texting or don&apos;t have reliable internet access.
+            SMS posts appear on the board like any other post.
+          </Step>
+        </Section>
+
+        <Divider />
+
+        {/* ─── PART 2: YOUR ROLE AS A MODERATOR ─── */}
+        <Section title="Your role as a moderator">
+          <P>
+            As a moderator, you help keep Flourish safe, relevant, and welcoming. You&apos;re not a gatekeeper —
+            the default assumption is that posts are fine. You&apos;re here to catch the occasional problem,
+            not to approve every post before it goes live.
+          </P>
+          <P>
+            Posts appear on the board immediately when someone creates them. Your job is to review them
+            and remove anything that shouldn&apos;t be there. Think of it as post-moderation: posts are
+            visible first, and you can take action if needed.
+          </P>
+          <P>
+            <strong>What moderators can do:</strong>
+          </P>
+          <ul className="ml-5 space-y-1.5 mb-4" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+            <li>Review posts on the board and in the admin dashboard</li>
+            <li>Approve posts (confirm they&apos;re fine — optional, since posts are approved by default)</li>
+            <li>Reject posts (remove them from the public board)</li>
+            <li>View basic stats about the board&apos;s activity</li>
+          </ul>
+          <P>
+            <strong>What moderators cannot do:</strong>
+          </P>
+          <ul className="ml-5 space-y-1.5 mb-4" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+            <li>Edit other people&apos;s posts (only approve or reject)</li>
+            <li>Add or remove other moderators (only admins can do this)</li>
+            <li>See users&apos; private messages or personal contact details</li>
+          </ul>
+        </Section>
+
+        <Section title="Getting started">
+          <Step n={1} label="Log in">
+            Go to <a href="https://flourish.ourlondon.xyz/auth" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>flourish.ourlondon.xyz/auth</a> and
+            enter the email address that was registered for your moderator account. You&apos;ll receive a magic link —
+            click it to sign in. No password needed.
+          </Step>
+          <Step n={2} label="Access the admin dashboard">
+            Once signed in, go to <a href="https://flourish.ourlondon.xyz/admin" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>flourish.ourlondon.xyz/admin</a>.
+            If your email is in the moderator list, you&apos;ll see the dashboard with stats, a list of posts to review,
+            and moderation tools. If you see an &ldquo;access denied&rdquo; message, your email may not have been added yet — contact the admin.
+          </Step>
+          <Step n={3} label="Review posts">
+            You can moderate posts in two places:
+            <ul className="ml-5 mt-2 space-y-1" style={{ listStyleType: 'disc' }}>
+              <li><strong>On the board itself</strong> — when you&apos;re logged in as a moderator, you&apos;ll see small approve/reject buttons on each post card</li>
+              <li><strong>In the admin dashboard</strong> — the moderation section lists all active posts with action buttons</li>
+            </ul>
+          </Step>
+        </Section>
+
+        <Section title="Moderation decisions">
+          <P>
+            Use your best judgement. The goal is to keep the board useful and safe, not to be overly strict.
+            Here&apos;s a general framework:
+          </P>
+
+          <SubHead text="Approve (leave it up) if the post:" />
+          <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+            <li>Is a genuine need or offer relevant to London, Ontario</li>
+            <li>Is written in good faith, even if a bit vague</li>
+            <li>Falls into one of the categories (items, services, skills, space)</li>
+            <li>Is something a neighbour might reasonably post on a community board</li>
+          </ul>
+
+          <SubHead text="Reject (remove it) if the post:" />
+          <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+            <li>Is spam, advertising, or a commercial solicitation</li>
+            <li>Contains hate speech, threats, harassment, or discrimination</li>
+            <li>Shares someone else&apos;s private information</li>
+            <li>Is clearly not relevant to London, Ontario</li>
+            <li>Promotes illegal activity</li>
+            <li>Is a duplicate or test post</li>
+            <li>Contains explicit or inappropriate content</li>
+          </ul>
+
+          <SubHead text="Use your judgement for:" />
+          <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+            <li>Posts that are vague but seem genuine — leave them up, people can ask for details</li>
+            <li>Posts offering paid services — fine as long as they&apos;re not pushy commercial ads</li>
+            <li>Posts from outside London — if it&apos;s nearby (e.g. St. Thomas, Woodstock) and relevant, it&apos;s probably fine</li>
+            <li>Unusual requests — if it doesn&apos;t violate any of the rejection criteria, let the community decide</li>
+          </ul>
+
+          <P>
+            When in doubt, leave the post up. Flourish works best when the barrier to participation is low.
+            If you&apos;re genuinely unsure, reach out to the admin before rejecting.
+          </P>
+        </Section>
+
+        <Section title="Rejecting a post">
+          <P>
+            When you reject a post, it&apos;s removed from the public board but not deleted from the database.
+            The poster isn&apos;t currently notified when their post is rejected (this may change in future).
+          </P>
+          <P>
+            You can optionally provide a reason when rejecting. Even if the poster doesn&apos;t see it now,
+            it helps other moderators understand why the decision was made.
+          </P>
+        </Section>
+
+        <Divider />
+
+        {/* ─── PART 3: CODE OF CONDUCT ─── */}
+        <Section title="Moderator code of conduct">
+          <ul className="ml-5 space-y-2.5 mb-4" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+            <li><strong>Be fair and consistent.</strong> Apply the same standards to all posts regardless of who posted them.</li>
+            <li><strong>Assume good faith.</strong> Most people are genuinely trying to participate. Give the benefit of the doubt.</li>
+            <li><strong>Protect privacy.</strong> Don&apos;t share any user information you see through the admin tools. Don&apos;t screenshot or discuss specific users outside the mod team.</li>
+            <li><strong>Don&apos;t use moderation tools for personal reasons.</strong> Never reject a post because you personally disagree with it (unless it violates the guidelines above).</li>
+            <li><strong>Ask if unsure.</strong> It&apos;s better to check with the admin than to make a wrong call. No one expects you to have all the answers.</li>
+            <li><strong>Be kind.</strong> If you ever interact with a user about moderation (e.g. if we add messaging to posters), be respectful and explain clearly.</li>
+          </ul>
+        </Section>
+
+        <Section title="Questions?">
+          <P>
+            If you have questions about moderation, need help with the tools, or want to flag something,
+            use the <a href="https://flourish.ourlondon.xyz/feedback" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>feedback form</a> or
+            contact the admin directly.
+          </P>
+          <P>
+            Thank you for volunteering your time to help keep Flourish a good space. It genuinely matters.
+          </P>
+        </Section>
+
+      </div>
+    </main>
+  );
+}
+
+/* ── Reusable components ── */
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="mb-10">
+      <h2
+        className="text-sm font-bold uppercase tracking-wider mb-4"
+        style={{ fontFamily: 'var(--font-display)', color: 'var(--heading)', fontSize: '0.8rem', letterSpacing: '0.12em' }}
+      >
+        {title}
+      </h2>
+      {children}
+    </section>
+  );
+}
+
+function SubHead({ text }: { text: string }) {
+  return (
+    <p
+      className="text-xs font-bold uppercase tracking-wider mb-2 mt-4"
+      style={{ fontFamily: 'var(--font-display)', color: 'var(--ink-light)', fontSize: '0.68rem', letterSpacing: '0.1em' }}
+    >
+      {text}
+    </p>
+  );
+}
+
+function P({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="mb-4" style={{ fontFamily: 'var(--font-serif)', color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7 }}>
+      {children}
+    </p>
+  );
+}
+
+function Step({ n, label, children }: { n: number; label: string; children: React.ReactNode }) {
+  return (
+    <div className="mb-5 flex gap-4">
+      <div
+        className="flex-shrink-0 w-7 h-7 flex items-center justify-center text-xs font-bold"
+        style={{ fontFamily: 'var(--font-display)', background: 'var(--ink)', color: 'var(--card)' }}
+      >
+        {n}
+      </div>
+      <div className="flex-1">
+        <p className="text-sm font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '0.75rem' }}>
+          {label}
+        </p>
+        <div style={{ fontFamily: 'var(--font-serif)', color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7 }}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Divider() {
+  return <hr className="my-10" style={{ border: 'none', borderTop: '1px dashed var(--border)' }} />;
+}
