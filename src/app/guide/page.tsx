@@ -22,7 +22,7 @@ export default function ModeratorGuidePage() {
         >
           Moderator Guide
         </h1>
-        <p className="text-sm mb-12" style={{ ...sr, color: 'var(--ink-muted)', fontStyle: 'italic' }}>
+        <p className="text-sm mb-12" style={{ ...sr, color: 'var(--card-hover)', fontStyle: 'italic' }}>
           Everything you need to know about keeping Flourish a safe, useful space for our community.
         </p>
 
@@ -41,7 +41,7 @@ export default function ModeratorGuidePage() {
           <P>
             Examples of what people post:
           </P>
-          <ul className="ml-5 space-y-1.5 mb-4" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <ul className="ml-5 space-y-1.5 mb-4" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
             <li><strong style={{ color: 'var(--need)' }}>Needs:</strong> &ldquo;Ride to appointment Tuesday&rdquo;, &ldquo;Looking for a winter coat, size M&rdquo;, &ldquo;Need help moving a couch&rdquo;</li>
             <li><strong style={{ color: 'var(--offer)' }}>Offers:</strong> &ldquo;Free kids clothes, ages 4-6&rdquo;, &ldquo;Can help with basic plumbing&rdquo;, &ldquo;Spare room for short-term stay&rdquo;</li>
           </ul>
@@ -92,7 +92,7 @@ export default function ModeratorGuidePage() {
           <P>
             <strong>What moderators can do:</strong>
           </P>
-          <ul className="ml-5 space-y-1.5 mb-4" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <ul className="ml-5 space-y-1.5 mb-4" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
             <li>Review posts on the board and in the admin dashboard</li>
             <li>Approve posts (confirm they&apos;re fine — optional, since posts are approved by default)</li>
             <li>Reject posts (remove them from the public board)</li>
@@ -101,7 +101,7 @@ export default function ModeratorGuidePage() {
           <P>
             <strong>What moderators cannot do:</strong>
           </P>
-          <ul className="ml-5 space-y-1.5 mb-4" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <ul className="ml-5 space-y-1.5 mb-4" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
             <li>Edit other people&apos;s posts (only approve or reject)</li>
             <li>Add or remove other moderators (only admins can do this)</li>
             <li>See users&apos; private messages or personal contact details</li>
@@ -135,7 +135,7 @@ export default function ModeratorGuidePage() {
           </P>
 
           <SubHead text="Approve (leave it up) if the post:" />
-          <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
             <li>Is a genuine need or offer relevant to London, Ontario</li>
             <li>Is written in good faith, even if a bit vague</li>
             <li>Falls into one of the categories (items, services, skills, space)</li>
@@ -143,7 +143,7 @@ export default function ModeratorGuidePage() {
           </ul>
 
           <SubHead text="Reject (remove it) if the post:" />
-          <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
             <li>Is spam, advertising, or a commercial solicitation</li>
             <li>Contains hate speech, threats, harassment, or discrimination</li>
             <li>Shares someone else&apos;s private information</li>
@@ -154,7 +154,7 @@ export default function ModeratorGuidePage() {
           </ul>
 
           <SubHead text="Use your judgement for:" />
-          <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
             <li>Posts that are vague but seem genuine — leave them up, people can ask for details</li>
             <li>Posts offering paid services — fine as long as they&apos;re not pushy commercial ads</li>
             <li>Posts from outside London — if it&apos;s nearby (e.g. St. Thomas, Woodstock) and relevant, it&apos;s probably fine</li>
@@ -182,7 +182,7 @@ export default function ModeratorGuidePage() {
 
         {/* ─── PART 3: CODE OF CONDUCT ─── */}
         <Section title="Moderator code of conduct">
-          <ul className="ml-5 space-y-2.5 mb-4" style={{ ...sr, color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <ul className="ml-5 space-y-2.5 mb-4" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
             <li><strong>Be fair and consistent.</strong> Apply the same standards to all posts regardless of who posted them.</li>
             <li><strong>Assume good faith.</strong> Most people are genuinely trying to participate. Give the benefit of the doubt.</li>
             <li><strong>Protect privacy.</strong> Don&apos;t share any user information you see through the admin tools. Don&apos;t screenshot or discuss specific users outside the mod team.</li>
@@ -190,6 +190,43 @@ export default function ModeratorGuidePage() {
             <li><strong>Ask if unsure.</strong> It&apos;s better to check with the admin than to make a wrong call. No one expects you to have all the answers.</li>
             <li><strong>Be kind.</strong> If you ever interact with a user about moderation (e.g. if we add messaging to posters), be respectful and explain clearly.</li>
           </ul>
+        </Section>
+
+        <Divider />
+
+        {/* ─── PART 4: THINGS TO TEST ─── */}
+        <Section title="Things to test">
+          <P>
+            Before you start moderating, walk through these steps to make sure everything works for you.
+            This should only take a few minutes.
+          </P>
+
+          <SubHead text="As a regular user" />
+          <ul className="ml-5 space-y-1.5 mb-5" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+            <li>Browse the board without logging in — can you see posts, filter by need/offer, search?</li>
+            <li>Open the map view — do location pins show up?</li>
+            <li>Log in with your email — did the magic link arrive? (Check spam if not)</li>
+            <li>Create a test post (mark it as an offer, something like &ldquo;Test post — please ignore&rdquo;) — does it appear on the board?</li>
+            <li>Respond to your own test post or another test post — does the poster get notified?</li>
+            <li>Try texting the SMS number ((226) 242-0489) with &ldquo;hello&rdquo; — does the AI assistant respond?</li>
+            <li>Delete or mark your test post as fulfilled when done</li>
+          </ul>
+
+          <SubHead text="As a moderator" />
+          <ul className="ml-5 space-y-1.5 mb-5" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+            <li>Go to <a href="https://flourish.ourlondon.xyz/admin" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>flourish.ourlondon.xyz/admin</a> — can you access the dashboard?</li>
+            <li>Find a test post in the moderation list — can you see the approve/reject buttons?</li>
+            <li>Approve a test post — does the status update?</li>
+            <li>Reject a test post — does it disappear from the public board?</li>
+            <li>Check the stats section — does it show recent activity?</li>
+          </ul>
+
+          <SubHead text="If something doesn't work" />
+          <P>
+            Don&apos;t worry — just note what happened and let the admin know through the{' '}
+            <a href="https://flourish.ourlondon.xyz/feedback" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>feedback form</a>.
+            Include what you tried, what you expected, and what actually happened.
+          </P>
         </Section>
 
         <Section title="Questions?">
@@ -228,7 +265,7 @@ function SubHead({ text }: { text: string }) {
   return (
     <p
       className="text-xs font-bold uppercase tracking-wider mb-2 mt-4"
-      style={{ fontFamily: 'var(--font-display)', color: 'var(--ink-light)', fontSize: '0.68rem', letterSpacing: '0.1em' }}
+      style={{ fontFamily: 'var(--font-display)', color: 'var(--card-hover)', fontSize: '0.68rem', letterSpacing: '0.1em' }}
     >
       {text}
     </p>
@@ -237,7 +274,7 @@ function SubHead({ text }: { text: string }) {
 
 function P({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-4" style={{ fontFamily: 'var(--font-serif)', color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7 }}>
+    <p className="mb-4" style={{ fontFamily: 'var(--font-serif)', color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7 }}>
       {children}
     </p>
   );
@@ -253,10 +290,10 @@ function Step({ n, label, children }: { n: number; label: string; children: Reac
         {n}
       </div>
       <div className="flex-1">
-        <p className="text-sm font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '0.75rem' }}>
+        <p className="text-sm font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: 'var(--card)', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '0.75rem' }}>
           {label}
         </p>
-        <div style={{ fontFamily: 'var(--font-serif)', color: 'var(--ink)', fontSize: '0.95rem', lineHeight: 1.7 }}>
+        <div style={{ fontFamily: 'var(--font-serif)', color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7 }}>
           {children}
         </div>
       </div>
