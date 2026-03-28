@@ -144,7 +144,7 @@ export default function CodeOfConductPage() {
               'Using this space to recruit for political campaigns, MLMs, or religious proselytizing',
             ].map((item, i) => (
               <li key={i} className="flex items-start gap-2">
-                <span style={{ color: 'var(--need)', flexShrink: 0, marginTop: '2px' }}>✗</span>
+                <span style={{ color: 'var(--need)', flexShrink: 0, marginTop: '0.125rem' }}>✗</span>
                 <p className="text-base leading-relaxed" style={{ ...sr, color: 'var(--ink-light)' }}>{item}</p>
               </li>
             ))}

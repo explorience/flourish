@@ -78,12 +78,12 @@ export function PostFeed({ initialPosts, isModerator = false }: PostFeedProps) {
           className="mt-5"
           style={{
             columnCount: 'auto' as any,
-            columnWidth: '300px',
-            columnGap: '16px',
+            columnWidth: '18.75rem',
+            columnGap: '1rem',
           }}
         >
           {filtered.map((post, i) => (
-            <div key={post.id} style={{ breakInside: 'avoid', marginBottom: '16px' }}>
+            <div key={post.id} style={{ breakInside: 'avoid', marginBottom: '1rem' }}>
               <PostCard post={post} index={i} isModerator={isModerator} />
             </div>
           ))}

@@ -110,7 +110,7 @@ export function MessageThread({ threadId, currentUserId, initialMessages, otherN
   return (
     <div className="flex flex-col flex-1" style={{ minHeight: 0 }}>
       {/* Scrollable message area */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6" style={{ paddingBottom: '100px' }}>
+      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-6" style={{ paddingBottom: '6.25rem' }}>
         {messages.length === 0 && (
           <div className="text-center py-8">
             <p className="text-sm italic" style={{ ...sr, color: 'var(--ink-muted)' }}>
@@ -191,7 +191,7 @@ export function MessageThread({ threadId, currentUserId, initialMessages, otherN
               border: '1px solid var(--border-card)',
               color: 'var(--ink)',
               fontFamily: 'var(--font-body)',
-              maxHeight: '120px',
+              maxHeight: '7.5rem',
               overflowY: 'auto',
               lineHeight: 1.5,
             }}

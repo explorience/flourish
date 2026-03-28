@@ -69,7 +69,7 @@ export function AuthForm() {
     textTransform: 'uppercase' as const,
     letterSpacing: '0.12em',
     color: 'var(--sub)',
-    marginBottom: '6px',
+    marginBottom: '0.375rem',
     ...ds,
   };
 

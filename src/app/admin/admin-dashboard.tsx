@@ -147,7 +147,7 @@ export function AdminDashboard({
     textTransform: 'uppercase',
     letterSpacing: '0.12em',
     color: 'var(--sub)',
-    marginBottom: '5px',
+    marginBottom: '0.3125rem',
     ...ds,
   };
 
@@ -296,7 +296,7 @@ export function AdminDashboard({
                               placeholder="Reason (optional)"
                               value={rejectReason[post.id] || ''}
                               onChange={(e) => setRejectReason((prev) => ({ ...prev, [post.id]: e.target.value }))}
-                              style={{ ...inputStyle, width: '180px', padding: '6px 10px', fontSize: '0.75rem' }}
+                              style={{ ...inputStyle, width: '11.25rem', padding: '0.375rem 0.625rem', fontSize: '0.75rem' }}
                             />
                             <button
                               onClick={() => handleModerate(post.id, 'reject', rejectReason[post.id])}

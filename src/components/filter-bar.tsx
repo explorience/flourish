@@ -74,7 +74,7 @@ function Tag({ active, onClick, label, activeColor }: {
           : 'var(--sub)',
         opacity: 1,
         textDecoration: active ? 'underline' : 'none',
-        textUnderlineOffset: '3px',
+        textUnderlineOffset: '0.1875rem',
         background: 'transparent',
         border: 'none',
         padding: '2px 0',

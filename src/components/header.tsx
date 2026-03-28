@@ -68,7 +68,7 @@ export function Header() {
         className="sticky top-0 z-40 backdrop-blur-xl border-b"
         style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}
       >
-        <div className="w-full px-5 flex items-center justify-between" style={{ height: '52px' }}>
+        <div className="w-full px-5 flex items-center justify-between" style={{ height: '3.25rem' }}>
           <Link
             href="/"
             className="text-xs md:text-xl font-bold uppercase tracking-widest"
@@ -109,9 +109,9 @@ export function Header() {
                       background: 'var(--need)',
                       borderRadius: '999px',
                       fontSize: '0.5rem',
-                      minWidth: '14px',
-                      height: '14px',
-                      padding: '0 3px',
+                      minWidth: '0.875rem',
+                      height: '0.875rem',
+                      padding: '0 0.1875rem',
                       fontFamily: 'var(--font-display)',
                     }}
                   >

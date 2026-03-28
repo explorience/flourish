@@ -110,7 +110,7 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
             {post.location_label && (
               <>
                 <span>&mdash;</span>
-                <span className="truncate" style={{ maxWidth: '120px' }}>{post.location_label}</span>
+                <span className="truncate" style={{ maxWidth: '7.5rem' }}>{post.location_label}</span>
               </>
             )}
             {!post.location_label && categoryInfo && (

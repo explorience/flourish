@@ -18,7 +18,7 @@ export default async function AccountPage() {
   return (
     <main className="min-h-screen" style={{ background: 'var(--bg)' }}>
       <header className="sticky top-0 z-40 backdrop-blur-xl border-b" style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}>
-        <div className="max-w-xl mx-auto px-5 flex items-center justify-between" style={{ height: '156px' }}>
+        <div className="max-w-xl mx-auto px-5 flex items-center justify-between" style={{ height: '3.25rem' }}>
           <Link href="/" className="inline-flex items-center gap-2 text-xs" style={{ color: 'var(--sub)' }}>
             <ArrowLeft className="w-4 h-4" /> Flourish
           </Link>

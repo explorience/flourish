@@ -33,7 +33,7 @@ export default function FeedbackPage() {
     textTransform: 'uppercase',
     letterSpacing: '0.12em',
     color: 'var(--sub)',
-    marginBottom: '6px',
+    marginBottom: '0.375rem',
     ...ds,
   };
 
@@ -160,7 +160,7 @@ export default function FeedbackPage() {
                     style={{
                       ...inputStyle,
                       resize: 'vertical',
-                      minHeight: '120px',
+                      minHeight: '7.5rem',
                     }}
                     placeholder="What's on your mind?"
                   />
