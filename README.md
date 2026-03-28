@@ -6,6 +6,8 @@
 
 Flourish is a mutual aid platform where neighbours can post what they need or what they can offer — items, services, skills, or space. No selling, no algorithms, no ads. Just people helping each other.
 
+Forked from [omniharmonic/potluck](https://github.com/omniharmonic/potluck).
+
 ---
 
 ## Features
