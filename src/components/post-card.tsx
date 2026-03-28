@@ -10,10 +10,34 @@ import type { PostWithResponses } from '@/types/database';
 interface PostCardProps {
   post: PostWithResponses;
   index?: number;
+  isModerator?: boolean;
 }
 
-export function PostCard({ post, index = 0 }: PostCardProps) {
+export function PostCard({ post, index = 0, isModerator = false }: PostCardProps) {
   const [showRespond, setShowRespond] = useState(false);
+  const [moderating, setModerating] = useState(false);
+  const [modDone, setModDone] = useState<'approved' | 'rejected' | null>(null);
+  const [showRejectInput, setShowRejectInput] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
+
+  const handleModerate = async (action: 'approve' | 'reject', reason?: string) => {
+    setModerating(true);
+    try {
+      const res = await fetch('/api/admin/moderate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ postId: post.id, action, reason }),
+      });
+      if (res.ok) {
+        setModDone(action === 'approve' ? 'approved' : 'rejected');
+        setShowRejectInput(false);
+      }
+    } catch (err) {
+      console.error('Moderation error:', err);
+    } finally {
+      setModerating(false);
+    }
+  };
   
   const categoryInfo = CATEGORIES.find((c) => c.value === post.category);
   const timeAgo = formatDistanceToNow(new Date(post.created_at), { addSuffix: true });
@@ -93,12 +117,7 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
                 <span>{categoryInfo.label}</span>
               </>
             )}
-            {post.source === 'sms' && (
-              <span className="px-1.5 py-0.5 uppercase tracking-wider"
-                style={{ fontSize: '0.55rem', background: 'rgba(58,106,74,0.15)', color: 'var(--offer)' }}>
-                sms
-              </span>
-            )}
+
             {post.responses.length > 0 && (
               <span style={{ color: 'var(--ink-muted)', fontSize: '0.68rem' }}>
                 &mdash; {post.responses.length} {post.responses.length === 1 ? 'response' : 'responses'}
@@ -130,6 +149,93 @@ export function PostCard({ post, index = 0 }: PostCardProps) {
             {isNeed ? 'I can help' : 'I\'m interested'}
           </button>
         </div>
+        {/* Moderation bar — moderators only */}
+        {isModerator && (
+          <div
+            className="mt-3 pt-3"
+            style={{ borderTop: '1px dashed rgba(208,112,64,0.3)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {modDone ? (
+              <div
+                className="text-center text-xs font-bold uppercase tracking-wider py-1"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  color: modDone === 'approved' ? 'var(--offer)' : 'var(--need)',
+                  fontSize: '0.6rem',
+                  letterSpacing: '0.12em',
+                }}
+              >
+                {modDone === 'approved' ? '✓ Approved' : '✕ Rejected'}
+              </div>
+            ) : showRejectInput ? (
+              <div className="flex gap-1.5 items-center">
+                <input
+                  type="text"
+                  placeholder="Reason (optional)"
+                  value={rejectReason}
+                  onChange={(e) => setRejectReason(e.target.value)}
+                  style={{
+                    flex: 1,
+                    background: 'rgba(255,255,255,0.9)',
+                    border: '1px solid var(--border-card)',
+                    color: 'var(--ink)',
+                    padding: '5px 8px',
+                    fontSize: '0.7rem',
+                    outline: 'none',
+                    fontFamily: 'var(--font-body)',
+                  }}
+                />
+                <button
+                  onClick={() => handleModerate('reject', rejectReason)}
+                  disabled={moderating}
+                  className="px-2 py-1 text-xs font-bold uppercase disabled:opacity-40"
+                  style={{ background: 'var(--need)', color: 'white', fontFamily: 'var(--font-display)', fontSize: '0.6rem', letterSpacing: '0.08em' }}
+                >
+                  {moderating ? '…' : 'Reject'}
+                </button>
+                <button
+                  onClick={() => setShowRejectInput(false)}
+                  className="px-1.5 py-1 text-xs"
+                  style={{ color: 'var(--ink-muted)' }}
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-1.5">
+                <button
+                  onClick={() => handleModerate('approve')}
+                  disabled={moderating}
+                  className="flex-1 py-1 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-colors"
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '0.6rem',
+                    letterSpacing: '0.1em',
+                    background: 'var(--offer)',
+                    color: 'white',
+                  }}
+                >
+                  ✓ Approve
+                </button>
+                <button
+                  onClick={() => setShowRejectInput(true)}
+                  disabled={moderating}
+                  className="flex-1 py-1 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-colors"
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '0.6rem',
+                    letterSpacing: '0.1em',
+                    background: 'var(--need)',
+                    color: 'white',
+                  }}
+                >
+                  ✕ Reject
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </article>
 
       <RespondDialog

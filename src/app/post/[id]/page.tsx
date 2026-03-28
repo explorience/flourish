@@ -5,10 +5,15 @@ import { CATEGORIES, URGENCIES } from '@/lib/constants';
 import { PostDetailClient } from './post-detail-client';
 import { ArrowLeft, Clock, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
+import { getModeratorByEmail } from '@/lib/admin';
 
 export default async function PostDetail({ params }: { params: { id: string } }) {
   const supabase = await createClient();
   const { data: post } = await supabase.from('posts').select('*, responses(*)').eq('id', params.id).single();
+
+  // Check moderation status for the current user
+  const { data: { user } } = await supabase.auth.getUser();
+  const isModerator = user?.email ? !!(await getModeratorByEmail(user.email)) : false;
   if (!post) notFound();
 
   const categoryInfo = CATEGORIES.find((c) => c.value === post.category);
@@ -82,7 +87,7 @@ export default async function PostDetail({ params }: { params: { id: string } })
           </div>
         )}
 
-        <PostDetailClient post={post} />
+        <PostDetailClient post={post} isModerator={isModerator} />
       </div>
     </main>
   );

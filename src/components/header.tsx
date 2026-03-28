@@ -68,28 +68,43 @@ export function Header() {
         className="sticky top-0 z-40 backdrop-blur-xl border-b"
         style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}
       >
-        <div className="w-full px-5 h-13 flex items-center justify-between">
+        <div className="w-full px-5 h-13 md:h-[6.5rem] flex items-center justify-between">
           <Link
             href="/"
-            className="text-xs font-bold uppercase tracking-widest"
+            className="text-xs md:text-xl font-bold uppercase tracking-widest"
             style={{ color: 'var(--heading)', fontFamily: 'var(--font-display)' }}
           >
             Flourish
           </Link>
 
-          <div className="flex items-center gap-1">
-            <Link href="/search" className="p-2 rounded transition-colors" style={{ color: 'var(--sub)' }}>
-              <Search className="w-4 h-4" />
+          <div className="flex items-center gap-1 md:gap-3">
+            {/* Text nav links — desktop only */}
+            <Link
+              href="/about"
+              className="hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-colors"
+              style={{ color: 'var(--sub)', fontFamily: 'var(--font-display)', letterSpacing: '0.1em' }}
+            >
+              About
             </Link>
-            <Link href="/map" className="p-2 rounded transition-colors" style={{ color: 'var(--sub)' }}>
-              <Map className="w-4 h-4" />
+            <Link
+              href="/feedback"
+              className="hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-colors"
+              style={{ color: 'var(--sub)', fontFamily: 'var(--font-display)', letterSpacing: '0.1em' }}
+            >
+              Feedback
+            </Link>
+            <Link href="/search" className="p-2 md:p-3 rounded transition-colors" style={{ color: 'var(--sub)' }}>
+              <Search className="w-4 h-4 md:w-7 md:h-7" />
+            </Link>
+            <Link href="/map" className="p-2 md:p-3 rounded transition-colors" style={{ color: 'var(--sub)' }}>
+              <Map className="w-4 h-4 md:w-7 md:h-7" />
             </Link>
             {isLoggedIn && (
-              <Link href="/messages" className="relative p-2 rounded transition-colors" style={{ color: unread > 0 ? 'var(--offer)' : 'var(--sub)' }}>
-                <MessageSquare className="w-4 h-4" />
+              <Link href="/messages" className="relative p-2 md:p-3 rounded transition-colors" style={{ color: unread > 0 ? 'var(--offer)' : 'var(--sub)' }}>
+                <MessageSquare className="w-4 h-4 md:w-7 md:h-7" />
                 {unread > 0 && (
                   <span
-                    className="absolute top-1 right-1 flex items-center justify-center text-white font-bold"
+                    className="absolute top-1 right-1 md:top-1.5 md:right-1.5 flex items-center justify-center text-white font-bold"
                     style={{
                       background: 'var(--need)',
                       borderRadius: '999px',
@@ -105,12 +120,12 @@ export function Header() {
                 )}
               </Link>
             )}
-            <Link href={isLoggedIn ? '/account' : '/auth'} className="p-2 rounded transition-colors" style={{ color: isLoggedIn ? 'var(--offer)' : 'var(--sub)' }}>
-              <User className="w-4 h-4" />
+            <Link href={isLoggedIn ? '/account' : '/auth'} className="p-2 md:p-3 rounded transition-colors" style={{ color: isLoggedIn ? 'var(--offer)' : 'var(--sub)' }}>
+              <User className="w-4 h-4 md:w-7 md:h-7" />
             </Link>
             <button
               onClick={() => isLoggedIn ? setShowCreate(true) : window.location.href = '/auth?next=/'}
-              className="ml-1 px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors"
+              className="ml-1 px-4 py-2 md:ml-2 md:px-7 md:py-3 text-xs md:text-base font-bold uppercase tracking-wider transition-colors"
               style={{
                 background: 'var(--card)',
                 color: 'var(--ink)',
@@ -122,6 +137,28 @@ export function Header() {
           </div>
         </div>
       </header>
+
+      {/* Mobile nav strip — about + feedback links */}
+      <div
+        className="flex md:hidden items-center justify-center gap-4 py-1.5 border-b text-center"
+        style={{ background: 'rgba(26,42,32,0.95)', borderColor: 'var(--border)' }}
+      >
+        <Link
+          href="/about"
+          className="text-xs font-bold uppercase tracking-wider"
+          style={{ color: 'var(--sub)', fontFamily: 'var(--font-display)', letterSpacing: '0.1em' }}
+        >
+          About
+        </Link>
+        <span style={{ color: 'var(--border)' }}>|</span>
+        <Link
+          href="/feedback"
+          className="text-xs font-bold uppercase tracking-wider"
+          style={{ color: 'var(--sub)', fontFamily: 'var(--font-display)', letterSpacing: '0.1em' }}
+        >
+          Feedback
+        </Link>
+      </div>
 
       {showCreate && <CreatePostForm onClose={() => setShowCreate(false)} />}
     </>

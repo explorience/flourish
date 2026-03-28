@@ -2,22 +2,30 @@ import { createClient } from '@/lib/supabase/server';
 import { PostFeed } from '@/components/post-feed';
 import { Header } from '@/components/header';
 import { APP_NAME, APP_TAGLINE, APP_DESCRIPTION } from '@/lib/constants';
+import { getModeratorByEmail } from '@/lib/admin';
 
 export const revalidate = 0;
 
 export default async function Home() {
   const supabase = await createClient();
+
+  // Check if current user is a moderator (for moderation UI in feed)
+  const { data: { user } } = await supabase.auth.getUser();
+  const isModerator = user?.email ? !!(await getModeratorByEmail(user.email)) : false;
   
   const { data: posts } = await supabase
     .from('posts')
     .select('*, responses(*)')
     .eq('status', 'active')
+    // Show approved posts, or posts without a moderation_status (legacy/unmoderated)
+    .or('moderation_status.eq.approved,moderation_status.is.null')
     .order('created_at', { ascending: false });
 
   const { count } = await supabase
     .from('posts')
     .select('*', { count: 'exact', head: true })
-    .eq('status', 'active');
+    .eq('status', 'active')
+    .or('moderation_status.eq.approved,moderation_status.is.null');
 
   return (
     <main className="min-h-screen" style={{ background: 'var(--bg)' }}>
@@ -52,7 +60,7 @@ export default async function Home() {
       {/* Feed */}
       <section className="w-full px-4 sm:px-6 lg:px-8 pb-24 flex flex-col items-center">
         <div className="w-full">
-          <PostFeed initialPosts={posts || []} />
+          <PostFeed initialPosts={posts || []} isModerator={isModerator} />
         </div>
       </section>
     </main>

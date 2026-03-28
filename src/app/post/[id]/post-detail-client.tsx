@@ -10,12 +10,17 @@ import type { PostWithResponses } from '@/types/database';
 
 interface PostDetailClientProps {
   post: PostWithResponses;
+  isModerator?: boolean;
 }
 
-export function PostDetailClient({ post }: PostDetailClientProps) {
+export function PostDetailClient({ post, isModerator = false }: PostDetailClientProps) {
   const [showRespond, setShowRespond] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [threading, setThreading] = useState<string | null>(null);
+  const [modAction, setModAction] = useState<'approved' | 'rejected' | null>(null);
+  const [moderating, setModerating] = useState(false);
+  const [showRejectInput, setShowRejectInput] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -25,6 +30,25 @@ export function PostDetailClient({ post }: PostDetailClientProps) {
 
   const isPoster = currentUserId && post.user_id === currentUserId;
   const isNeed = post.type === 'need';
+
+  const handleModerate = async (action: 'approve' | 'reject', reason?: string) => {
+    setModerating(true);
+    try {
+      const res = await fetch('/api/admin/moderate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ postId: post.id, action, reason }),
+      });
+      if (res.ok) {
+        setModAction(action === 'approve' ? 'approved' : 'rejected');
+        setShowRejectInput(false);
+      }
+    } catch (err) {
+      console.error('Moderation error:', err);
+    } finally {
+      setModerating(false);
+    }
+  };
 
   const startThread = async (responderId: string) => {
     if (!responderId) return;
@@ -56,6 +80,82 @@ export function PostDetailClient({ post }: PostDetailClientProps) {
           >
             {isNeed ? 'I can help with this' : 'I\'m interested in this'}
           </button>
+        </div>
+      )}
+
+      {/* Moderation panel — moderators only */}
+      {isModerator && (
+        <div
+          className="mb-8 p-4"
+          style={{ border: '1px dashed rgba(208,112,64,0.4)', background: 'rgba(208,112,64,0.04)' }}
+        >
+          <div
+            className="text-xs font-bold uppercase tracking-wider mb-3"
+            style={{ ...ds, color: 'var(--need)', fontSize: '0.6rem', letterSpacing: '0.14em' }}
+          >
+            Moderation
+          </div>
+
+          {modAction ? (
+            <div
+              className="text-sm font-bold uppercase tracking-wider"
+              style={{ ...ds, color: modAction === 'approved' ? 'var(--offer)' : 'var(--need)' }}
+            >
+              {modAction === 'approved' ? '✓ Approved' : '✕ Rejected'}
+            </div>
+          ) : showRejectInput ? (
+            <div className="flex gap-2 items-center flex-wrap">
+              <input
+                type="text"
+                placeholder="Rejection reason (optional)"
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                style={{
+                  flex: '1 1 200px',
+                  background: 'var(--card)',
+                  border: '1px solid var(--border-card)',
+                  color: 'var(--ink)',
+                  padding: '8px 12px',
+                  fontSize: '0.85rem',
+                  outline: 'none',
+                }}
+              />
+              <button
+                onClick={() => handleModerate('reject', rejectReason)}
+                disabled={moderating}
+                className="px-4 py-2 text-xs font-bold uppercase tracking-wider disabled:opacity-40"
+                style={{ ...ds, background: 'var(--need)', color: 'white' }}
+              >
+                {moderating ? '…' : 'Confirm Reject'}
+              </button>
+              <button
+                onClick={() => setShowRejectInput(false)}
+                className="text-xs"
+                style={{ color: 'var(--ink-muted)' }}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <div className="flex gap-3">
+              <button
+                onClick={() => handleModerate('approve')}
+                disabled={moderating}
+                className="px-5 py-2.5 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-colors"
+                style={{ ...ds, background: 'var(--offer)', color: 'white', letterSpacing: '0.1em' }}
+              >
+                ✓ Approve
+              </button>
+              <button
+                onClick={() => setShowRejectInput(true)}
+                disabled={moderating}
+                className="px-5 py-2.5 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-colors"
+                style={{ ...ds, background: 'var(--need)', color: 'white', letterSpacing: '0.1em' }}
+              >
+                ✕ Reject
+              </button>
+            </div>
+          )}
         </div>
       )}
 

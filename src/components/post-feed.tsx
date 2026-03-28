@@ -9,9 +9,10 @@ import type { PostWithResponses, PostType, Category } from '@/types/database';
 
 interface PostFeedProps {
   initialPosts: PostWithResponses[];
+  isModerator?: boolean;
 }
 
-export function PostFeed({ initialPosts }: PostFeedProps) {
+export function PostFeed({ initialPosts, isModerator = false }: PostFeedProps) {
   const [posts, setPosts] = useState<PostWithResponses[]>(initialPosts);
   const [typeFilter, setTypeFilter] = useState<PostType | 'all'>('all');
   const [categoryFilter, setCategoryFilter] = useState<Category | 'all'>('all');
@@ -83,7 +84,7 @@ export function PostFeed({ initialPosts }: PostFeedProps) {
         >
           {filtered.map((post, i) => (
             <div key={post.id} style={{ breakInside: 'avoid', marginBottom: '16px' }}>
-              <PostCard post={post} index={i} />
+              <PostCard post={post} index={i} isModerator={isModerator} />
             </div>
           ))}
         </div>

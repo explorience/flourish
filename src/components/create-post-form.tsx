@@ -19,8 +19,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
   const [category, setCategory] = useState<Category>('other');
   const [urgency, setUrgency] = useState<Urgency>('flexible');
   const [contactName, setContactName] = useState('');
-  const [contactMethod, setContactMethod] = useState<ContactMethod>('app');
-  const [contactValue, setContactValue] = useState('');
+  const contactMethod: ContactMethod = 'app';
   const [crossStreet, setCrossStreet] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -44,7 +43,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
         urgency,
         contact_name: contactName.trim(),
         contact_method: contactMethod,
-        contact_value: contactValue.trim() || null,
+        contact_value: null,
         source: 'web',
         user_id: user?.id || null,
         location_label: crossStreet.trim() || null,
@@ -198,23 +197,11 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                       placeholder="First name" autoFocus
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>How should people reach you?</label>
-                    <div className="flex gap-2 mb-3">
-                      {[{ value: 'app' as const, label: 'Through the board' }, { value: 'phone' as const, label: 'Phone' }, { value: 'email' as const, label: 'Email' }].map((m) => (
-                        <button key={m.value} type="button" onClick={() => setContactMethod(m.value)}
-                          className="flex-1 px-3 py-2 text-xs font-bold uppercase tracking-wider text-center transition-all"
-                          style={{ ...ds, fontSize: '0.55rem', background: contactMethod === m.value ? 'var(--ink)' : 'transparent', color: contactMethod === m.value ? 'var(--card)' : 'var(--ink-light)', border: `1.5px solid ${contactMethod === m.value ? 'var(--ink)' : 'var(--border-card)'}` }}
-                        >{m.label}</button>
-                      ))}
-                    </div>
-                    {contactMethod !== 'app' && (
-                      <input type={contactMethod === 'email' ? 'email' : 'tel'} value={contactValue} onChange={(e) => setContactValue(e.target.value)}
-                        className="w-full px-4 py-3 text-sm focus:outline-none"
-                        style={{ background: '#fff', border: '1px solid var(--border-card)', color: 'var(--ink)' }}
-                        placeholder={contactMethod === 'phone' ? 'Your phone number' : 'Your email address'}
-                      />
-                    )}
+                  <div className="p-3" style={{ background: 'rgba(58,106,74,0.08)', border: '1px solid var(--border-card)' }}>
+                    <p className="text-xs" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>How people connect with you</p>
+                    <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)', fontSize: '0.75rem' }}>
+                      Interested neighbours will reach out through the app. Your personal info stays private until you choose to share it.
+                    </p>
                   </div>
 
                   {/* Preview */}
