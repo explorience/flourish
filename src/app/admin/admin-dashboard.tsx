@@ -204,7 +204,7 @@ export function AdminDashboard({
             { href: '/', label: 'View Board' },
             { href: '/about', label: 'About Page' },
             { href: '/feedback', label: 'Feedback Page' },
-            { href: '/docs/moderator-guide.md', label: 'Moderator Guide', external: true },
+            { href: '/guide', label: 'Moderator Guide', external: false },
           ].map((link) => (
             <Link
               key={link.href}
