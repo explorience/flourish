@@ -192,6 +192,13 @@ export default function AboutPage() {
                 <p className="text-base leading-relaxed" style={{ ...sr, color: 'var(--ink-light)' }}>{item}</p>
               </li>
             ))}
+            <li className="flex items-start gap-2">
+              <span style={{ color: 'var(--offer)', flexShrink: 0, marginTop: '2px' }}>✓</span>
+              <p className="text-base leading-relaxed" style={{ ...sr, color: 'var(--ink-light)' }}>
+                All members agree to our{' '}
+                <a href="/code-of-conduct" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>code of conduct</a>
+              </p>
+            </li>
           </ul>
         </div>
 
