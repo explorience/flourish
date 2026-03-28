@@ -30,7 +30,7 @@ export function SearchClient() {
   return (
     <>
       <header className="sticky top-0 z-40 backdrop-blur-xl border-b" style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}>
-        <div className="max-w-xl mx-auto px-5 h-13 flex items-center gap-3">
+        <div className="max-w-xl mx-auto px-5 flex items-center gap-3" style={{ height: '156px' }}>
           <Link href="/" className="p-1.5 flex-shrink-0" style={{ color: 'var(--sub)' }}><ArrowLeft className="w-4 h-4" /></Link>
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--ink-muted)' }} />

@@ -12,7 +12,7 @@ export default async function AuthPage() {
   return (
     <main className="min-h-screen flex flex-col" style={{ background: 'var(--bg)' }}>
       <header className="sticky top-0 z-40 backdrop-blur-xl border-b" style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}>
-        <div className="max-w-xl mx-auto px-5 h-13 flex items-center">
+        <div className="max-w-xl mx-auto px-5 flex items-center" style={{ height: "156px" }}>
           <Link href="/" className="inline-flex items-center gap-2 text-xs" style={{ color: 'var(--sub)' }}>
             <ArrowLeft className="w-4 h-4" /> Back
           </Link>

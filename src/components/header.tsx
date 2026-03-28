@@ -68,7 +68,7 @@ export function Header() {
         className="sticky top-0 z-40 backdrop-blur-xl border-b"
         style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}
       >
-        <div className="w-full px-5 h-13 md:h-[6.5rem] flex items-center justify-between">
+        <div className="w-full px-5 flex items-center justify-between" style={{ height: '156px' }}>
           <Link
             href="/"
             className="text-xs md:text-xl font-bold uppercase tracking-widest"
