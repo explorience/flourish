@@ -87,12 +87,12 @@ export default function AboutPage() {
               {
                 step: '02',
                 heading: 'Post what you need or can offer',
-                body: 'Sign in with a magic link — just your email, no password. Or text us to post via SMS.',
+                body: 'Sign in with a magic link — just your email, no password. Or text (226) 242-0489 to post via SMS. Just text "hello" to get started. You can use any language.',
               },
               {
                 step: '03',
                 heading: 'Connect privately',
-                body: 'Respond to a post and connect through the app. Your personal info stays private until you choose to share it.',
+                body: 'Respond to a post and connect through the app. Your personal information is never shared.',
               },
               {
                 step: '04',
@@ -183,8 +183,8 @@ export default function AboutPage() {
             {[
               'No account needed to browse',
               'Magic link login — just your email, no passwords',
-              'You can also post via SMS text message',
-              'Your contact info is only shared when you choose to respond',
+              'You can also post by texting (226) 242-0489 — just say "hello" to start, in any language',
+              'Your personal information is never shared',
               'We don\'t sell data or show you ads — ever',
             ].map((item, i) => (
               <li key={i} className="flex items-start gap-2">
