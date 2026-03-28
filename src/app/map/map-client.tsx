@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 
 const LeafletMap = dynamic(() => import('./leaflet-map'), { ssr: false, loading: () => (
-  <div className="flex-1 flex items-center justify-center" style={{ height: 'calc(100vh - 52px)' }}>
+  <div className="flex-1 flex items-center justify-center" style={{ height: 'calc(100vh - 156px)' }}>
     <div className="text-sm" style={{ color: 'var(--sub)' }}>Loading map...</div>
   </div>
 ) });
@@ -36,7 +36,7 @@ export function MapClient({ posts }: MapClientProps) {
   const filtered = posts.filter(p => (typeFilter === 'all' || p.type === typeFilter) && p.location_fuzzed_lat && p.location_fuzzed_lng);
 
   return (
-    <div className="flex flex-col" style={{ height: 'calc(100vh - 52px)' }}>
+    <div className="flex flex-col" style={{ height: 'calc(100vh - 156px)' }}>
       {/* Filter strip */}
       <div className="flex items-center gap-2 px-4 py-2 flex-shrink-0" style={{ borderBottom: '1px solid var(--border)' }}>
         {(['all', 'need', 'offer'] as const).map((t) => (
