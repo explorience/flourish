@@ -230,7 +230,14 @@ export default function AboutPage() {
           >
             Browse the board
           </Link>
-          <div>
+          <div className="flex items-center justify-center gap-4">
+            <Link
+              href="/code-of-conduct"
+              className="text-xs font-bold uppercase tracking-wider"
+              style={{ ...ds, color: 'var(--sub)' }}
+            >
+              Code of conduct →
+            </Link>
             <Link
               href="/feedback"
               className="text-xs font-bold uppercase tracking-wider"
