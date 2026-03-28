@@ -115,7 +115,7 @@ export default function AboutPage() {
                     {item.heading}
                   </h3>
                   <p
-                    className="text-sm leading-relaxed"
+                    className="text-base leading-relaxed"
                     style={{ ...sr, color: 'var(--ink-light)' }}
                   >
                     {item.body}
@@ -151,13 +151,13 @@ export default function AboutPage() {
                 style={{ border: '1px dashed var(--border-card)' }}
               >
                 <div
-                  className="text-xs font-bold uppercase tracking-widest mb-1"
+                  className="text-sm font-bold uppercase tracking-widest mb-1"
                   style={{ ...ds, color: 'var(--ink)' }}
                 >
                   {cat.label}
                 </div>
                 <p
-                  className="text-xs leading-relaxed"
+                  className="text-base leading-relaxed"
                   style={{ ...sr, color: 'var(--ink-muted)' }}
                 >
                   {cat.desc}
@@ -189,7 +189,7 @@ export default function AboutPage() {
             ].map((item, i) => (
               <li key={i} className="flex items-start gap-2">
                 <span style={{ color: 'var(--offer)', flexShrink: 0, marginTop: '2px' }}>✓</span>
-                <p className="text-sm leading-relaxed" style={{ ...sr, color: 'var(--ink-light)' }}>{item}</p>
+                <p className="text-base leading-relaxed" style={{ ...sr, color: 'var(--ink-light)' }}>{item}</p>
               </li>
             ))}
           </ul>
@@ -208,13 +208,13 @@ export default function AboutPage() {
             Open source &amp; community-run
           </h2>
           <p
-            className="text-sm leading-relaxed mb-3"
+            className="text-base leading-relaxed mb-3"
             style={{ ...sr, color: 'var(--ink-light)' }}
           >
             Flourish is built in the open and licensed under the MIT license. Anyone can inspect the code, suggest improvements, or run their own instance for their community.
           </p>
           <p
-            className="text-sm leading-relaxed"
+            className="text-base leading-relaxed"
             style={{ ...sr, color: 'var(--ink-light)' }}
           >
             It&apos;s run by volunteers who believe local communities work better when people can share resources and support each other.
