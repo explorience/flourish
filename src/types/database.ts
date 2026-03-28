@@ -5,6 +5,8 @@ export type ContactMethod = 'app' | 'phone' | 'email';
 export type PostSource = 'web' | 'sms';
 export type PostStatus = 'active' | 'fulfilled' | 'expired';
 
+export type ModerationStatus = 'pending' | 'approved' | 'rejected';
+
 export interface Post {
   id: string;
   type: PostType;
@@ -22,6 +24,7 @@ export interface Post {
   location_label: string | null;
   location_lat: number | null;
   location_lng: number | null;
+  moderation_status: ModerationStatus | null;
   created_at: string;
   updated_at: string;
 }

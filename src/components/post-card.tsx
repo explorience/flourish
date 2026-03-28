@@ -16,7 +16,9 @@ interface PostCardProps {
 export function PostCard({ post, index = 0, isModerator = false }: PostCardProps) {
   const [showRespond, setShowRespond] = useState(false);
   const [moderating, setModerating] = useState(false);
-  const [modDone, setModDone] = useState<'approved' | 'rejected' | null>(null);
+  const [modDone, setModDone] = useState<'approved' | 'rejected' | null>(
+    post.moderation_status === 'approved' || post.moderation_status === 'rejected' ? post.moderation_status : null
+  );
   const [showRejectInput, setShowRejectInput] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
 
