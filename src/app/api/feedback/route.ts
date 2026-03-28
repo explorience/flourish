@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     </div>
 
     <div class="footer">
-      <p>Sent via <a href="https://flourish.ourlondon.xyz">Flourish</a> — community exchange board for London, Ontario.</p>
+      <p>Sent via <a href="${process.env.NEXT_PUBLIC_APP_URL || '#'}">${process.env.NEXT_PUBLIC_APP_NAME || 'Flourish'}</a> — community exchange board</p>
     </div>
   </div>
 </body>
@@ -74,10 +74,10 @@ Message:
 ${message.trim()}
 
 ---
-Flourish — flourish.ourlondon.xyz`;
+${process.env.NEXT_PUBLIC_APP_NAME || 'Flourish'} — ${process.env.NEXT_PUBLIC_APP_URL || ''}`;
 
     const sent = await sendEmail({
-      to: { email: '1heenal@gmail.com', name: 'Flourish Admin' },
+      to: { email: process.env.ADMIN_EMAIL || 'admin@example.com', name: 'Flourish Admin' },
       subject: `Flourish Feedback — from ${fromName}`,
       html,
       text,

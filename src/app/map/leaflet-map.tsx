@@ -24,9 +24,12 @@ interface LeafletMapProps {
   onSelect: (post: MapPost) => void;
 }
 
-// London, ON centre
-const LONDON_CENTER: [number, number] = [42.9849, -81.2453];
-const DEFAULT_ZOOM = 13;
+// Default map centre — override via NEXT_PUBLIC_MAP_CENTER_LAT / LNG env vars
+const MAP_CENTER: [number, number] = [
+  parseFloat(process.env.NEXT_PUBLIC_MAP_CENTER_LAT || '42.9849'),
+  parseFloat(process.env.NEXT_PUBLIC_MAP_CENTER_LNG || '-81.2453'),
+];
+const DEFAULT_ZOOM = parseInt(process.env.NEXT_PUBLIC_MAP_ZOOM || '13', 10);
 
 function makeIcon(type: string, selected = false) {
   const color = type === 'need' ? '#d07040' : '#3a6a4a';
@@ -57,7 +60,7 @@ export default function LeafletMap({ posts, selected, onSelect }: LeafletMapProp
     if (!containerRef.current || mapRef.current) return;
 
     const map = L.map(containerRef.current, {
-      center: LONDON_CENTER,
+      center: MAP_CENTER,
       zoom: DEFAULT_ZOOM,
       zoomControl: true,
     });

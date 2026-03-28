@@ -3,6 +3,7 @@
  */
 
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://example.com';
 
 interface SendEmailParams {
   to: { email: string; name?: string };
@@ -18,7 +19,7 @@ export async function sendEmail(params: SendEmailParams): Promise<boolean> {
     return false;
   }
 
-  const fromEmail = process.env.BREVO_FROM_EMAIL || 'noreply@flourish.ourlondon.xyz';
+  const fromEmail = process.env.BREVO_FROM_EMAIL || 'noreply@example.com';
   const fromName = process.env.BREVO_FROM_NAME || 'Flourish';
 
   try {
@@ -112,7 +113,7 @@ export function responseNotificationEmail({
     </div>
 
     <div class="footer">
-      <p>This is a notification from <a href="https://flourish.ourlondon.xyz">Flourish</a>, a community exchange board for London, Ontario.</p>
+      <p>This is a notification from <a href="${APP_URL}">Flourish</a>, a community exchange board.</p>
       <p>You received this because someone responded to your post. No account needed to use Flourish.</p>
     </div>
   </div>
@@ -126,8 +127,8 @@ ${responderName} responded to your ${postType}: "${postTitle}"
 ${responderMessage ? `Their message: "${responderMessage}"\n\n` : ''}${responderContact ? `How to reach them: ${responderContact}\n\n` : ''}View your post: ${postUrl}
 
 ---
-Flourish — community exchange board for London, ON
-flourish.ourlondon.xyz`;
+Flourish — community exchange board
+${APP_URL}`;
 
   return { subject, html, text };
 }
@@ -174,7 +175,7 @@ export function postConfirmationEmail({
       <a href="${postUrl}" class="cta">View your post &rarr;</a>
     </div>
     <div class="footer">
-      <p><a href="https://flourish.ourlondon.xyz">Flourish</a> — community exchange board for London, ON</p>
+      <p><a href="${APP_URL}">Flourish</a> — community exchange board</p>
     </div>
   </div>
 </body>
@@ -189,7 +190,7 @@ View it here: ${postUrl}
 We'll email you when someone responds.
 
 ---
-Flourish — flourish.ourlondon.xyz`;
+Flourish — community exchange board`;
 
   return { subject, html, text };
 }

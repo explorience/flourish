@@ -1,10 +1,10 @@
 import { Header } from '@/components/header';
 import Link from 'next/link';
-import { APP_NAME } from '@/lib/constants';
+import { APP_NAME, APP_TAGLINE, APP_COMMUNITY, APP_SMS_NUMBER } from '@/lib/constants';
 
 export const metadata = {
   title: 'About — Flourish',
-  description: 'A free community exchange board for London, Ontario. Share what you have. Ask for what you need.',
+  description: 'A free community exchange board. Share what you have. Ask for what you need.',
 };
 
 export default function AboutPage() {
@@ -23,7 +23,7 @@ export default function AboutPage() {
             className="text-xs font-bold uppercase tracking-widest mb-3"
             style={{ ...ds, color: 'var(--sub)' }}
           >
-            London, Ontario
+            {APP_TAGLINE}
           </p>
           <h1
             className="text-5xl sm:text-6xl font-extrabold uppercase tracking-wide leading-none mb-4"
@@ -55,7 +55,7 @@ export default function AboutPage() {
             className="text-base leading-relaxed mb-4"
             style={{ ...sr, color: 'var(--ink)' }}
           >
-            Flourish is a free community exchange board for London, Ontario. It&apos;s a place where neighbours can share what they have and ask for what they need — items, services, skills, space, and more.
+            {APP_NAME} is a free community exchange board for {APP_COMMUNITY}. It&apos;s a place where neighbours can share what they have and ask for what they need — items, services, skills, space, and more.
           </p>
           <p
             className="text-base leading-relaxed"
@@ -87,7 +87,9 @@ export default function AboutPage() {
               {
                 step: '02',
                 heading: 'Post what you need or can offer',
-                body: 'Sign in with a magic link — just your email, no password. Or text (226) 242-0489 to post via SMS. Just text "hello" to get started. You can use any language.',
+                body: APP_SMS_NUMBER
+                  ? `Sign in with a magic link — just your email, no password. Or text ${APP_SMS_NUMBER} to post via SMS. Just text "hello" to get started. You can use any language.`
+                  : 'Sign in with a magic link — just your email, no password.',
               },
               {
                 step: '03',
@@ -183,7 +185,7 @@ export default function AboutPage() {
             {[
               'No account needed to browse',
               'Magic link login — just your email, no passwords',
-              'You can also post by texting (226) 242-0489 — just say "hello" to start, in any language',
+              ...(APP_SMS_NUMBER ? [`You can also post by texting ${APP_SMS_NUMBER} — just say "hello" to start, in any language`] : []),
               'Your personal information is never shared',
               'We don\'t sell data or show you ads — ever',
             ].map((item, i) => (

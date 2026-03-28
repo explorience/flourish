@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
     const emoji = post.type === 'need' ? '🙏' : '💚';
     const typeLabel = post.type === 'need' ? 'NEED' : 'OFFER';
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://flourish.ourlondon.xyz';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://example.com';
 
     const message = [
       `${emoji} ${typeLabel}: ${post.title}`,
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       `\nCategory: ${post.category}`,
       `Posted by: ${post.contact_name}`,
       `\n👉 Respond at: ${appUrl}`,
-      `\n#LondonON #MutualAid #CommunityExchange`,
+      `\n#MutualAid #CommunityExchange`,
     ].filter(Boolean).join('\n');
 
     const fbUrl = `https://graph.facebook.com/v19.0/${pageId}/feed`;

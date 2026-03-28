@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   try {
     const { postId, responderName, responderContact, responderMessage } = await req.json();
     const supabase = getSupabase();
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://flourish.ourlondon.xyz';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://example.com';
 
     const { data: post } = await supabase
       .from('posts')

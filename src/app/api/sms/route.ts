@@ -8,9 +8,9 @@ function getSupabase() {
   );
 }
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://flourish.ourlondon.xyz';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://example.com';
 
-const SYSTEM_PROMPT = `You are the SMS assistant for Flourish, a community exchange board for people in London, Ontario. People text you to post needs and offers to the community board.
+const SYSTEM_PROMPT = `You are the SMS assistant for Flourish, a community exchange board. People text you to post needs and offers to the community board.
 
 Your job is to have a warm, brief conversation to gather what they want to post. You are friendly, neighbourly, and concise - every message costs them time to read on a small screen.
 
@@ -144,7 +144,7 @@ export async function POST(req: NextRequest) {
   // Create the post if LLM returned action data
   if (postData) {
     const userName = user?.name || 'Neighbour';
-    const APP_ORIGIN = process.env.NEXT_PUBLIC_APP_URL || 'https://flourish.ourlondon.xyz';
+    const APP_ORIGIN = process.env.NEXT_PUBLIC_APP_URL || 'https://example.com';
 
     // Use the posts API route so geocoding runs
     const postRes = await fetch(`${APP_ORIGIN}/api/posts`, {

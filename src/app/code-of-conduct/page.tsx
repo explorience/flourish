@@ -4,7 +4,7 @@ import { APP_NAME } from '@/lib/constants';
 
 export const metadata = {
   title: 'Code of Conduct — Flourish',
-  description: 'Community guidelines for Flourish, London Ontario\'s community exchange board. Solidarity, respect, and mutual aid.',
+  description: 'Community guidelines for Flourish, a community exchange board. Solidarity, respect, and mutual aid.',
 };
 
 export default function CodeOfConductPage() {
@@ -168,8 +168,7 @@ export default function CodeOfConductPage() {
             style={{ ...sr, color: 'var(--ink-light)' }}
           >
             If someone is asking for essential items repeatedly, we reach out with care — not judgement. We connect them with resources that can help long-term, like{' '}
-            <a href="https://www.informationlondon.ca" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>Information London</a>,{' '}
-            the London Food Bank, LifeSPIN, or other community services. Mutual aid is a bridge, not a replacement for systemic support.
+            local community services and organizations. Mutual aid is a bridge, not a replacement for systemic support.
           </p>
         </div>
 

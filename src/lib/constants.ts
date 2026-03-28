@@ -19,13 +19,17 @@ export const POST_TYPES: { value: PostType; label: string; action: string; color
   { value: 'offer', label: 'Offer', action: 'I can offer something', color: 'text-[hsl(145,30%,42%)]', bgColor: 'bg-[hsl(145,30%,42%)]' },
 ];
 
-export const APP_NAME = 'Flourish';
-export const APP_TAGLINE = 'London, Ontario';
-export const APP_DESCRIPTION = 'Share what you have. Ask for what you need.';
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'Flourish';
+export const APP_TAGLINE = process.env.NEXT_PUBLIC_APP_TAGLINE || 'Community Exchange';
+export const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Share what you have. Ask for what you need.';
+export const APP_COMMUNITY = process.env.NEXT_PUBLIC_APP_COMMUNITY || 'your community';
+export const APP_SMS_NUMBER = process.env.NEXT_PUBLIC_SMS_NUMBER || '';
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || '';
 
 export const POST_EXPIRY_DAYS = 30; // Auto-expire posts after 30 days
 
-export const LONDON_NEIGHBOURHOODS = [
+// Default neighbourhoods — override by forking this file for your community
+export const NEIGHBOURHOODS = [
   { name: 'Downtown', lat: 42.9849, lng: -81.2453 },
   { name: 'Old East Village', lat: 42.9890, lng: -81.2250 },
   { name: 'Old South', lat: 42.9620, lng: -81.2390 },

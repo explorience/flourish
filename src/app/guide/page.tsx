@@ -2,7 +2,7 @@ import { Header } from '@/components/header';
 
 export const metadata = {
   title: 'Moderator Guide — Flourish',
-  description: 'Everything you need to know about moderating Flourish, a community exchange board for London, Ontario.',
+  description: 'Everything you need to know about moderating Flourish, a community exchange board.',
 };
 
 export default function ModeratorGuidePage() {
@@ -30,7 +30,7 @@ export default function ModeratorGuidePage() {
         {/* ─── PART 1: WHAT IS FLOURISH ─── */}
         <Section title="What is Flourish?">
           <P>
-            Flourish is a free community exchange board for London, Ontario. Think of it as a
+            Flourish is a free community exchange board . Think of it as a
             neighbourhood bulletin board — but online, and available to anyone in the city.
           </P>
           <P>
@@ -54,7 +54,7 @@ export default function ModeratorGuidePage() {
 
         <Section title="How it works for users">
           <Step n={1} label="Browse the board">
-            Anyone can visit <a href="https://flourish.ourlondon.xyz" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>flourish.ourlondon.xyz</a> and
+            Anyone can visit <a href="/" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>the site</a> and
             browse all active posts without an account. They can filter by needs vs offers, by category, or search for something specific.
             There&apos;s also a map view showing approximate locations of posts.
           </Step>
@@ -110,12 +110,12 @@ export default function ModeratorGuidePage() {
 
         <Section title="Getting started">
           <Step n={1} label="Log in">
-            Go to <a href="https://flourish.ourlondon.xyz/auth" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>flourish.ourlondon.xyz/auth</a> and
+            Go to <a href="/auth" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>Sign In</a> and
             enter the email address that was registered for your moderator account. You&apos;ll receive a magic link —
             click it to sign in. No password needed.
           </Step>
           <Step n={2} label="Access the admin dashboard">
-            Once signed in, go to <a href="https://flourish.ourlondon.xyz/admin" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>flourish.ourlondon.xyz/admin</a>.
+            Once signed in, go to <a href="/admin" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>Admin Dashboard</a>.
             If your email is in the moderator list, you&apos;ll see the dashboard with stats, a list of posts to review,
             and moderation tools. If you see an &ldquo;access denied&rdquo; message, your email may not have been added yet — contact the admin.
           </Step>
@@ -136,7 +136,7 @@ export default function ModeratorGuidePage() {
 
           <SubHead text="Approve (leave it up) if the post:" />
           <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
-            <li>Is a genuine need or offer relevant to London, Ontario</li>
+            <li>Is a genuine need or offer relevant to your community</li>
             <li>Is written in good faith, even if a bit vague</li>
             <li>Falls into one of the categories (items, services, skills, space)</li>
             <li>Is something a neighbour might reasonably post on a community board</li>
@@ -147,7 +147,7 @@ export default function ModeratorGuidePage() {
             <li>Is spam, advertising, or a commercial solicitation</li>
             <li>Contains hate speech, threats, harassment, or discrimination</li>
             <li>Shares someone else&apos;s private information</li>
-            <li>Is clearly not relevant to London, Ontario</li>
+            <li>Is clearly not relevant to your community</li>
             <li>Promotes illegal activity</li>
             <li>Is a duplicate or test post</li>
             <li>Contains explicit or inappropriate content</li>
@@ -208,13 +208,13 @@ export default function ModeratorGuidePage() {
             <li>Log in with your email — did the magic link arrive? (Check spam if not)</li>
             <li>Create a test post (mark it as an offer, something like &ldquo;Test post — please ignore&rdquo;) — does it appear on the board?</li>
             <li>Respond to your own test post or another test post — does the poster get notified?</li>
-            <li>Try texting the SMS number ((226) 242-0489) with &ldquo;hello&rdquo; — does the AI assistant respond?</li>
+            <li>Try texting the SMS number (the SMS number (if configured)) with &ldquo;hello&rdquo; — does the AI assistant respond?</li>
             <li>Delete or mark your test post as fulfilled when done</li>
           </ul>
 
           <SubHead text="As a moderator" />
           <ul className="ml-5 space-y-1.5 mb-5" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
-            <li>Go to <a href="https://flourish.ourlondon.xyz/admin" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>flourish.ourlondon.xyz/admin</a> — can you access the dashboard?</li>
+            <li>Go to <a href="/admin" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>Admin Dashboard</a> — can you access the dashboard?</li>
             <li>Find a test post in the moderation list — can you see the approve/reject buttons?</li>
             <li>Approve a test post — does the status update?</li>
             <li>Reject a test post — does it disappear from the public board?</li>
@@ -224,7 +224,7 @@ export default function ModeratorGuidePage() {
           <SubHead text="If something doesn't work" />
           <P>
             Don&apos;t worry — just note what happened and let the admin know through the{' '}
-            <a href="https://flourish.ourlondon.xyz/feedback" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>feedback form</a>.
+            <a href="/feedback" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>feedback form</a>.
             Include what you tried, what you expected, and what actually happened.
           </P>
         </Section>
@@ -232,7 +232,7 @@ export default function ModeratorGuidePage() {
         <Section title="Questions?">
           <P>
             If you have questions about moderation, need help with the tools, or want to flag something,
-            use the <a href="https://flourish.ourlondon.xyz/feedback" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>feedback form</a> or
+            use the <a href="/feedback" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>feedback form</a> or
             contact the admin directly.
           </P>
           <P>

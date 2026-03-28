@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
 
     // Email notification to the recipient (not the sender)
     const recipientId = thread.poster_id === user.id ? thread.responder_id : thread.poster_id;
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://flourish.ourlondon.xyz';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://example.com';
     const threadUrl = `${appUrl}/messages/${threadId}`;
     const postTitle = (thread.posts as any)?.title || 'your post';
 

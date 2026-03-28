@@ -1,15 +1,23 @@
 /**
  * Geocode a cross-street string using Nominatim (OpenStreetMap, free, no key).
- * Biased to London, ON.
+ * Biased to the configured community location via environment variables.
+ *
+ * Configure via env:
+ *   GEO_COMMUNITY_LOCATION - e.g. "London, Ontario, Canada"
+ *   GEO_COUNTRY_CODE - e.g. "ca"
+ *   GEO_BOUNDS_LAT_MIN / GEO_BOUNDS_LAT_MAX - latitude bounds
+ *   GEO_BOUNDS_LNG_MIN / GEO_BOUNDS_LNG_MAX - longitude bounds
  */
 export async function geocodeCrossStreet(crossStreet: string): Promise<{ lat: number; lng: number } | null> {
-  const query = `${crossStreet}, London, Ontario, Canada`;
-  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=ca`;
+  const communityLocation = process.env.GEO_COMMUNITY_LOCATION || 'London, Ontario, Canada';
+  const countryCode = process.env.GEO_COUNTRY_CODE || 'ca';
+  const query = `${crossStreet}, ${communityLocation}`;
+  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=${countryCode}`;
 
   try {
     const res = await fetch(url, {
       headers: {
-        'User-Agent': 'Flourish-Community-App/1.0 (flourish.ourlondon.xyz)',
+        'User-Agent': 'Flourish-Community-App/1.0',
         'Accept-Language': 'en',
       },
     });
@@ -22,9 +30,13 @@ export async function geocodeCrossStreet(crossStreet: string): Promise<{ lat: nu
     const parsedLat = parseFloat(lat);
     const parsedLng = parseFloat(lon);
 
-    // Sanity check: London ON is roughly 42.8–43.1 lat, -81.1 to -81.5 lng
-    if (parsedLat < 42.7 || parsedLat > 43.2 || parsedLng < -81.7 || parsedLng > -80.9) {
-      return null; // Outside London area — reject
+    // Sanity check: configurable bounds (defaults to London ON area)
+    const latMin = parseFloat(process.env.GEO_BOUNDS_LAT_MIN || '42.7');
+    const latMax = parseFloat(process.env.GEO_BOUNDS_LAT_MAX || '43.2');
+    const lngMin = parseFloat(process.env.GEO_BOUNDS_LNG_MIN || '-81.7');
+    const lngMax = parseFloat(process.env.GEO_BOUNDS_LNG_MAX || '-80.9');
+    if (parsedLat < latMin || parsedLat > latMax || parsedLng < lngMin || parsedLng > lngMax) {
+      return null; // Outside configured area
     }
 
     return { lat: parsedLat, lng: parsedLng };

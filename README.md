@@ -1,10 +1,14 @@
 # Flourish
 
-**A free community exchange board for London, Ontario.**
+**A free, open-source community exchange board you can run for any neighbourhood.**
 
 > Share what you have. Ask for what you need.
 
 Flourish is a mutual aid platform where neighbours can post what they need or what they can offer — items, services, skills, or space. No selling, no algorithms, no ads. Just people helping each other.
+
+It was built for London, Ontario but is designed to be forked and configured for any community. All location-specific settings (community name, map centre, geocoding bounds, SMS number) are controlled via environment variables — no code changes needed.
+
+**See it in action:** [flourish.ourlondon.xyz](https://flourish.ourlondon.xyz)
 
 Forked from [omniharmonic/potluck](https://github.com/omniharmonic/potluck).
 
@@ -81,12 +85,33 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
+# App — customize for your community
+NEXT_PUBLIC_APP_URL=https://your-domain.com
+NEXT_PUBLIC_APP_NAME=Flourish
+NEXT_PUBLIC_APP_TAGLINE=Your City
+NEXT_PUBLIC_APP_COMMUNITY=Your City, State
+NEXT_PUBLIC_SMS_NUMBER=(555) 123-4567
+ADMIN_EMAIL=admin@example.com
+
+# Map centre
+NEXT_PUBLIC_MAP_CENTER_LAT=42.9849
+NEXT_PUBLIC_MAP_CENTER_LNG=-81.2453
+NEXT_PUBLIC_MAP_ZOOM=13
+
+# Geocoding bounds
+GEO_COMMUNITY_LOCATION=Your City, State, Country
+GEO_COUNTRY_CODE=ca
+GEO_BOUNDS_LAT_MIN=42.7
+GEO_BOUNDS_LAT_MAX=43.2
+GEO_BOUNDS_LNG_MIN=-81.7
+GEO_BOUNDS_LNG_MAX=-80.9
+
 # Brevo (transactional email)
 BREVO_API_KEY=your-brevo-api-key
 BREVO_FROM_EMAIL=noreply@yourdomain.com
 BREVO_FROM_NAME=Flourish
 
-# SMS (optional — Twilio or similar)
+# SMS (optional — Twilio)
 TWILIO_ACCOUNT_SID=
 TWILIO_AUTH_TOKEN=
 TWILIO_PHONE_NUMBER=

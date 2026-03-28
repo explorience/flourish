@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
 
     // Send confirmation email if poster provided email
     if (post && contact_method === 'email' && contact_value) {
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://flourish.ourlondon.xyz';
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://example.com';
       const { subject, html, text } = postConfirmationEmail({
         posterName: contact_name,
         postTitle: title,
