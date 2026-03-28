@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
               <p style="font-size: 18px; margin-bottom: 8px;">Hey ${recipientName},</p>
               <p style="margin-bottom: 24px; color: #4a5c4e;">Someone sent you a message about <strong>${postTitle}</strong>.</p>
               <a href="${threadUrl}" style="display: inline-block; background: #1a2a20; color: #f0ece0; padding: 12px 24px; text-decoration: none; font-family: sans-serif; font-size: 13px; font-weight: bold; letter-spacing: 0.05em; text-transform: uppercase;">View Conversation</a>
-              <p style="margin-top: 32px; font-size: 12px; color: #7a8a78;">Flourish · London Community Exchange</p>
+              <p style="margin-top: 32px; font-size: 12px; color: #7a8a78;">Flourish · Community Exchange</p>
             </div>
           `,
           text: `New message about "${postTitle}" on Flourish. View it here: ${threadUrl}`,

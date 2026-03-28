@@ -157,7 +157,7 @@ export default function ModeratorGuidePage() {
           <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
             <li>Posts that are vague but seem genuine — leave them up, people can ask for details</li>
             <li>Posts offering paid services — fine as long as they&apos;re not pushy commercial ads</li>
-            <li>Posts from outside London — if it&apos;s nearby (e.g. St. Thomas, Woodstock) and relevant, it&apos;s probably fine</li>
+            <li>Posts from outside your area — if it&apos;s nearby and relevant, it&apos;s probably fine</li>
             <li>Unusual requests — if it doesn&apos;t violate any of the rejection criteria, let the community decide</li>
           </ul>
 
