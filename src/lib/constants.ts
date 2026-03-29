@@ -28,26 +28,3 @@ export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || '';
 
 export const POST_EXPIRY_DAYS = 30; // Auto-expire posts after 30 days
 
-// Default neighbourhoods — override by forking this file for your community
-export const NEIGHBOURHOODS = [
-  { name: 'Downtown', lat: 42.9849, lng: -81.2453 },
-  { name: 'Old East Village', lat: 42.9890, lng: -81.2250 },
-  { name: 'Old South', lat: 42.9620, lng: -81.2390 },
-  { name: 'Wortley Village', lat: 42.9680, lng: -81.2490 },
-  { name: 'Old North', lat: 43.0100, lng: -81.2450 },
-  { name: 'Byron', lat: 42.9580, lng: -81.2950 },
-  { name: 'Hyde Park', lat: 43.0100, lng: -81.3250 },
-  { name: 'Masonville', lat: 43.0280, lng: -81.2650 },
-  { name: 'Argyle', lat: 42.9820, lng: -81.2530 },
-  { name: 'Carling Heights', lat: 42.9900, lng: -81.2650 },
-  { name: 'Pond Mills', lat: 42.9450, lng: -81.2250 },
-  { name: 'Westminster', lat: 42.9380, lng: -81.2650 },
-  { name: 'Lambeth', lat: 42.9180, lng: -81.2650 },
-  { name: 'Fanshawe', lat: 43.0200, lng: -81.2400 },
-
-  { name: 'Medway', lat: 43.0300, lng: -81.2900 },
-  { name: 'Stoney Creek', lat: 43.0000, lng: -81.2200 },
-  { name: 'Huron Heights', lat: 43.0010, lng: -81.2850 },
-  { name: 'Southcrest', lat: 42.9550, lng: -81.2150 },
-  { name: 'Whitehills', lat: 43.0050, lng: -81.2750 },
-];
