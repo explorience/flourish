@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { CreatePostForm } from './create-post-form';
+import { ThemeToggle } from './theme-toggle';
 import { Search, Map, User, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
@@ -25,13 +26,11 @@ export function Header() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Fetch + subscribe to unread count when logged in
   useEffect(() => {
     if (!userId) { setUnread(0); return; }
     const supabase = createClient();
 
     const fetchUnread = async () => {
-      // Get thread IDs the user is in
       const { data: threads } = await supabase
         .from('threads')
         .select('id')
@@ -52,7 +51,6 @@ export function Header() {
 
     fetchUnread();
 
-    // Subscribe to new messages
     const channel = supabase
       .channel('header-unread')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, fetchUnread)
@@ -64,73 +62,42 @@ export function Header() {
 
   return (
     <>
-      <header
-        className="sticky top-0 z-40 backdrop-blur-xl border-b"
-        style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}
-      >
-        <div className="w-full px-5 flex items-center justify-between" style={{ height: '3.25rem' }}>
-          <Link
-            href="/"
-            className="text-xs md:text-xl font-bold uppercase tracking-widest"
-            style={{ color: 'var(--heading)', fontFamily: 'var(--font-display)' }}
-          >
+      <header className="site-header sticky top-0 z-40 backdrop-blur-xl border-b">
+        <div className="site-header-inner w-full px-5 flex items-center justify-between">
+          <Link href="/" className="site-logo text-xs md:text-xl font-bold uppercase tracking-widest">
             Flourish
           </Link>
 
           <div className="flex items-center gap-1 md:gap-3">
-            {/* Text nav links — desktop only */}
-            <Link
-              href="/about"
-              className="hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-colors"
-              style={{ color: 'var(--sub)', fontFamily: 'var(--font-display)', letterSpacing: '0.1em' }}
-            >
+            <Link href="/about" className="nav-link hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-colors">
               About
             </Link>
-            <Link
-              href="/feedback"
-              className="hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-colors"
-              style={{ color: 'var(--sub)', fontFamily: 'var(--font-display)', letterSpacing: '0.1em' }}
-            >
+            <Link href="/feedback" className="nav-link hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-colors">
               Feedback
             </Link>
-            <Link href="/search" className="p-2 md:p-3 rounded transition-colors" style={{ color: 'var(--sub)' }}>
+            <Link href="/search" className="nav-icon p-2 md:p-3 rounded transition-colors">
               <Search className="w-4 h-4 md:w-7 md:h-7" />
             </Link>
-            <Link href="/map" className="p-2 md:p-3 rounded transition-colors" style={{ color: 'var(--sub)' }}>
+            <Link href="/map" className="nav-icon p-2 md:p-3 rounded transition-colors">
               <Map className="w-4 h-4 md:w-7 md:h-7" />
             </Link>
             {isLoggedIn && (
-              <Link href="/messages" className="relative p-2 md:p-3 rounded transition-colors" style={{ color: unread > 0 ? 'var(--offer)' : 'var(--sub)' }}>
+              <Link href="/messages" className={`relative p-2 md:p-3 rounded transition-colors ${unread > 0 ? 'nav-icon-active' : 'nav-icon'}`}>
                 <MessageSquare className="w-4 h-4 md:w-7 md:h-7" />
                 {unread > 0 && (
-                  <span
-                    className="absolute top-1 right-1 md:top-1.5 md:right-1.5 flex items-center justify-center text-white font-bold"
-                    style={{
-                      background: 'var(--need)',
-                      borderRadius: '999px',
-                      fontSize: '0.5rem',
-                      minWidth: '0.875rem',
-                      height: '0.875rem',
-                      padding: '0 0.1875rem',
-                      fontFamily: 'var(--font-display)',
-                    }}
-                  >
+                  <span className="nav-badge absolute top-1 right-1 md:top-1.5 md:right-1.5 flex items-center justify-center text-white font-bold">
                     {unread > 9 ? '9+' : unread}
                   </span>
                 )}
               </Link>
             )}
-            <Link href={isLoggedIn ? '/account' : '/auth'} className="p-2 md:p-3 rounded transition-colors" style={{ color: isLoggedIn ? 'var(--offer)' : 'var(--sub)' }}>
+            <Link href={isLoggedIn ? '/account' : '/auth'} className={`p-2 md:p-3 rounded transition-colors ${isLoggedIn ? 'nav-icon-active' : 'nav-icon'}`}>
               <User className="w-4 h-4 md:w-7 md:h-7" />
             </Link>
+            <ThemeToggle />
             <button
               onClick={() => isLoggedIn ? setShowCreate(true) : window.location.href = '/auth?next=/'}
-              className="ml-1 px-4 py-2 md:ml-2 md:px-7 md:py-3 text-xs md:text-base font-bold uppercase tracking-wider transition-colors"
-              style={{
-                background: 'var(--card)',
-                color: 'var(--ink)',
-                fontFamily: 'var(--font-display)',
-              }}
+              className="post-btn ml-1 px-4 py-2 md:ml-2 md:px-7 md:py-3 text-xs md:text-base font-bold uppercase tracking-wider transition-colors"
             >
               Post
             </button>
@@ -138,24 +105,12 @@ export function Header() {
         </div>
       </header>
 
-      {/* Mobile nav strip — about + feedback links */}
-      <div
-        className="flex md:hidden items-center justify-center gap-4 py-1.5 border-b text-center"
-        style={{ background: 'rgba(26,42,32,0.95)', borderColor: 'var(--border)' }}
-      >
-        <Link
-          href="/about"
-          className="text-xs font-bold uppercase tracking-wider"
-          style={{ color: 'var(--sub)', fontFamily: 'var(--font-display)', letterSpacing: '0.1em' }}
-        >
+      <div className="mobile-nav flex md:hidden items-center justify-center gap-4 py-1.5 border-b text-center">
+        <Link href="/about" className="nav-link text-xs font-bold uppercase tracking-wider">
           About
         </Link>
-        <span style={{ color: 'var(--border)' }}>|</span>
-        <Link
-          href="/feedback"
-          className="text-xs font-bold uppercase tracking-wider"
-          style={{ color: 'var(--sub)', fontFamily: 'var(--font-display)', letterSpacing: '0.1em' }}
-        >
+        <span className="mobile-nav-sep">|</span>
+        <Link href="/feedback" className="nav-link text-xs font-bold uppercase tracking-wider">
           Feedback
         </Link>
       </div>

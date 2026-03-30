@@ -8,73 +8,43 @@ export const metadata = {
 };
 
 export default function AboutPage() {
-  const ds: React.CSSProperties = { fontFamily: 'var(--font-display)' };
-  const sr: React.CSSProperties = { fontFamily: 'var(--font-serif)' };
-
   return (
-    <main className="min-h-screen" style={{ background: 'var(--bg)' }}>
+    <main className="page-bg min-h-screen">
       <Header />
 
       <div className="max-w-2xl mx-auto px-5 py-14">
 
         {/* Hero */}
         <div className="mb-12 text-center">
-          <p
-            className="text-xs font-bold uppercase tracking-widest mb-3"
-            style={{ ...ds, color: 'var(--sub)' }}
-          >
+          <p className="nav-link text-xs font-bold uppercase tracking-widest mb-3">
             {APP_TAGLINE}
           </p>
-          <h1
-            className="text-5xl sm:text-6xl font-extrabold uppercase tracking-wide leading-none mb-4"
-            style={{ ...ds, color: 'var(--heading)' }}
-          >
+          <h1 className="display-heading text-5xl sm:text-6xl font-extrabold uppercase tracking-wide leading-none mb-4">
             About {APP_NAME}
           </h1>
-          <p
-            className="text-lg leading-relaxed"
-            style={{ ...sr, color: 'var(--sub)', fontStyle: 'italic' }}
-          >
+          <p className="page-subtitle text-lg leading-relaxed">
             Share what you have. Ask for what you need.
           </p>
         </div>
 
         {/* What is Flourish */}
-        <div
-          className="p-8 mb-6 relative"
-          style={{ background: 'var(--card)', border: '1px solid var(--border)', boxShadow: '2px 3px 12px rgba(0,0,0,0.2)' }}
-        >
+        <div className="about-card p-8 mb-6 relative">
           <div className="tape tape-offer" />
-          <h2
-            className="text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ ...ds, color: 'var(--offer)' }}
-          >
+          <h2 className="card-heading-offer text-xs font-bold uppercase tracking-widest mb-4">
             What is Flourish?
           </h2>
-          <p
-            className="text-base leading-relaxed mb-4"
-            style={{ ...sr, color: 'var(--ink)' }}
-          >
+          <p className="card-body text-base leading-relaxed mb-4">
             {APP_NAME} is a free community exchange board for {APP_COMMUNITY}. It&apos;s a place where neighbours can share what they have and ask for what they need — items, services, skills, space, and more.
           </p>
-          <p
-            className="text-base leading-relaxed"
-            style={{ ...sr, color: 'var(--ink-light)' }}
-          >
+          <p className="card-body-light text-base leading-relaxed">
             There&apos;s no algorithm, no ads, no selling. Just people helping each other out.
           </p>
         </div>
 
         {/* How it works */}
-        <div
-          className="p-8 mb-6 relative"
-          style={{ background: 'var(--card)', border: '1px solid var(--border)', boxShadow: '2px 3px 12px rgba(0,0,0,0.2)', transform: 'rotate(-0.4deg)' }}
-        >
+        <div className="about-card about-card-tilt-left p-8 mb-6 relative">
           <div className="tape tape-need" />
-          <h2
-            className="text-xs font-bold uppercase tracking-widest mb-5"
-            style={{ ...ds, color: 'var(--need)' }}
-          >
+          <h2 className="card-heading-need text-xs font-bold uppercase tracking-widest mb-5">
             How it works
           </h2>
           <div className="space-y-4">
@@ -103,23 +73,14 @@ export default function AboutPage() {
               },
             ].map((item) => (
               <div key={item.step} className="flex gap-4">
-                <div
-                  className="flex-shrink-0 text-xl font-extrabold leading-none pt-0.5"
-                  style={{ ...ds, color: 'var(--border-card)', letterSpacing: '-0.02em' }}
-                >
+                <div className="card-step-num flex-shrink-0 text-xl font-extrabold leading-none pt-0.5">
                   {item.step}
                 </div>
                 <div>
-                  <h3
-                    className="text-sm font-bold uppercase tracking-wide mb-1"
-                    style={{ ...ds, color: 'var(--ink)' }}
-                  >
+                  <h3 className="card-step-title text-sm font-bold uppercase tracking-wide mb-1">
                     {item.heading}
                   </h3>
-                  <p
-                    className="text-base leading-relaxed"
-                    style={{ ...sr, color: 'var(--ink-light)' }}
-                  >
+                  <p className="card-body-light text-base leading-relaxed">
                     {item.body}
                   </p>
                 </div>
@@ -129,15 +90,9 @@ export default function AboutPage() {
         </div>
 
         {/* Categories */}
-        <div
-          className="p-8 mb-6 relative"
-          style={{ background: 'var(--card)', border: '1px solid var(--border)', boxShadow: '2px 3px 12px rgba(0,0,0,0.2)', transform: 'rotate(0.3deg)' }}
-        >
+        <div className="about-card about-card-tilt-right p-8 mb-6 relative">
           <div className="tape tape-offer" style={{ left: '35%' }} />
-          <h2
-            className="text-xs font-bold uppercase tracking-widest mb-5"
-            style={{ ...ds, color: 'var(--sub)' }}
-          >
+          <h2 className="card-heading-sub text-xs font-bold uppercase tracking-widest mb-5">
             What can be posted
           </h2>
           <div className="grid grid-cols-2 gap-3">
@@ -147,21 +102,11 @@ export default function AboutPage() {
               { label: 'Skills', desc: 'Teaching, coaching, translation, creative work, advice' },
               { label: 'Space', desc: 'Storage, workspace, garden plots, meeting rooms' },
             ].map((cat) => (
-              <div
-                key={cat.label}
-                className="p-4"
-                style={{ border: '1px dashed var(--border-card)' }}
-              >
-                <div
-                  className="text-sm font-bold uppercase tracking-widest mb-1"
-                  style={{ ...ds, color: 'var(--ink)' }}
-                >
+              <div key={cat.label} className="card-cat-border p-4">
+                <div className="card-cat-label text-sm font-bold uppercase tracking-widest mb-1">
                   {cat.label}
                 </div>
-                <p
-                  className="text-base leading-relaxed"
-                  style={{ ...sr, color: 'var(--ink-muted)' }}
-                >
+                <p className="card-body-muted text-base leading-relaxed">
                   {cat.desc}
                 </p>
               </div>
@@ -170,15 +115,9 @@ export default function AboutPage() {
         </div>
 
         {/* Privacy + Access */}
-        <div
-          className="p-8 mb-6 relative"
-          style={{ background: 'var(--card)', border: '1px solid var(--border)', boxShadow: '2px 3px 12px rgba(0,0,0,0.2)', transform: 'rotate(-0.2deg)' }}
-        >
+        <div className="about-card about-card-tilt-neg p-8 mb-6 relative">
           <div className="tape tape-need" style={{ left: '45%' }} />
-          <h2
-            className="text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ ...ds, color: 'var(--sub)' }}
-          >
+          <h2 className="card-heading-sub text-xs font-bold uppercase tracking-widest mb-4">
             Privacy &amp; access
           </h2>
           <ul className="space-y-2">
@@ -190,69 +129,45 @@ export default function AboutPage() {
               'We don\'t sell data or show you ads — ever',
             ].map((item, i) => (
               <li key={i} className="flex items-start gap-2">
-                <span style={{ color: 'var(--offer)', flexShrink: 0, marginTop: '0.125rem' }}>✓</span>
-                <p className="text-base leading-relaxed" style={{ ...sr, color: 'var(--ink-light)' }}>{item}</p>
+                <span className="check-icon">✓</span>
+                <p className="card-body-light text-base leading-relaxed">{item}</p>
               </li>
             ))}
             <li className="flex items-start gap-2">
-              <span style={{ color: 'var(--offer)', flexShrink: 0, marginTop: '0.125rem' }}>✓</span>
-              <p className="text-base leading-relaxed" style={{ ...sr, color: 'var(--ink-light)' }}>
+              <span className="check-icon">✓</span>
+              <p className="card-body-light text-base leading-relaxed">
                 All members agree to our{' '}
-                <a href="/code-of-conduct" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>code of conduct</a>
+                <a href="/code-of-conduct" className="link-offer">code of conduct</a>
               </p>
             </li>
           </ul>
         </div>
 
         {/* Open source */}
-        <div
-          className="p-8 mb-10 relative"
-          style={{ background: 'var(--card)', border: '1px solid var(--border)', boxShadow: '2px 3px 12px rgba(0,0,0,0.2)', transform: 'rotate(0.2deg)' }}
-        >
+        <div className="about-card about-card-tilt-slight p-8 mb-10 relative">
           <div className="tape tape-offer" style={{ left: '30%' }} />
-          <h2
-            className="text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ ...ds, color: 'var(--sub)' }}
-          >
+          <h2 className="card-heading-sub text-xs font-bold uppercase tracking-widest mb-4">
             Open source &amp; community-run
           </h2>
-          <p
-            className="text-base leading-relaxed mb-3"
-            style={{ ...sr, color: 'var(--ink-light)' }}
-          >
+          <p className="card-body-light text-base leading-relaxed mb-3">
             Flourish is built in the open and licensed under the MIT license. Anyone can{' '}
-            <a href="https://github.com/explorience/flourish" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>inspect the code</a>, suggest improvements, or run their own instance for their community.
+            <a href="https://github.com/explorience/flourish" target="_blank" rel="noopener noreferrer" className="link-offer">inspect the code</a>, suggest improvements, or run their own instance for their community.
           </p>
-          <p
-            className="text-base leading-relaxed"
-            style={{ ...sr, color: 'var(--ink-light)' }}
-          >
+          <p className="card-body-light text-base leading-relaxed">
             It&apos;s run by volunteers who believe local communities work better when people can share resources and support each other.
           </p>
         </div>
 
         {/* CTA */}
         <div className="text-center space-y-4">
-          <Link
-            href="/"
-            className="inline-block px-10 py-4 text-sm font-bold uppercase tracking-wider transition-colors"
-            style={{ ...ds, background: 'var(--card)', color: 'var(--ink)' }}
-          >
+          <Link href="/" className="cta-btn inline-block px-10 py-4 text-sm font-bold uppercase tracking-wider transition-colors">
             Browse the board
           </Link>
           <div className="flex items-center justify-center gap-4">
-            <Link
-              href="/code-of-conduct"
-              className="text-xs font-bold uppercase tracking-wider"
-              style={{ ...ds, color: 'var(--sub)' }}
-            >
+            <Link href="/code-of-conduct" className="cta-link text-xs font-bold uppercase tracking-wider">
               Code of conduct →
             </Link>
-            <Link
-              href="/feedback"
-              className="text-xs font-bold uppercase tracking-wider"
-              style={{ ...ds, color: 'var(--sub)' }}
-            >
+            <Link href="/feedback" className="cta-link text-xs font-bold uppercase tracking-wider">
               Send feedback →
             </Link>
           </div>
