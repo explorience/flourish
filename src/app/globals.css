@@ -2,10 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
 
 @layer base {
-  :root {
+  :root,
+  [data-theme="forest-dark"] {
     --font-display: 'Syne', sans-serif;
     --font-serif: 'Libre Baskerville', Georgia, serif;
     --font-body: 'DM Sans', system-ui, sans-serif;
@@ -13,6 +14,7 @@
     /* Deep Forest palette */
     --bg: #1a2a20;
     --bg-light: #223828;
+    --bg-alpha: rgba(26,42,32,0.9);
     --card: #f0ece0;
     --card-hover: #f5f2e8;
     --ink: #1a2a20;
@@ -36,6 +38,90 @@
     --border-hsl: 140 20% 30%;
     --radius: 0.5rem;
   }
+
+  [data-theme="light"] {
+    --bg: #faf8f4;
+    --bg-light: #f0ece4;
+    --bg-alpha: rgba(250,248,244,0.95);
+    --card: #ffffff;
+    --card-hover: #f8f6f2;
+    --ink: #2a2a28;
+    --ink-light: #5a5a56;
+    --ink-muted: #8a8a86;
+    --border: #d8d4cc;
+    --border-card: #e0dcd4;
+    --tape-need: rgba(200,180,100,0.25);
+    --tape-offer: rgba(160,120,100,0.2);
+    --need: #c06030;
+    --need-hover: #a85028;
+    --offer: #2a7a44;
+    --offer-hover: #1e6634;
+    --heading: #1a1a18;
+    --sub: #6a7a6a;
+  }
+
+  [data-theme="evergreen"] {
+    --bg: #1e3a28;
+    --bg-light: #2a4a34;
+    --bg-alpha: rgba(30,58,40,0.92);
+    --card: #eae6d8;
+    --card-hover: #f0ece4;
+    --ink: #1e3a28;
+    --ink-light: #3a5a44;
+    --ink-muted: #6a8a6e;
+    --border: #3a6a48;
+    --border-card: #c8c0a8;
+    --tape-need: rgba(200,180,100,0.35);
+    --tape-offer: rgba(120,160,100,0.3);
+    --need: #d88050;
+    --need-hover: #c07040;
+    --offer: #48864e;
+    --offer-hover: #3a7240;
+    --heading: #d8e8c8;
+    --sub: #8ab888;
+  }
+
+  [data-theme="slate"] {
+    --bg: #22222a;
+    --bg-light: #2c2c34;
+    --bg-alpha: rgba(34,34,42,0.92);
+    --card: #eae8e4;
+    --card-hover: #f2f0ec;
+    --ink: #22222a;
+    --ink-light: #4a4a52;
+    --ink-muted: #7a7a82;
+    --border: #3a3a44;
+    --border-card: #c8c6c2;
+    --tape-need: rgba(200,180,100,0.3);
+    --tape-offer: rgba(160,120,100,0.25);
+    --need: #d87050;
+    --need-hover: #c06040;
+    --offer: #4a8a6a;
+    --offer-hover: #3a7a5a;
+    --heading: #e4e0d8;
+    --sub: #a0a0a8;
+  }
+
+  [data-theme="parchment"] {
+    --bg: #f5f0e0;
+    --bg-light: #ebe6d6;
+    --bg-alpha: rgba(245,240,224,0.95);
+    --card: #fffdf6;
+    --card-hover: #faf8f0;
+    --ink: #2a2820;
+    --ink-light: #5a5848;
+    --ink-muted: #8a8878;
+    --border: #d0c8b0;
+    --border-card: #ddd6c0;
+    --tape-need: rgba(200,180,100,0.2);
+    --tape-offer: rgba(160,120,100,0.18);
+    --need: #b85828;
+    --need-hover: #a04820;
+    --offer: #2a6a3a;
+    --offer-hover: #1e5a2e;
+    --heading: #2a2820;
+    --sub: #6a6854;
+  }
 }
 
 @layer base {
@@ -51,6 +137,251 @@
   h1, h2, h3 {
     font-family: var(--font-display);
   }
+}
+
+/* ─── Header ─── */
+.site-header {
+  background: var(--bg-alpha);
+  border-color: var(--border);
+}
+.site-header-inner {
+  height: 3.25rem;
+}
+.site-logo {
+  color: var(--heading);
+  font-family: var(--font-display);
+}
+.nav-link {
+  color: var(--sub);
+  font-family: var(--font-display);
+  letter-spacing: 0.1em;
+}
+.nav-icon {
+  color: var(--sub);
+}
+.nav-icon-active {
+  color: var(--offer);
+}
+.nav-badge {
+  background: var(--need);
+  border-radius: 999px;
+  font-size: 0.5rem;
+  min-width: 0.875rem;
+  height: 0.875rem;
+  padding: 0 0.1875rem;
+  font-family: var(--font-display);
+}
+.post-btn {
+  background: var(--card);
+  color: var(--ink);
+  font-family: var(--font-display);
+}
+.mobile-nav {
+  background: var(--bg-alpha);
+  border-color: var(--border);
+}
+.mobile-nav-sep {
+  color: var(--border);
+}
+
+/* ─── Content pages (guide, about) ─── */
+.page-bg {
+  background: var(--bg);
+}
+
+/* Section headings */
+.section-title {
+  font-family: var(--font-display);
+  color: var(--heading);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+}
+.section-subhead {
+  font-family: var(--font-display);
+  color: var(--card-hover);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+}
+
+/* Display heading style */
+.display-heading {
+  font-family: var(--font-display);
+  color: var(--heading);
+}
+
+/* Subtitle / tagline */
+.page-subtitle {
+  font-family: var(--font-serif);
+  color: var(--sub);
+  font-style: italic;
+}
+
+/* Body text on dark backgrounds */
+.prose-dark {
+  font-family: var(--font-serif);
+  color: var(--card);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.prose-dark-italic {
+  font-family: var(--font-serif);
+  color: var(--card-hover);
+  font-style: italic;
+}
+
+/* Lists on dark backgrounds */
+.list-dark {
+  font-family: var(--font-serif);
+  color: var(--card);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  list-style-type: disc;
+}
+
+/* Accent text colors */
+.text-need-accent { color: var(--need); }
+.text-offer-accent { color: var(--offer); }
+.text-heading { color: var(--heading); }
+.text-sub { color: var(--sub); }
+.text-card { color: var(--card); }
+.text-card-hover { color: var(--card-hover); }
+.text-ink { color: var(--ink); }
+.text-ink-light { color: var(--ink-light); }
+.text-ink-muted { color: var(--ink-muted); }
+
+/* Links on dark backgrounds */
+.link-offer {
+  color: var(--offer);
+  text-decoration: underline;
+}
+
+/* Step number badge */
+.step-number {
+  font-family: var(--font-display);
+  background: var(--ink);
+  color: var(--card);
+}
+.step-label {
+  font-family: var(--font-display);
+  color: var(--card);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+}
+.step-body {
+  font-family: var(--font-serif);
+  color: var(--card);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+/* Divider */
+.section-divider {
+  border: none;
+  border-top: 1px dashed var(--border);
+}
+
+/* Cards on about page */
+.about-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 2px 3px 12px rgba(0,0,0,0.2);
+}
+.about-card-tilt-left { transform: rotate(-0.4deg); }
+.about-card-tilt-right { transform: rotate(0.3deg); }
+.about-card-tilt-slight { transform: rotate(0.2deg); }
+.about-card-tilt-neg { transform: rotate(-0.2deg); }
+
+/* About page card text */
+.card-heading-offer {
+  font-family: var(--font-display);
+  color: var(--offer);
+}
+.card-heading-need {
+  font-family: var(--font-display);
+  color: var(--need);
+}
+.card-heading-sub {
+  font-family: var(--font-display);
+  color: var(--sub);
+}
+.card-body {
+  font-family: var(--font-serif);
+  color: var(--ink);
+}
+.card-body-light {
+  font-family: var(--font-serif);
+  color: var(--ink-light);
+}
+.card-body-muted {
+  font-family: var(--font-serif);
+  color: var(--ink-muted);
+}
+.card-step-num {
+  font-family: var(--font-display);
+  color: var(--border-card);
+  letter-spacing: -0.02em;
+}
+.card-step-title {
+  font-family: var(--font-display);
+  color: var(--ink);
+}
+.card-cat-border {
+  border: 1px dashed var(--border-card);
+}
+.card-cat-label {
+  font-family: var(--font-display);
+  color: var(--ink);
+}
+.check-icon {
+  color: var(--offer);
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+/* About CTA */
+.cta-btn {
+  font-family: var(--font-display);
+  background: var(--card);
+  color: var(--ink);
+}
+.cta-link {
+  font-family: var(--font-display);
+  color: var(--sub);
+}
+
+/* Theme toggle */
+.theme-toggle {
+  position: relative;
+}
+.theme-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.5rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 2px 4px 16px rgba(0,0,0,0.25);
+  z-index: 50;
+  min-width: 10rem;
+}
+.theme-option {
+  color: var(--ink);
+  font-family: var(--font-display);
+  transition: background 0.15s;
+}
+.theme-option:hover {
+  background: var(--card-hover);
+}
+.theme-option-active {
+  color: var(--offer);
+}
+.theme-swatch {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 1px solid var(--border-card);
+  flex-shrink: 0;
 }
 
 /* Card tilt and lift */
@@ -121,3 +452,10 @@
 .scroll-fade {
   mask-image: linear-gradient(to right, transparent, black 8px, black calc(100% - 8px), transparent);
 }
+
+/* Font preview */
+.font-preview-inter { font-family: 'Inter', system-ui, sans-serif; }
+.font-preview-source-sans { font-family: 'Source Sans 3', system-ui, sans-serif; }
+.font-preview-nunito { font-family: 'Nunito', system-ui, sans-serif; }
+.font-preview-source-serif { font-family: 'Source Serif 4', Georgia, serif; }
+.font-preview-merriweather { font-family: 'Merriweather', Georgia, serif; }

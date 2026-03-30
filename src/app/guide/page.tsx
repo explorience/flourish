@@ -6,31 +6,22 @@ export const metadata = {
 };
 
 export default function ModeratorGuidePage() {
-  const ds: React.CSSProperties = { fontFamily: 'var(--font-display)' };
-  const sr: React.CSSProperties = { fontFamily: 'var(--font-serif)' };
-
   return (
-    <main className="min-h-screen" style={{ background: 'var(--bg)' }}>
+    <main className="page-bg min-h-screen">
       <Header />
 
       <div className="max-w-2xl mx-auto px-5 py-14">
 
-        {/* Title */}
-        <h1
-          className="text-2xl font-bold uppercase tracking-wide mb-2"
-          style={{ ...ds, color: 'var(--heading)' }}
-        >
+        <h1 className="display-heading text-2xl font-bold uppercase tracking-wide mb-2">
           Moderator Guide
         </h1>
-        <p className="text-sm mb-12" style={{ ...sr, color: 'var(--card-hover)', fontStyle: 'italic' }}>
+        <p className="prose-dark-italic text-sm mb-12">
           Everything you need to know about keeping Flourish a safe, useful space for our community.
         </p>
 
-
-        {/* ─── PART 1: WHAT IS FLOURISH ─── */}
         <Section title="What is Flourish?">
           <P>
-            Flourish is a free community exchange board . Think of it as a
+            Flourish is a free community exchange board. Think of it as a
             neighbourhood bulletin board — but online, and available to anyone in the city.
           </P>
           <P>
@@ -38,12 +29,10 @@ export default function ModeratorGuidePage() {
             and neighbours connect with each other. No money changes hands (though it can if people agree to it).
             It&apos;s about sharing resources, skills, time, and space within our community.
           </P>
-          <P>
-            Examples of what people post:
-          </P>
-          <ul className="ml-5 space-y-1.5 mb-4" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
-            <li><strong style={{ color: 'var(--need)' }}>Needs:</strong> &ldquo;Ride to appointment Tuesday&rdquo;, &ldquo;Looking for a winter coat, size M&rdquo;, &ldquo;Need help moving a couch&rdquo;</li>
-            <li><strong style={{ color: 'var(--offer)' }}>Offers:</strong> &ldquo;Free kids clothes, ages 4-6&rdquo;, &ldquo;Can help with basic plumbing&rdquo;, &ldquo;Spare room for short-term stay&rdquo;</li>
+          <P>Examples of what people post:</P>
+          <ul className="list-dark ml-5 space-y-1.5 mb-4">
+            <li><strong className="text-need-accent">Needs:</strong> &ldquo;Ride to appointment Tuesday&rdquo;, &ldquo;Looking for a winter coat, size M&rdquo;, &ldquo;Need help moving a couch&rdquo;</li>
+            <li><strong className="text-offer-accent">Offers:</strong> &ldquo;Free kids clothes, ages 4-6&rdquo;, &ldquo;Can help with basic plumbing&rdquo;, &ldquo;Spare room for short-term stay&rdquo;</li>
           </ul>
           <P>
             Posts are organised into four categories: <strong>Items</strong>, <strong>Services</strong>,
@@ -54,7 +43,7 @@ export default function ModeratorGuidePage() {
 
         <Section title="How it works for users">
           <Step n={1} label="Browse the board">
-            Anyone can visit <a href="/" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>the site</a> and
+            Anyone can visit <a href="/" className="link-offer">the site</a> and
             browse all active posts without an account. They can filter by needs vs offers, by category, or search for something specific.
             There&apos;s also a map view showing approximate locations of posts.
           </Step>
@@ -77,7 +66,6 @@ export default function ModeratorGuidePage() {
 
         <Divider />
 
-        {/* ─── PART 2: YOUR ROLE AS A MODERATOR ─── */}
         <Section title="Your role as a moderator">
           <P>
             As a moderator, you help keep Flourish safe, relevant, and welcoming. You&apos;re not a gatekeeper —
@@ -89,19 +77,15 @@ export default function ModeratorGuidePage() {
             and remove anything that shouldn&apos;t be there. Think of it as post-moderation: posts are
             visible first, and you can take action if needed.
           </P>
-          <P>
-            <strong>What moderators can do:</strong>
-          </P>
-          <ul className="ml-5 space-y-1.5 mb-4" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <P><strong>What moderators can do:</strong></P>
+          <ul className="list-dark ml-5 space-y-1.5 mb-4">
             <li>Review posts on the board and in the admin dashboard</li>
             <li>Approve posts (confirm they&apos;re fine — optional, since posts are approved by default)</li>
             <li>Reject posts (remove them from the public board)</li>
             <li>View basic stats about the board&apos;s activity</li>
           </ul>
-          <P>
-            <strong>What moderators cannot do:</strong>
-          </P>
-          <ul className="ml-5 space-y-1.5 mb-4" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <P><strong>What moderators cannot do:</strong></P>
+          <ul className="list-dark ml-5 space-y-1.5 mb-4">
             <li>Edit other people&apos;s posts (only approve or reject)</li>
             <li>Add or remove other moderators (only admins can do this)</li>
             <li>See users&apos; private messages or personal contact details</li>
@@ -110,18 +94,18 @@ export default function ModeratorGuidePage() {
 
         <Section title="Getting started">
           <Step n={1} label="Log in">
-            Go to <a href="/auth" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>Sign In</a> and
+            Go to <a href="/auth" className="link-offer">Sign In</a> and
             enter the email address that was registered for your moderator account. You&apos;ll receive a magic link —
             click it to sign in. No password needed.
           </Step>
           <Step n={2} label="Access the admin dashboard">
-            Once signed in, go to <a href="/admin" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>Admin Dashboard</a>.
+            Once signed in, go to <a href="/admin" className="link-offer">Admin Dashboard</a>.
             If your email is in the moderator list, you&apos;ll see the dashboard with stats, a list of posts to review,
             and moderation tools. If you see an &ldquo;access denied&rdquo; message, your email may not have been added yet — contact the admin.
           </Step>
           <Step n={3} label="Review posts">
             You can moderate posts in two places:
-            <ul className="ml-5 mt-2 space-y-1" style={{ listStyleType: 'disc' }}>
+            <ul className="ml-5 mt-2 space-y-1 list-disc">
               <li><strong>On the board itself</strong> — when you&apos;re logged in as a moderator, you&apos;ll see small approve/reject buttons on each post card</li>
               <li><strong>In the admin dashboard</strong> — the moderation section lists all active posts with action buttons</li>
             </ul>
@@ -135,7 +119,7 @@ export default function ModeratorGuidePage() {
           </P>
 
           <SubHead text="Approve (leave it up) if the post:" />
-          <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <ul className="list-dark ml-5 space-y-1 mb-5">
             <li>Is a genuine need or offer relevant to your community</li>
             <li>Is written in good faith, even if a bit vague</li>
             <li>Falls into one of the categories (items, services, skills, space)</li>
@@ -143,7 +127,7 @@ export default function ModeratorGuidePage() {
           </ul>
 
           <SubHead text="Reject (remove it) if the post:" />
-          <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <ul className="list-dark ml-5 space-y-1 mb-5">
             <li>Is spam, advertising, or a commercial solicitation</li>
             <li>Contains hate speech, threats, harassment, or discrimination</li>
             <li>Shares someone else&apos;s private information</li>
@@ -154,7 +138,7 @@ export default function ModeratorGuidePage() {
           </ul>
 
           <SubHead text="Use your judgement for:" />
-          <ul className="ml-5 space-y-1 mb-5" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <ul className="list-dark ml-5 space-y-1 mb-5">
             <li>Posts that are vague but seem genuine — leave them up, people can ask for details</li>
             <li>Posts offering paid services — fine as long as they&apos;re not pushy commercial ads</li>
             <li>Posts from outside your area — if it&apos;s nearby and relevant, it&apos;s probably fine</li>
@@ -180,9 +164,8 @@ export default function ModeratorGuidePage() {
 
         <Divider />
 
-        {/* ─── PART 3: CODE OF CONDUCT ─── */}
         <Section title="Moderator code of conduct">
-          <ul className="ml-5 space-y-2.5 mb-4" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <ul className="list-dark ml-5 space-y-2.5 mb-4">
             <li><strong>Be fair and consistent.</strong> Apply the same standards to all posts regardless of who posted them.</li>
             <li><strong>Assume good faith.</strong> Most people are genuinely trying to participate. Give the benefit of the doubt.</li>
             <li><strong>Protect privacy.</strong> Don&apos;t share any user information you see through the admin tools. Don&apos;t screenshot or discuss specific users outside the mod team.</li>
@@ -194,7 +177,6 @@ export default function ModeratorGuidePage() {
 
         <Divider />
 
-        {/* ─── PART 4: THINGS TO TEST ─── */}
         <Section title="Things to test">
           <P>
             Before you start moderating, walk through these steps to make sure everything works for you.
@@ -202,7 +184,7 @@ export default function ModeratorGuidePage() {
           </P>
 
           <SubHead text="As a regular user" />
-          <ul className="ml-5 space-y-1.5 mb-5" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
+          <ul className="list-dark ml-5 space-y-1.5 mb-5">
             <li>Browse the board without logging in — can you see posts, filter by need/offer, search?</li>
             <li>Open the map view — do location pins show up?</li>
             <li>Log in with your email — did the magic link arrive? (Check spam if not)</li>
@@ -213,8 +195,8 @@ export default function ModeratorGuidePage() {
           </ul>
 
           <SubHead text="As a moderator" />
-          <ul className="ml-5 space-y-1.5 mb-5" style={{ ...sr, color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7, listStyleType: 'disc' }}>
-            <li>Go to <a href="/admin" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>Admin Dashboard</a> — can you access the dashboard?</li>
+          <ul className="list-dark ml-5 space-y-1.5 mb-5">
+            <li>Go to <a href="/admin" className="link-offer">Admin Dashboard</a> — can you access the dashboard?</li>
             <li>Find a test post in the moderation list — can you see the approve/reject buttons?</li>
             <li>Approve a test post — does the status update?</li>
             <li>Reject a test post — does it disappear from the public board?</li>
@@ -224,7 +206,7 @@ export default function ModeratorGuidePage() {
           <SubHead text="If something doesn't work" />
           <P>
             Don&apos;t worry — just note what happened and let the admin know through the{' '}
-            <a href="/feedback" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>feedback form</a>.
+            <a href="/feedback" className="link-offer">feedback form</a>.
             Include what you tried, what you expected, and what actually happened.
           </P>
         </Section>
@@ -232,7 +214,7 @@ export default function ModeratorGuidePage() {
         <Section title="Questions?">
           <P>
             If you have questions about moderation, need help with the tools, or want to flag something,
-            use the <a href="/feedback" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>feedback form</a> or
+            use the <a href="/feedback" className="link-offer">feedback form</a> or
             contact the admin directly.
           </P>
           <P>
@@ -250,10 +232,7 @@ export default function ModeratorGuidePage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-10">
-      <h2
-        className="text-sm font-bold uppercase tracking-wider mb-4"
-        style={{ fontFamily: 'var(--font-display)', color: 'var(--heading)', fontSize: '0.8rem', letterSpacing: '0.12em' }}
-      >
+      <h2 className="section-title text-sm font-bold uppercase tracking-wider mb-4">
         {title}
       </h2>
       {children}
@@ -263,10 +242,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function SubHead({ text }: { text: string }) {
   return (
-    <p
-      className="text-xs font-bold uppercase tracking-wider mb-2 mt-4"
-      style={{ fontFamily: 'var(--font-display)', color: 'var(--card-hover)', fontSize: '0.68rem', letterSpacing: '0.1em' }}
-    >
+    <p className="section-subhead text-xs font-bold uppercase tracking-wider mb-2 mt-4">
       {text}
     </p>
   );
@@ -274,33 +250,24 @@ function SubHead({ text }: { text: string }) {
 
 function P({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-4" style={{ fontFamily: 'var(--font-serif)', color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7 }}>
-      {children}
-    </p>
+    <p className="prose-dark mb-4">{children}</p>
   );
 }
 
 function Step({ n, label, children }: { n: number; label: string; children: React.ReactNode }) {
   return (
     <div className="mb-5 flex gap-4">
-      <div
-        className="flex-shrink-0 w-7 h-7 flex items-center justify-center text-xs font-bold"
-        style={{ fontFamily: 'var(--font-display)', background: 'var(--ink)', color: 'var(--card)' }}
-      >
+      <div className="step-number flex-shrink-0 w-7 h-7 flex items-center justify-center text-xs font-bold">
         {n}
       </div>
       <div className="flex-1">
-        <p className="text-sm font-bold mb-1" style={{ fontFamily: 'var(--font-display)', color: 'var(--card)', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '0.75rem' }}>
-          {label}
-        </p>
-        <div style={{ fontFamily: 'var(--font-serif)', color: 'var(--card)', fontSize: '0.95rem', lineHeight: 1.7 }}>
-          {children}
-        </div>
+        <p className="step-label text-sm font-bold mb-1">{label}</p>
+        <div className="step-body">{children}</div>
       </div>
     </div>
   );
 }
 
 function Divider() {
-  return <hr className="my-10" style={{ border: 'none', borderTop: '1px dashed var(--border)' }} />;
+  return <hr className="section-divider my-10" />;
 }
