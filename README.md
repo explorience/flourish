@@ -55,7 +55,7 @@ Forked from [omniharmonic/potluck](https://github.com/omniharmonic/potluck).
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/your-org/flourish.git
+git clone https://github.com/explorience/flourish.git
 cd flourish
 
 # 2. Install dependencies

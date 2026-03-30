@@ -21,7 +21,7 @@ See [README.md](./README.md) for full setup instructions.
 Short version:
 
 ```bash
-git clone https://github.com/your-org/flourish.git
+git clone https://github.com/explorience/flourish.git
 cd flourish
 npm install
 cp .env.example .env.local
