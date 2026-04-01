@@ -9,7 +9,7 @@
   [data-theme="forest-dark"] {
     --font-display: 'Syne', sans-serif;
     --font-serif: 'Libre Baskerville', Georgia, serif;
-    --font-body: 'DM Sans', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
 
     /* Deep Forest palette */
     --bg: #1a2a20;
