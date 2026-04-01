@@ -20,6 +20,7 @@ export function SearchClient() {
     const term = `%${q.trim()}%`;
     const { data } = await supabase.from('posts').select('*, responses(*)')
       .eq('status', 'active')
+      .neq('moderation_status', 'rejected')
       .or(`title.ilike.${term},details.ilike.${term},contact_name.ilike.${term}`)
       .order('created_at', { ascending: false }).limit(50);
     setResults(data || []); setLoading(false);
