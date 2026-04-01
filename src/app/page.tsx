@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { PostFeed } from '@/components/post-feed';
 import { Header } from '@/components/header';
+import { PostSomethingButton } from '@/components/post-something-button';
 import { APP_NAME, APP_TAGLINE, APP_DESCRIPTION } from '@/lib/constants';
 import { getModeratorByEmail } from '@/lib/admin';
 
@@ -46,10 +47,7 @@ export default async function Home() {
           {APP_DESCRIPTION}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
-          <a href="/auth" className="px-8 py-3 text-sm font-bold uppercase tracking-wider transition-colors"
-            style={{ background: 'var(--card)', color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-            Post something
-          </a>
+          <PostSomethingButton />
           <a href="/map" className="px-8 py-3 text-sm font-bold uppercase tracking-wider transition-colors"
             style={{ border: '1.5px solid rgba(232,224,204,0.2)', color: 'var(--heading)', fontFamily: 'var(--font-display)' }}>
             View map

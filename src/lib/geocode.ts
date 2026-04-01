@@ -11,7 +11,22 @@
 export async function geocodeCrossStreet(crossStreet: string): Promise<{ lat: number; lng: number } | null> {
   const communityLocation = process.env.GEO_COMMUNITY_LOCATION || 'London, Ontario, Canada';
   const countryCode = process.env.GEO_COUNTRY_CODE || 'ca';
-  const query = `${crossStreet}, ${communityLocation}`;
+
+  // Try the original query first, then a neighbourhood fallback
+  const queries = [
+    `${crossStreet}, ${communityLocation}`,
+    `${crossStreet} neighbourhood, ${communityLocation}`,
+  ];
+
+  for (const query of queries) {
+    const result = await geocodeQuery(query, countryCode);
+    if (result) return result;
+  }
+
+  return null;
+}
+
+async function geocodeQuery(query: string, countryCode: string): Promise<{ lat: number; lng: number } | null> {
   const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=${countryCode}`;
 
   try {
