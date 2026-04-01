@@ -168,7 +168,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                       Whereabouts? <span className="normal-case tracking-normal font-normal" style={{ color: 'var(--ink-muted)' }}>(optional — places a pin on the map)</span>
                     </label>
                     <p className="text-xs mb-2" style={{ color: 'var(--ink-muted)', fontSize: '0.68rem' }}>
-                      Nearest cross-street or landmark. We never show your exact location — only an approximate area.
+                      Use a nearby intersection for best results (neighbourhood names alone won&apos;t appear on the map). We never show your exact location — only an approximate area.
                     </p>
                     <input
                       type="text"
@@ -176,7 +176,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                       onChange={(e) => setCrossStreet(e.target.value)}
                       className="w-full px-4 py-3 text-sm focus:outline-none"
                       style={{ background: '#fff', border: '1px solid var(--border-card)', color: 'var(--ink)' }}
-                      placeholder="e.g. Dundas & Adelaide, or near Victoria Park"
+                      placeholder="e.g. Dundas & Adelaide, or Oxford & Wharncliffe"
                     />
                   </div>
 
