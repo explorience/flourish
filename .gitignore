@@ -1,11 +1,11 @@
-node_modules/
-.next/
-out/
-.env.local
-.env*.local
 .DS_Store
-*.tsbuildinfo
+.env*.local
+.env.local
+.next/
 next-env.d.ts
+node_modules/
+out/
 .playwright-mcp/
 supabase/.temp/
+*.tsbuildinfo
 .vercel
