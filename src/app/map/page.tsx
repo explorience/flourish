@@ -9,7 +9,7 @@ export default async function MapPage() {
   const supabase = await createClient();
   const { data: posts } = await supabase
     .from('posts')
-    .select('id, type, title, details, category, contact_name, created_at, status, location_label, location_fuzzed_lat, location_fuzzed_lng')
+    .select('id, type, title, details, category, contact_name, created_at, status, location_label, location_crossstreet, location_fuzzed_lat, location_fuzzed_lng')
     .eq('status', 'active')
     .neq('moderation_status', 'rejected')
     .not('location_fuzzed_lat', 'is', null)
