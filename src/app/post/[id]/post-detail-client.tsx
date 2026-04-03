@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { isVouchRequiredClient } from '@/lib/settings-client';
 import { RespondDialog } from '@/components/respond-dialog';
 import { formatDistanceToNow } from 'date-fns';
 import { MessageSquare } from 'lucide-react';
@@ -17,6 +18,7 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
   const [showRespond, setShowRespond] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [vouchStatus, setVouchStatus] = useState<string>('unvouched');
+  const [vouchRequired, setVouchRequired] = useState(false);
   const [threading, setThreading] = useState<string | null>(null);
   const [modAction, setModAction] = useState<'approved' | 'rejected' | null>(null);
   const [moderating, setModerating] = useState(false);
@@ -26,6 +28,7 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
 
   useEffect(() => {
     const supabase = createClient();
+    isVouchRequiredClient().then(setVouchRequired);
     supabase.auth.getUser().then(({ data }) => {
       setCurrentUserId(data.user?.id || null);
       if (data.user) {
@@ -82,7 +85,7 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
       {/* Respond button — shown to non-posters, vouched users only */}
       {!isPoster && post.status === 'active' && (
         <div className="mb-8">
-          {currentUserId && vouchStatus === 'unvouched' ? (
+          {currentUserId && vouchRequired && vouchStatus === 'unvouched' ? (
             <div className="w-full py-4 px-4 text-center text-sm" style={{ background: 'rgba(240,236,224,0.08)', border: '1px dashed var(--border)' }}>
               <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ ...ds, color: 'var(--sub)' }}>
                 Vouch needed to respond

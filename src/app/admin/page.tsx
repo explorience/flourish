@@ -81,12 +81,21 @@ export default async function AdminPage() {
   // All moderators (admin only)
   const userIsAdmin = moderator.role === 'admin';
   let moderators: any[] = [];
+  let settings: Record<string, any> = {};
   if (userIsAdmin) {
     const { data } = await serviceSupabase
       .from('moderators')
       .select('*')
       .order('created_at', { ascending: true });
     moderators = data || [];
+
+    // Fetch app settings
+    const { data: settingsRows } = await serviceSupabase
+      .from('app_settings')
+      .select('key, value');
+    for (const row of settingsRows || []) {
+      settings[row.key] = row.value;
+    }
   }
 
   return (
@@ -131,6 +140,7 @@ export default async function AdminPage() {
           moderators={moderators}
           isAdmin={userIsAdmin}
           currentUserEmail={user.email}
+          settings={settings}
         />
       </div>
     </main>

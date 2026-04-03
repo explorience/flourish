@@ -4,15 +4,18 @@ import { useState, useEffect } from 'react';
 import { CreatePostForm } from './create-post-form';
 import { createClient } from '@/lib/supabase/client';
 import { Shield } from 'lucide-react';
+import { isVouchRequiredClient } from '@/lib/settings-client';
 
 export function PostSomethingButton() {
   const [showCreate, setShowCreate] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [vouchStatus, setVouchStatus] = useState<string>('unvouched');
+  const [vouchRequired, setVouchRequired] = useState(false);
   const [showVouchMsg, setShowVouchMsg] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
+    isVouchRequiredClient().then(setVouchRequired);
     supabase.auth.getUser().then(({ data: { user } }) => {
       setIsLoggedIn(!!user);
       if (user) {
@@ -29,7 +32,7 @@ export function PostSomethingButton() {
       window.location.href = '/auth?next=/';
       return;
     }
-    if (vouchStatus === 'unvouched') {
+    if (vouchRequired && vouchStatus === 'unvouched') {
       setShowVouchMsg(true);
       setTimeout(() => setShowVouchMsg(false), 4000);
       return;
