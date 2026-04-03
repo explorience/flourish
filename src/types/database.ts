@@ -61,6 +61,23 @@ export interface Message {
   created_at: string;
 }
 
+export interface Profile {
+  id: string;
+  display_name: string;
+  neighbourhood: string | null;
+  bio: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PostWithProfile extends Post {
+  profiles: Pick<Profile, 'display_name' | 'neighbourhood'> | null;
+}
+
+export interface PostWithResponsesAndProfile extends PostWithResponses {
+  profiles: Pick<Profile, 'display_name' | 'neighbourhood'> | null;
+}
+
 export interface Database {
   public: {
     Tables: {

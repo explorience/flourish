@@ -9,7 +9,7 @@ import { getModeratorByEmail } from '@/lib/admin';
 
 export default async function PostDetail({ params }: { params: { id: string } }) {
   const supabase = await createClient();
-  const { data: post } = await supabase.from('posts').select('*, responses(*)').eq('id', params.id).single();
+  const { data: post } = await supabase.from('posts').select('*, responses(*), profiles(display_name, neighbourhood)').eq('id', params.id).single();
 
   // Check moderation status for the current user
   const { data: { user } } = await supabase.auth.getUser();
@@ -58,7 +58,15 @@ export default async function PostDetail({ params }: { params: { id: string } })
 
         {/* Meta */}
         <div className="flex flex-wrap items-center gap-2 text-xs mb-6" style={{ color: 'var(--sub)', fontSize: '0.72rem' }}>
-          <span style={{ fontWeight: 500, color: 'var(--heading)' }}>{post.contact_name}</span>
+          <span style={{ fontWeight: 500, color: 'var(--heading)' }}>{(post as any).profiles?.display_name || post.contact_name}</span>
+          {(post as any).profiles?.neighbourhood && (
+            <>
+              <span>&mdash;</span>
+              <span style={{ color: 'var(--offer)', fontFamily: 'var(--font-display)', fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                {(post as any).profiles.neighbourhood}
+              </span>
+            </>
+          )}
           <span>&mdash;</span>
           <span title={dateStr}>{timeAgo}</span>
           {categoryInfo && <><span>&mdash;</span><span>{categoryInfo.label}</span></>}
