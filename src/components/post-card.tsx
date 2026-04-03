@@ -5,10 +5,10 @@ import { formatDistanceToNow } from 'date-fns';
 import { CATEGORIES } from '@/lib/constants';
 import { RespondDialog } from './respond-dialog';
 import Link from 'next/link';
-import type { PostWithResponses } from '@/types/database';
+import type { PostWithResponses, PostWithProfile } from '@/types/database';
 
 interface PostCardProps {
-  post: PostWithResponses;
+  post: PostWithResponses | PostWithProfile;
   index?: number;
   isModerator?: boolean;
 }
@@ -104,7 +104,15 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
         <div className="pt-2" style={{ borderTop: '1px dashed var(--border-card)' }}>
           {/* Meta row */}
           <div className="flex items-center gap-1 flex-wrap mb-2" style={{ color: 'var(--ink-light)', fontSize: '0.72rem' }}>
-            <span style={{ fontWeight: 600, color: 'var(--ink)' }}>{post.contact_name}</span>
+            <span style={{ fontWeight: 600, color: 'var(--ink)' }}>{(post as any).profiles?.display_name || post.contact_name}</span>
+            {(post as any).profiles?.neighbourhood && (
+              <>
+                <span>&mdash;</span>
+                <span style={{ color: 'var(--offer)', fontFamily: 'var(--font-display)', fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  {(post as any).profiles.neighbourhood}
+                </span>
+              </>
+            )}
             <span>&mdash;</span>
             <span>{timeAgo}</span>
             {post.location_label && (

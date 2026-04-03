@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
-import { CheckCircle, XCircle, LogOut, MessageCircle, MessageSquare } from 'lucide-react';
+import { CheckCircle, XCircle, LogOut, MessageCircle, MessageSquare, UserCircle } from 'lucide-react';
 import type { PostWithResponses } from '@/types/database';
 import type { User } from '@supabase/supabase-js';
 import Link from 'next/link';
@@ -110,8 +110,12 @@ export function AccountClient({ user, posts }: { user: User; posts: PostWithResp
         </div>
       )}
 
-      {/* Messages */}
-      <div className="mt-8 pt-6" style={{ borderTop: '1px solid var(--border)' }}>
+      {/* Profile & Messages */}
+      <div className="mt-8 pt-6 space-y-3" style={{ borderTop: '1px solid var(--border)' }}>
+        <Link href="/account/profile" className="inline-flex items-center gap-2 px-4 py-3 text-xs font-bold uppercase tracking-wider transition-all w-full"
+          style={{ ...ds, background: 'var(--card)', color: 'var(--ink)', border: '1px solid var(--border)' }}>
+          <UserCircle className="w-4 h-4" /> Edit Profile
+        </Link>
         <Link href="/messages" className="inline-flex items-center gap-2 px-4 py-3 text-xs font-bold uppercase tracking-wider transition-all w-full"
           style={{ ...ds, background: 'var(--card)', color: 'var(--ink)', border: '1px solid var(--border)' }}>
           <MessageSquare className="w-4 h-4" /> My Messages
