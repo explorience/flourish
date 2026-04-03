@@ -38,7 +38,7 @@ export function CreatePostButton() {
           fontFamily: 'var(--font-display)',
         }}
       >
-        Share something
+        Offer something
       </button>
       {showForm && <CreatePostForm onClose={() => setShowForm(false)} />}
     </>

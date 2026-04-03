@@ -68,7 +68,7 @@ export function PostFeed({ initialPosts, isModerator = false }: PostFeedProps) {
           </p>
           <p className="text-sm mb-8" style={{ color: 'var(--sub)' }}>
             {posts.length === 0
-              ? 'Be the first to share something with your neighbours.'
+              ? 'Be the first to post something for your neighbours.'
               : 'Try adjusting your filters.'}
           </p>
           {posts.length === 0 && <CreatePostButton />}

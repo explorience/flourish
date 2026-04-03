@@ -2,7 +2,7 @@
 
 **A free, open-source community exchange board you can run for any neighbourhood.**
 
-> Share what you have. Ask for what you need.
+> Offer what you have. Ask for what you need.
 
 Flourish is a mutual aid platform where neighbours can post what they need or what they can offer — items, services, skills, or space. No selling, no algorithms, no ads. Just people helping each other.
 

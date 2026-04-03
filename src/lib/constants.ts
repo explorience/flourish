@@ -21,7 +21,7 @@ export const POST_TYPES: { value: PostType; label: string; action: string; color
 
 export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'Flourish';
 export const APP_TAGLINE = process.env.NEXT_PUBLIC_APP_TAGLINE || 'Community Exchange';
-export const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Share what you have. Ask for what you need.';
+export const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_DESCRIPTION || 'Offer what you have. Ask for what you need.';
 export const APP_COMMUNITY = process.env.NEXT_PUBLIC_APP_COMMUNITY || 'your community';
 export const APP_SMS_NUMBER = process.env.NEXT_PUBLIC_SMS_NUMBER || '';
 export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || '';

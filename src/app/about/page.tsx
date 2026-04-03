@@ -4,7 +4,7 @@ import { APP_NAME, APP_TAGLINE, APP_COMMUNITY, APP_SMS_NUMBER } from '@/lib/cons
 
 export const metadata = {
   title: 'About — Flourish',
-  description: 'A free community exchange board. Share what you have. Ask for what you need.',
+  description: 'A free community exchange board. Offer what you have. Ask for what you need.',
 };
 
 export default function AboutPage() {
@@ -23,7 +23,7 @@ export default function AboutPage() {
             About {APP_NAME}
           </h1>
           <p className="page-subtitle text-lg leading-relaxed">
-            Share what you have. Ask for what you need.
+            Offer what you have. Ask for what you need.
           </p>
         </div>
 
@@ -34,7 +34,7 @@ export default function AboutPage() {
             What is Flourish?
           </h2>
           <p className="card-body text-base leading-relaxed mb-4">
-            {APP_NAME} is a free community exchange board for {APP_COMMUNITY}. It&apos;s a place where neighbours can share what they have and ask for what they need — items, services, skills, space, and more.
+            {APP_NAME} is a free community exchange board for {APP_COMMUNITY}. It&apos;s a place where neighbours can offer what they have and ask for what they need — items, services, skills, space, and more.
           </p>
           <p className="card-body-light text-base leading-relaxed">
             There&apos;s no algorithm, no ads, no selling. Just people helping each other out.
@@ -52,7 +52,7 @@ export default function AboutPage() {
               {
                 step: '01',
                 heading: 'Browse the board',
-                body: 'No account needed. See what your neighbours have shared — needs and offers, big and small.',
+                body: 'No account needed. See what your neighbours have posted — needs and offers, big and small.',
               },
               {
                 step: '02',
@@ -154,7 +154,7 @@ export default function AboutPage() {
             <a href="https://github.com/explorience/flourish" target="_blank" rel="noopener noreferrer" className="link-offer">inspect the code</a>, suggest improvements, or run their own instance for their community.
           </p>
           <p className="card-body-light text-base leading-relaxed">
-            It&apos;s run by volunteers who believe local communities work better when people can share resources and support each other.
+            It&apos;s run by volunteers who believe local communities work better when people can offer resources and support each other.
           </p>
         </div>
 

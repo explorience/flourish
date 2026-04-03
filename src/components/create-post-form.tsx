@@ -74,7 +74,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
       <div className="w-full max-w-lg max-h-[85vh] overflow-y-auto animate-slide-up sm:rounded-md" style={{ background: 'var(--card)' }} onClick={(e) => e.stopPropagation()}>
         {submitted ? (
           <div className="text-center py-20 px-6">
-            <p className="text-xl font-bold uppercase tracking-wide mb-3" style={{ ...ds, color: 'var(--ink)' }}>Shared with the community</p>
+            <p className="text-xl font-bold uppercase tracking-wide mb-3" style={{ ...ds, color: 'var(--ink)' }}>Posted to the community</p>
             <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>Your {type} is now live on the board.</p>
           </div>
         ) : (
@@ -221,7 +221,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                   <button onClick={handleSubmit} disabled={submitting || !contactName.trim()}
                     className="w-full py-4 text-sm font-bold uppercase tracking-wider disabled:opacity-40 transition-all"
                     style={{ background: type === 'need' ? 'var(--need)' : 'var(--offer)', color: 'var(--card)', ...ds }}
-                  >{submitting ? 'Posting...' : 'Share with the community'}</button>
+                  >{submitting ? 'Posting...' : 'Post to the community'}</button>
                 </div>
               )}
             </div>

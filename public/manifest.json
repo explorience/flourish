@@ -1,7 +1,7 @@
 {
   "name": "Flourish",
   "short_name": "Flourish",
-  "description": "Share what you have. Ask for what you need.",
+  "description": "Offer what you have. Ask for what you need.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1a2a20",
