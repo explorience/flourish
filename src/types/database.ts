@@ -22,6 +22,7 @@ export interface Post {
   status: PostStatus;
   user_id: string | null;
   location_label: string | null;
+  location_crossstreet: string | null;
   location_lat: number | null;
   location_lng: number | null;
   moderation_status: ModerationStatus | null;

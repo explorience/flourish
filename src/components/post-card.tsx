@@ -107,13 +107,13 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
             <span style={{ fontWeight: 600, color: 'var(--ink)' }}>{post.contact_name}</span>
             <span>&mdash;</span>
             <span>{timeAgo}</span>
-            {post.location_label && (
+            {(post.location_crossstreet || post.location_label) && (
               <>
                 <span>&mdash;</span>
-                <span className="truncate" style={{ maxWidth: '7.5rem' }}>{post.location_label}</span>
+                <span className="truncate" style={{ maxWidth: '7.5rem' }}>{post.location_crossstreet || post.location_label}</span>
               </>
             )}
-            {!post.location_label && categoryInfo && (
+            {!post.location_crossstreet && !post.location_label && categoryInfo && (
               <>
                 <span>&mdash;</span>
                 <span>{categoryInfo.label}</span>

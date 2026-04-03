@@ -21,6 +21,7 @@ interface MapPost {
   created_at: string;
   status: string;
   location_label: string | null;
+  location_crossstreet: string | null;
   location_fuzzed_lat: number;
   location_fuzzed_lng: number;
 }
@@ -54,7 +55,7 @@ export function MapClient({ posts }: MapClientProps) {
         ))}
         {filtered.length === 0 && posts.length > 0 && (
           <span className="text-xs ml-2" style={{ color: 'var(--need)' }}>
-            No posts with locations yet — add a neighbourhood when creating a post
+            No posts with locations yet — add an intersection when creating a post
           </span>
         )}
       </div>
@@ -90,7 +91,7 @@ export function MapClient({ posts }: MapClientProps) {
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-bold uppercase tracking-wider mb-1"
                   style={{ fontFamily: 'var(--font-display)', color: selected.type === 'need' ? 'var(--need)' : 'var(--offer)', fontSize: '0.6rem' }}>
-                  {selected.type} {selected.location_label ? `· ${selected.location_label}` : ''}
+                  {selected.type}{selected.location_label ? ` · ${selected.location_label}` : ''}{selected.location_crossstreet ? ` · ${selected.location_crossstreet}` : ''}
                 </div>
                 <h3 className="text-base leading-tight mb-1 truncate"
                   style={{ fontFamily: 'var(--font-serif)', color: 'var(--ink)', fontWeight: 400 }}>
