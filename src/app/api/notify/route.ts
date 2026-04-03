@@ -28,8 +28,47 @@ export async function POST(req: NextRequest) {
     const postUrl = `${appUrl}/post/${postId}`;
     let notified = false;
 
-    // 1. Email notification — for web users who provided email as contact method
-    if (post.contact_method === 'email' && post.contact_value) {
+    // Check email preference if user has a profile
+    let emailEnabled = true;
+    if (post.user_id) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('email_notifications')
+        .eq('id', post.user_id)
+        .single();
+      if (profile && profile.email_notifications === false) {
+        emailEnabled = false;
+      }
+    }
+
+    // 1. Email notification for logged-in users
+    if (emailEnabled && post.user_id) {
+      // Get user email from auth
+      const { data: { user } } = await supabase.auth.admin.getUserById(post.user_id);
+      const userEmail = user?.email;
+
+      if (userEmail) {
+        const { subject, html, text } = responseNotificationEmail({
+          posterName: post.contact_name,
+          postTitle: post.title,
+          postType: post.type,
+          responderName,
+          responderContact,
+          responderMessage,
+          postUrl,
+        });
+
+        notified = await sendEmail({
+          to: { email: userEmail, name: post.contact_name },
+          subject,
+          html,
+          text,
+        });
+      }
+    }
+
+    // 2. Fallback: email via contact_value if contact_method is email and we haven't notified yet
+    if (!notified && emailEnabled && post.contact_method === 'email' && post.contact_value) {
       const { subject, html, text } = responseNotificationEmail({
         posterName: post.contact_name,
         postTitle: post.title,
@@ -48,8 +87,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 2. SMS notification — only for posts that came in via SMS (people without web/email access)
-    //    This keeps SMS costs down while still reaching people who need it
+    // 3. SMS notification — only for posts that came in via SMS
     if (!notified && post.source === 'sms' && post.source_phone) {
       const accountSid = process.env.TWILIO_ACCOUNT_SID;
       const authToken = process.env.TWILIO_AUTH_TOKEN;
