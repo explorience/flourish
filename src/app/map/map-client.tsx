@@ -80,7 +80,7 @@ export function MapClient({ posts }: MapClientProps) {
             </div>
           </div>
         ) : (
-          <LeafletMap posts={filtered} selected={selected} onSelect={setSelected} />
+          <LeafletMap posts={filtered} selected={selected} onSelect={(post: MapPost) => setSelected(post)} />
         )}
 
         {/* Selected post card */}
