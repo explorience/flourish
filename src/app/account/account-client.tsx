@@ -9,6 +9,7 @@ import type { PostWithResponses } from '@/types/database';
 import type { User } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { PushManager } from '@/components/push-manager';
 
 const ds = { fontFamily: 'var(--font-display)' };
 const sr = { fontFamily: 'var(--font-serif)' };
@@ -171,8 +172,8 @@ export function AccountClient({ user, posts }: { user: User; posts: PostWithResp
         </Link>
       </div>
 
-      {/* Email notifications toggle */}
-      <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--border)' }}>
+      {/* Notification settings */}
+      <div className="mt-4 pt-4 space-y-2" style={{ borderTop: '1px solid var(--border)' }}>
         <button
           onClick={toggleEmailNotifications}
           disabled={emailToggling}
@@ -182,6 +183,7 @@ export function AccountClient({ user, posts }: { user: User; posts: PostWithResp
           {emailNotifications ? <Bell className="w-4 h-4" style={{ color: 'var(--offer)' }} /> : <BellOff className="w-4 h-4" />}
           Email notifications {emailNotifications ? 'on' : 'off'}
         </button>
+        <PushManager />
       </div>
 
       {/* Sign out */}

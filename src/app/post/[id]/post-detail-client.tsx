@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { isVouchRequiredClient } from '@/lib/settings-client';
 import { RespondDialog } from '@/components/respond-dialog';
 import { formatDistanceToNow } from 'date-fns';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, RefreshCw } from 'lucide-react';
 import type { PostWithResponses } from '@/types/database';
 
 interface PostDetailClientProps {
@@ -16,6 +16,8 @@ interface PostDetailClientProps {
 
 export function PostDetailClient({ post, isModerator = false }: PostDetailClientProps) {
   const [showRespond, setShowRespond] = useState(false);
+  const [extending, setExtending] = useState(false);
+  const [extendedUntil, setExtendedUntil] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [vouchStatus, setVouchStatus] = useState<string>('unvouched');
   const [vouchRequired, setVouchRequired] = useState(false);
@@ -77,8 +79,31 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
     setThreading(null);
   };
 
+  const extendPost = async () => {
+    setExtending(true);
+    try {
+      const res = await fetch(`/api/posts/${post.id}/extend`, { method: 'POST' });
+      if (res.ok) {
+        const { newExpiresAt } = await res.json();
+        setExtendedUntil(newExpiresAt);
+        router.refresh();
+      }
+    } catch (err) {
+      console.error('Extend error:', err);
+    } finally {
+      setExtending(false);
+    }
+  };
+
   const ds = { fontFamily: 'var(--font-display)' } as React.CSSProperties;
   const sr = { fontFamily: 'var(--font-serif)' } as React.CSSProperties;
+
+  // Calculate whether post is expiring soon (within 7 days)
+  const expiresAt = extendedUntil || post.expires_at;
+  const daysUntilExpiry = expiresAt
+    ? Math.ceil((new Date(expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+    : null;
+  const isExpiringSoon = daysUntilExpiry !== null && daysUntilExpiry <= 7;
 
   return (
     <>
@@ -103,6 +128,27 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
               {isNeed ? 'I can help with this' : 'I\'m interested in this'}
             </button>
           )}
+        </div>
+      )}
+
+      {/* Extend button — shown to post owner when expiring within 7 days */}
+      {isPoster && post.status === 'active' && isExpiringSoon && (
+        <div className="mb-6">
+          <button
+            onClick={extendPost}
+            disabled={extending || !!extendedUntil}
+            className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-60"
+            style={{
+              ...ds,
+              fontSize: '0.6rem',
+              border: '1.5px solid var(--offer)',
+              color: 'var(--offer)',
+              background: 'transparent',
+            }}
+          >
+            <RefreshCw className={`w-3 h-3 ${extending ? 'animate-spin' : ''}`} />
+            {extendedUntil ? 'Extended ✓' : extending ? 'Extending…' : 'Extend 30 days'}
+          </button>
         </div>
       )}
 
