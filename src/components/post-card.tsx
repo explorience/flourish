@@ -64,10 +64,9 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
 
         {/* Type label */}
         <div
-          className="text-xs font-bold uppercase tracking-wider mb-2"
+          className="text-xs font-bold uppercase tracking-wider mb-2 font-display"
           style={{
             color: isNeed ? 'var(--need)' : 'var(--offer)',
-            fontFamily: 'var(--font-display)',
             fontSize: '0.62rem',
             letterSpacing: '0.15em',
           }}
@@ -78,10 +77,8 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
         {/* Title */}
         <Link href={`/post/${post.id}`}>
           <h3
-            className="text-base leading-snug mb-1 hover:underline"
+            className="text-base leading-snug mb-1 hover:underline font-serif color-ink"
             style={{
-              color: 'var(--ink)',
-              fontFamily: 'var(--font-serif)',
               fontWeight: 400,
               lineHeight: 1.3,
             }}
@@ -93,8 +90,8 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
         {/* Details */}
         {post.details && (
           <p
-            className="text-sm leading-relaxed mb-2 line-clamp-2"
-            style={{ color: 'var(--ink)', fontSize: '0.88rem' }}
+            className="text-sm leading-relaxed mb-2 line-clamp-2 color-ink"
+            style={{ fontSize: '0.88rem' }}
           >
             {post.details}
           </p>
@@ -103,12 +100,12 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
         {/* Footer */}
         <div className="pt-2" style={{ borderTop: '1px dashed var(--border-card)' }}>
           {/* Meta row */}
-          <div className="flex items-center gap-1 flex-wrap mb-2" style={{ color: 'var(--ink-light)', fontSize: '0.72rem' }}>
+          <div className="flex items-center gap-1 flex-wrap mb-2 color-ink-light" style={{ fontSize: '0.72rem' }}>
             <span style={{ fontWeight: 600, color: 'var(--ink)' }}>{(post as any).profiles?.display_name || post.contact_name}</span>
             {(post as any).profiles?.neighbourhood && (
               <>
                 <span>&mdash;</span>
-                <span style={{ color: 'var(--offer)', fontFamily: 'var(--font-display)', fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                <span className="font-display color-offer" style={{ fontSize: '0.6rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                   {(post as any).profiles.neighbourhood}
                 </span>
               </>
@@ -129,7 +126,7 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
             )}
 
             {post.responses.length > 0 && (
-              <span style={{ color: 'var(--ink-muted)', fontSize: '0.68rem' }}>
+              <span className="color-ink-muted" style={{ fontSize: '0.68rem' }}>
                 &mdash; {post.responses.length} {post.responses.length === 1 ? 'response' : 'responses'}
               </span>
             )}
@@ -138,12 +135,11 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
           {/* Action button */}
           <button
             onClick={(e) => { e.stopPropagation(); setShowRespond(true); }}
-            className="w-full py-2 text-xs font-bold uppercase tracking-wider transition-all"
+            className="w-full py-2 text-xs font-bold uppercase tracking-wider transition-all font-display"
             style={{
               border: `2px solid ${isNeed ? 'var(--need)' : 'var(--offer)'}`,
               color: isNeed ? 'var(--need)' : 'var(--offer)',
               background: 'transparent',
-              fontFamily: 'var(--font-display)',
               fontSize: '0.7rem',
               letterSpacing: '0.1em',
             }}
@@ -168,9 +164,8 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
           >
             {modDone ? (
               <div
-                className="text-center text-xs font-bold uppercase tracking-wider py-1"
+                className="text-center text-xs font-bold uppercase tracking-wider py-1 font-display"
                 style={{
-                  fontFamily: 'var(--font-display)',
                   color: modDone === 'approved' ? 'var(--offer)' : 'var(--need)',
                   fontSize: '0.6rem',
                   letterSpacing: '0.12em',
@@ -199,15 +194,14 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
                 <button
                   onClick={() => handleModerate('reject', rejectReason)}
                   disabled={moderating}
-                  className="px-2 py-1 text-xs font-bold uppercase disabled:opacity-40"
-                  style={{ background: 'var(--need)', color: 'white', fontFamily: 'var(--font-display)', fontSize: '0.6rem', letterSpacing: '0.08em' }}
+                  className="px-2 py-1 text-xs font-bold uppercase disabled:opacity-40 font-display"
+                  style={{ background: 'var(--need)', color: 'white', fontSize: '0.6rem', letterSpacing: '0.08em' }}
                 >
                   {moderating ? '…' : 'Reject'}
                 </button>
                 <button
                   onClick={() => setShowRejectInput(false)}
-                  className="px-1.5 py-1 text-xs"
-                  style={{ color: 'var(--ink-muted)' }}
+                  className="px-1.5 py-1 text-xs color-ink-muted"
                 >
                   ✕
                 </button>
@@ -217,9 +211,8 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
                 <button
                   onClick={() => handleModerate('approve')}
                   disabled={moderating}
-                  className="flex-1 py-1 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-colors"
+                  className="flex-1 py-1 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-colors font-display"
                   style={{
-                    fontFamily: 'var(--font-display)',
                     fontSize: '0.6rem',
                     letterSpacing: '0.1em',
                     background: 'var(--offer)',
@@ -231,9 +224,8 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
                 <button
                   onClick={() => setShowRejectInput(true)}
                   disabled={moderating}
-                  className="flex-1 py-1 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-colors"
+                  className="flex-1 py-1 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-colors font-display"
                   style={{
-                    fontFamily: 'var(--font-display)',
                     fontSize: '0.6rem',
                     letterSpacing: '0.1em',
                     background: 'var(--need)',

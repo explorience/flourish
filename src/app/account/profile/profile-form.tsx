@@ -5,9 +5,6 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { Check } from 'lucide-react';
 
-const ds = { fontFamily: 'var(--font-display)' };
-const sr = { fontFamily: 'var(--font-serif)' };
-
 const NEIGHBOURHOODS = [
   'Old East Village', 'Wortley Village', 'Downtown', 'Old North',
   'Byron', 'Westmount', 'Masonville', 'Whitehills', 'Argyle',
@@ -75,8 +72,7 @@ export function ProfileForm({
       <div className="space-y-6">
         {/* Display Name */}
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider mb-2"
-            style={{ ...ds, color: 'var(--sub)', fontSize: '0.6rem' }}>
+          <label className="block text-xs font-bold uppercase tracking-wider mb-2 font-display color-sub" style={{ fontSize: '0.6rem' }}>
             Display name *
           </label>
           <input
@@ -92,8 +88,7 @@ export function ProfileForm({
 
         {/* Neighbourhood */}
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider mb-2"
-            style={{ ...ds, color: 'var(--sub)', fontSize: '0.6rem' }}>
+          <label className="block text-xs font-bold uppercase tracking-wider mb-2 font-display color-sub" style={{ fontSize: '0.6rem' }}>
             Neighbourhood
           </label>
           <select
@@ -122,8 +117,7 @@ export function ProfileForm({
 
         {/* Bio */}
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider mb-2"
-            style={{ ...ds, color: 'var(--sub)', fontSize: '0.6rem' }}>
+          <label className="block text-xs font-bold uppercase tracking-wider mb-2 font-display color-sub" style={{ fontSize: '0.6rem' }}>
             Bio
           </label>
           <textarea
@@ -135,22 +129,22 @@ export function ProfileForm({
             style={inputStyle}
             placeholder="A little about you (optional)"
           />
-          <p className="text-xs mt-1 text-right" style={{ color: 'var(--ink-muted)' }}>
+          <p className="text-xs mt-1 text-right color-ink-muted">
             {bio.length}/280
           </p>
         </div>
 
         {/* Error */}
         {error && (
-          <p className="text-sm" style={{ color: 'var(--need)' }}>{error}</p>
+          <p className="text-sm color-need">{error}</p>
         )}
 
         {/* Submit */}
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 px-6 py-3 text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-40"
-          style={{ ...ds, background: saved ? 'var(--offer)' : 'var(--card)', color: saved ? 'var(--card)' : 'var(--ink)', border: `1.5px solid ${saved ? 'var(--offer)' : 'var(--border-card)'}` }}
+          className="inline-flex items-center gap-2 px-6 py-3 text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-40 font-display"
+          style={{ background: saved ? 'var(--offer)' : 'var(--card)', color: saved ? 'var(--card)' : 'var(--ink)', border: `1.5px solid ${saved ? 'var(--offer)' : 'var(--border-card)'}` }}
         >
           {saved ? <><Check className="w-4 h-4" /> Saved</> : saving ? 'Saving...' : 'Save profile'}
         </button>

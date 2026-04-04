@@ -8,11 +8,8 @@ export const metadata = {
 };
 
 export default function CodeOfConductPage() {
-  const ds: React.CSSProperties = { fontFamily: 'var(--font-display)' };
-  const sr: React.CSSProperties = { fontFamily: 'var(--font-serif)' };
-
   return (
-    <main className="min-h-screen" style={{ background: 'var(--bg)' }}>
+    <main className="min-h-screen bg-page">
       <Header />
 
       <div className="max-w-2xl mx-auto px-5 py-14">
@@ -20,20 +17,18 @@ export default function CodeOfConductPage() {
         {/* Hero */}
         <div className="mb-12 text-center">
           <p
-            className="text-xs font-bold uppercase tracking-widest mb-3"
-            style={{ ...ds, color: 'var(--sub)' }}
+            className="text-xs font-bold uppercase tracking-widest mb-3 font-display color-sub"
           >
             Community guidelines
           </p>
           <h1
-            className="text-5xl sm:text-6xl font-extrabold uppercase tracking-wide leading-none mb-4"
-            style={{ ...ds, color: 'var(--heading)' }}
+            className="text-5xl sm:text-6xl font-extrabold uppercase tracking-wide leading-none mb-4 font-display color-heading"
           >
             Code of Conduct
           </h1>
           <p
-            className="text-lg leading-relaxed"
-            style={{ ...sr, color: 'var(--sub)', fontStyle: 'italic' }}
+            className="text-lg leading-relaxed font-serif color-sub"
+            style={{ fontStyle: 'italic' }}
           >
             How we show up for each other.
           </p>
@@ -46,20 +41,17 @@ export default function CodeOfConductPage() {
         >
           <div className="tape tape-offer" />
           <h2
-            className="text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ ...ds, color: 'var(--offer)' }}
+            className="text-xs font-bold uppercase tracking-widest mb-4 font-display color-offer"
           >
             Our foundation
           </h2>
           <p
-            className="text-base leading-relaxed mb-4"
-            style={{ ...sr, color: 'var(--ink)' }}
+            className="text-base leading-relaxed mb-4 font-serif color-ink"
           >
             {APP_NAME} is built on mutual aid — the idea that we are stronger when we support each other. These guidelines exist to keep this space safe, respectful, and welcoming for everyone.
           </p>
           <p
-            className="text-base leading-relaxed italic"
-            style={{ ...sr, color: 'var(--ink-light)' }}
+            className="text-base leading-relaxed italic font-serif color-ink-light"
           >
             &ldquo;Solidarity, not charity. Asking is as important as giving.&rdquo; — Dean Spade
           </p>
@@ -72,8 +64,7 @@ export default function CodeOfConductPage() {
         >
           <div className="tape tape-need" />
           <h2
-            className="text-xs font-bold uppercase tracking-widest mb-5"
-            style={{ ...ds, color: 'var(--need)' }}
+            className="text-xs font-bold uppercase tracking-widest mb-5 font-display color-need"
           >
             Our principles
           </h2>
@@ -106,14 +97,12 @@ export default function CodeOfConductPage() {
             ].map((item) => (
               <div key={item.title}>
                 <h3
-                  className="text-sm font-bold uppercase tracking-wide mb-1"
-                  style={{ ...ds, color: 'var(--ink)' }}
+                  className="text-sm font-bold uppercase tracking-wide mb-1 font-display color-ink"
                 >
                   {item.title}
                 </h3>
                 <p
-                  className="text-base leading-relaxed"
-                  style={{ ...sr, color: 'var(--ink-light)' }}
+                  className="text-base leading-relaxed font-serif color-ink-light"
                 >
                   {item.body}
                 </p>
@@ -129,8 +118,7 @@ export default function CodeOfConductPage() {
         >
           <div className="tape tape-offer" style={{ left: '35%' }} />
           <h2
-            className="text-xs font-bold uppercase tracking-widest mb-5"
-            style={{ ...ds, color: 'var(--sub)' }}
+            className="text-xs font-bold uppercase tracking-widest mb-5 font-display color-sub"
           >
             What&apos;s not okay
           </h2>
@@ -144,8 +132,8 @@ export default function CodeOfConductPage() {
               'Using this space to recruit for political campaigns, MLMs, or religious proselytizing',
             ].map((item, i) => (
               <li key={i} className="flex items-start gap-2">
-                <span style={{ color: 'var(--need)', flexShrink: 0, marginTop: '0.125rem' }}>✗</span>
-                <p className="text-base leading-relaxed" style={{ ...sr, color: 'var(--ink-light)' }}>{item}</p>
+                <span className="color-need" style={{ flexShrink: 0, marginTop: '0.125rem' }}>✗</span>
+                <p className="text-base leading-relaxed font-serif color-ink-light">{item}</p>
               </li>
             ))}
           </ul>
@@ -158,14 +146,12 @@ export default function CodeOfConductPage() {
         >
           <div className="tape tape-need" style={{ left: '45%' }} />
           <h2
-            className="text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ ...ds, color: 'var(--need)' }}
+            className="text-xs font-bold uppercase tracking-widest mb-4 font-display color-need"
           >
             When someone needs more support
           </h2>
           <p
-            className="text-base leading-relaxed"
-            style={{ ...sr, color: 'var(--ink-light)' }}
+            className="text-base leading-relaxed font-serif color-ink-light"
           >
             If someone is asking for essential items repeatedly, we reach out with care — not judgement. We connect them with resources that can help long-term, like{' '}
             local community services and organizations. Mutual aid is a bridge, not a replacement for systemic support.
@@ -179,20 +165,17 @@ export default function CodeOfConductPage() {
         >
           <div className="tape tape-offer" style={{ left: '30%' }} />
           <h2
-            className="text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ ...ds, color: 'var(--sub)' }}
+            className="text-xs font-bold uppercase tracking-widest mb-4 font-display color-sub"
           >
             Moderation
           </h2>
           <p
-            className="text-base leading-relaxed mb-3"
-            style={{ ...sr, color: 'var(--ink-light)' }}
+            className="text-base leading-relaxed mb-3 font-serif color-ink-light"
           >
             {APP_NAME} is moderated by volunteers from the community. When someone violates these guidelines, we start with conversation and education. We believe in accountability and making amends.
           </p>
           <p
-            className="text-base leading-relaxed"
-            style={{ ...sr, color: 'var(--ink-light)' }}
+            className="text-base leading-relaxed font-serif color-ink-light"
           >
             Repeated violations or severe harm (hate speech, threats, harassment) may result in removal. We have no tolerance for intolerance.
           </p>
@@ -205,14 +188,12 @@ export default function CodeOfConductPage() {
         >
           <div className="tape tape-need" style={{ left: '40%' }} />
           <h2
-            className="text-xs font-bold uppercase tracking-widest mb-4"
-            style={{ ...ds, color: 'var(--need)' }}
+            className="text-xs font-bold uppercase tracking-widest mb-4 font-display color-need"
           >
             A living document
           </h2>
           <p
-            className="text-base leading-relaxed"
-            style={{ ...sr, color: 'var(--ink-light)' }}
+            className="text-base leading-relaxed font-serif color-ink-light"
           >
             This code of conduct was written collaboratively by the people building {APP_NAME}. It will grow and change as we do. If you have suggestions, we want to hear them.
           </p>
@@ -222,16 +203,15 @@ export default function CodeOfConductPage() {
         <div className="text-center space-y-4">
           <Link
             href="/"
-            className="inline-block px-10 py-4 text-sm font-bold uppercase tracking-wider transition-colors"
-            style={{ ...ds, background: 'var(--card)', color: 'var(--ink)' }}
+            className="inline-block px-10 py-4 text-sm font-bold uppercase tracking-wider transition-colors font-display"
+            style={{ background: 'var(--card)', color: 'var(--ink)' }}
           >
             Browse the board
           </Link>
           <div>
             <Link
               href="/feedback"
-              className="text-xs font-bold uppercase tracking-wider"
-              style={{ ...ds, color: 'var(--sub)' }}
+              className="text-xs font-bold uppercase tracking-wider font-display color-sub"
             >
               Send feedback →
             </Link>
