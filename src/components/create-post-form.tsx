@@ -66,33 +66,30 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
     setSubmitting(false);
   };
 
-  const ds = { fontFamily: 'var(--font-display)' };
-  const sr = { fontFamily: 'var(--font-serif)' };
-
   return (
     <div className="fixed inset-0 flex items-end sm:items-center justify-center z-50 animate-fade-in" style={{ background: 'rgba(0,0,0,0.5)' }} onClick={onClose}>
-      <div className="w-full max-w-lg max-h-[85vh] overflow-y-auto animate-slide-up sm:rounded-md" style={{ background: 'var(--card)' }} onClick={(e) => e.stopPropagation()}>
+      <div className="w-full max-w-lg max-h-[85vh] overflow-y-auto animate-slide-up sm:rounded-md bg-card" onClick={(e) => e.stopPropagation()}>
         {submitted ? (
           <div className="text-center py-20 px-6">
-            <p className="text-xl font-bold uppercase tracking-wide mb-3" style={{ ...ds, color: 'var(--ink)' }}>Shared with the community</p>
-            <p className="text-sm" style={{ color: 'var(--ink-muted)' }}>Your {type} is now live on the board.</p>
+            <p className="text-xl font-bold uppercase tracking-wide mb-3 font-display color-ink">Shared with the community</p>
+            <p className="text-sm color-ink-muted">Your {type} is now live on the board.</p>
           </div>
         ) : (
           <>
             {/* Header */}
             <div className="flex items-center justify-between px-6 pt-6 pb-2">
               <div className="flex items-center gap-3">
-                {step > 1 && <button onClick={() => setStep(step - 1)} className="p-1" style={{ color: 'var(--ink-muted)' }}><ArrowLeft className="w-4 h-4" /></button>}
+                {step > 1 && <button onClick={() => setStep(step - 1)} className="p-1 color-ink-muted"><ArrowLeft className="w-4 h-4" /></button>}
                 <div>
-                  <p className="text-xs" style={{ color: 'var(--ink-muted)', fontSize: '0.6rem', ...ds }}>Step {step} of 3</p>
-                  <p className="text-sm font-bold uppercase tracking-wide" style={{ ...ds, color: 'var(--ink)' }}>
+                  <p className="text-xs font-display color-ink-muted" style={{ fontSize: '0.6rem' }}>Step {step} of 3</p>
+                  <p className="text-sm font-bold uppercase tracking-wide font-display color-ink">
                     {step === 1 && 'What kind of post?'}
                     {step === 2 && (type === 'need' ? 'What do you need?' : 'What can you offer?')}
                     {step === 3 && 'About you'}
                   </p>
                 </div>
               </div>
-              <button onClick={onClose} className="p-2" style={{ color: 'var(--ink-muted)' }}><X className="w-5 h-5" /></button>
+              <button onClick={onClose} className="p-2 color-ink-muted"><X className="w-5 h-5" /></button>
             </div>
 
             {/* Progress */}
@@ -116,8 +113,8 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                         background: type === opt.val ? '#fff' : 'transparent',
                       }}
                     >
-                      <p className="text-sm font-bold uppercase tracking-wide" style={{ ...ds, color: 'var(--ink)' }}>{opt.label}</p>
-                      <p className="text-xs mt-1" style={{ ...sr, color: 'var(--ink-muted)', fontStyle: 'italic' }}>{opt.desc}</p>
+                      <p className="text-sm font-bold uppercase tracking-wide font-display color-ink">{opt.label}</p>
+                      <p className="text-xs mt-1 font-serif color-ink-muted" style={{ fontStyle: 'italic' }}>{opt.desc}</p>
                     </button>
                   ))}
                 </div>
@@ -126,37 +123,37 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
               {step === 2 && (
                 <div className="space-y-5 animate-fade-up">
                   <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-0 py-3 bg-transparent border-0 border-b-2 focus:outline-none text-lg"
-                    style={{ borderColor: 'var(--border-card)', color: 'var(--ink)', ...sr }}
+                    className="w-full px-0 py-3 bg-transparent border-0 border-b-2 focus:outline-none text-lg font-serif color-ink"
+                    style={{ borderColor: 'var(--border-card)' }}
                     placeholder={type === 'need' ? 'Ride to appointment Tuesday' : 'Winter coats, kids sizes'}
                     autoFocus
                   />
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>Details <span className="normal-case tracking-normal font-normal" style={{ color: 'var(--ink-muted)' }}>(optional)</span></label>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>Details <span className="normal-case tracking-normal font-normal color-ink-muted">(optional)</span></label>
                     <textarea value={details} onChange={(e) => setDetails(e.target.value)}
-                      className="w-full px-4 py-3 text-sm focus:outline-none resize-none"
-                      style={{ background: '#fff', border: '1px solid var(--border-card)', color: 'var(--ink)' }}
+                      className="w-full px-4 py-3 text-sm focus:outline-none resize-none color-ink"
+                      style={{ background: '#fff', border: '1px solid var(--border-card)' }}
                       rows={3} placeholder="Any extra context..."
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>Category</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>Category</label>
                     <div className="flex gap-2 flex-wrap">
                       {CATEGORIES.map((c) => (
                         <button key={c.value} type="button" onClick={() => setCategory(c.value)}
-                          className="px-3 py-2 text-xs font-bold uppercase tracking-wider transition-all"
-                          style={{ ...ds, fontSize: '0.6rem', background: category === c.value ? 'var(--ink)' : 'transparent', color: category === c.value ? 'var(--card)' : 'var(--ink-light)', border: `1.5px solid ${category === c.value ? 'var(--ink)' : 'var(--border-card)'}` }}
+                          className="px-3 py-2 text-xs font-bold uppercase tracking-wider transition-all font-display"
+                          style={{ fontSize: '0.6rem', background: category === c.value ? 'var(--ink)' : 'transparent', color: category === c.value ? 'var(--card)' : 'var(--ink-light)', border: `1.5px solid ${category === c.value ? 'var(--ink)' : 'var(--border-card)'}` }}
                         >{c.label}</button>
                       ))}
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>How soon?</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>How soon?</label>
                     <div className="flex gap-2">
                       {URGENCIES.map((u) => (
                         <button key={u.value} type="button" onClick={() => setUrgency(u.value)}
-                          className="flex-1 px-3 py-2 text-xs font-bold uppercase tracking-wider text-center transition-all"
-                          style={{ ...ds, fontSize: '0.6rem', background: urgency === u.value ? 'var(--ink)' : 'transparent', color: urgency === u.value ? 'var(--card)' : 'var(--ink-light)', border: `1.5px solid ${urgency === u.value ? 'var(--ink)' : 'var(--border-card)'}` }}
+                          className="flex-1 px-3 py-2 text-xs font-bold uppercase tracking-wider text-center transition-all font-display"
+                          style={{ fontSize: '0.6rem', background: urgency === u.value ? 'var(--ink)' : 'transparent', color: urgency === u.value ? 'var(--card)' : 'var(--ink-light)', border: `1.5px solid ${urgency === u.value ? 'var(--ink)' : 'var(--border-card)'}` }}
                         >{u.label}</button>
                       ))}
                     </div>
@@ -164,25 +161,24 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
 
                   {/* Location — cross-street only */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider mb-1" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>
-                      Whereabouts? <span className="normal-case tracking-normal font-normal" style={{ color: 'var(--ink-muted)' }}>(optional — places a pin on the map)</span>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-1 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>
+                      Whereabouts? <span className="normal-case tracking-normal font-normal color-ink-muted">(optional — places a pin on the map)</span>
                     </label>
-                    <p className="text-xs mb-2" style={{ color: 'var(--ink-muted)', fontSize: '0.68rem' }}>
+                    <p className="text-xs mb-2 color-ink-muted" style={{ fontSize: '0.68rem' }}>
                       Use a nearby intersection for best results (neighbourhood names alone won&apos;t appear on the map). We never show your exact location — only an approximate area.
                     </p>
                     <input
                       type="text"
                       value={crossStreet}
                       onChange={(e) => setCrossStreet(e.target.value)}
-                      className="w-full px-4 py-3 text-sm focus:outline-none"
-                      style={{ background: '#fff', border: '1px solid var(--border-card)', color: 'var(--ink)' }}
+                      className="w-full px-4 py-3 text-sm focus:outline-none color-ink"
+                      style={{ background: '#fff', border: '1px solid var(--border-card)' }}
                       placeholder="e.g. Dundas & Adelaide, or Oxford & Wharncliffe"
                     />
                   </div>
 
                   <button onClick={() => setStep(3)} disabled={!title.trim()}
-                    className="w-full flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-all"
-                    style={{ background: 'var(--ink)', color: 'var(--card)', ...ds }}
+                    className="w-full flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-all font-display btn-ink"
                   >Continue <ArrowRight className="w-4 h-4" /></button>
                 </div>
               )}
@@ -190,37 +186,37 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
               {step === 3 && (
                 <div className="space-y-5 animate-fade-up">
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>Your name</label>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>Your name</label>
                     <input type="text" value={contactName} onChange={(e) => setContactName(e.target.value)}
-                      className="w-full px-4 py-3 text-sm focus:outline-none"
-                      style={{ background: '#fff', border: '1px solid var(--border-card)', color: 'var(--ink)' }}
+                      className="w-full px-4 py-3 text-sm focus:outline-none color-ink"
+                      style={{ background: '#fff', border: '1px solid var(--border-card)' }}
                       placeholder="First name" autoFocus
                     />
                   </div>
                   <div className="p-3" style={{ background: 'rgba(58,106,74,0.08)', border: '1px solid var(--border-card)' }}>
-                    <p className="text-xs" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>How people connect with you</p>
-                    <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)', fontSize: '0.75rem' }}>
+                    <p className="text-xs font-display color-ink-light" style={{ fontSize: '0.6rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>How people connect with you</p>
+                    <p className="text-xs mt-1 color-ink-muted" style={{ fontSize: '0.75rem' }}>
                       Interested neighbours will reach out through the app. Your personal info stays private until you choose to share it.
                     </p>
                   </div>
 
                   {/* Preview */}
                   <div className="p-4" style={{ background: 'rgba(26,42,32,0.05)', border: '1px dashed var(--border-card)' }}>
-                    <p className="text-xs uppercase tracking-wider font-bold mb-1" style={{ ...ds, color: 'var(--ink-muted)', fontSize: '0.55rem' }}>Preview</p>
-                    <p className="text-sm" style={{ color: 'var(--ink)' }}>
+                    <p className="text-xs uppercase tracking-wider font-bold mb-1 font-display color-ink-muted" style={{ fontSize: '0.55rem' }}>Preview</p>
+                    <p className="text-sm color-ink">
                       <span className="font-bold" style={{ color: type === 'need' ? 'var(--need)' : 'var(--offer)' }}>
                         {type === 'need' ? 'Looking for' : 'Offering'}:
                       </span>{' '}{title || '...'}
                     </p>
-                    <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>
+                    <p className="text-xs mt-1 color-ink-muted">
                       by {contactName || '...'}
                       {crossStreet && <span> · {crossStreet}</span>}
                     </p>
                   </div>
 
                   <button onClick={handleSubmit} disabled={submitting || !contactName.trim()}
-                    className="w-full py-4 text-sm font-bold uppercase tracking-wider disabled:opacity-40 transition-all"
-                    style={{ background: type === 'need' ? 'var(--need)' : 'var(--offer)', color: 'var(--card)', ...ds }}
+                    className="w-full py-4 text-sm font-bold uppercase tracking-wider disabled:opacity-40 transition-all font-display color-card"
+                    style={{ background: type === 'need' ? 'var(--need)' : 'var(--offer)' }}
                   >{submitting ? 'Posting...' : 'Share with the community'}</button>
                 </div>
               )}

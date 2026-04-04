@@ -52,6 +52,7 @@ export async function POST(req: NextRequest) {
       location_crossstreet: location_crossstreet || null,
       location_lat,
       location_lng,
+      expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     }).select().single();
 
     if (error) {
