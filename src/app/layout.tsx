@@ -40,6 +40,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>
       <body className="grain-overlay">
+        <a href="#main-content" className="skip-to-content">Skip to content</a>
         {children}
         <Toaster />
         <script dangerouslySetInnerHTML={{ __html: `

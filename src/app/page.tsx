@@ -29,16 +29,18 @@ export default async function Home() {
     .or('moderation_status.eq.approved,moderation_status.is.null');
 
   return (
-    <main className="min-h-screen bg-page">
+    <main id="main-content" className="min-h-screen bg-page">
       <Header />
 
       {/* Hero */}
       <section className="text-center px-5 pt-12 pb-8">
-        <h1
+        <h1 className="sr-only">{APP_NAME} — {APP_DESCRIPTION}</h1>
+        <p
           className="text-5xl sm:text-6xl font-extrabold uppercase tracking-wide leading-none mb-2 font-display color-heading"
+          aria-hidden="true"
         >
           {APP_NAME}
-        </h1>
+        </p>
         <p
           className="text-base sm:text-xl mb-6 font-serif color-sub"
         >

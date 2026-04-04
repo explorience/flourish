@@ -80,15 +80,15 @@ export function Header() {
             <Link href="/feedback" className="nav-link hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-all hover:opacity-100">
               Feedback
             </Link>
-            <Link href="/search" className="nav-icon p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110">
-              <Search className="w-4 h-4 md:w-7 md:h-7" />
+            <Link href="/search" className="nav-icon p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110" aria-label="Search posts">
+              <Search className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
             </Link>
-            <Link href="/map" className="nav-icon p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110">
-              <Map className="w-4 h-4 md:w-7 md:h-7" />
+            <Link href="/map" className="nav-icon p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110" aria-label="View map">
+              <Map className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
             </Link>
             {isLoggedIn && (
-              <Link href="/messages" className={`relative p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110 ${unread > 0 ? 'nav-icon-active' : 'nav-icon'}`}>
-                <MessageSquare className="w-4 h-4 md:w-7 md:h-7" />
+              <Link href="/messages" className={`relative p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110 ${unread > 0 ? 'nav-icon-active' : 'nav-icon'}`} aria-label={`Messages${unread > 0 ? ` (${unread} unread)` : ''}`}>
+                <MessageSquare className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
                 {unread > 0 && (
                   <span className="nav-badge absolute top-1 right-1 md:top-1.5 md:right-1.5 flex items-center justify-center text-white font-bold">
                     {unread > 9 ? '9+' : unread}
@@ -97,12 +97,12 @@ export function Header() {
               </Link>
             )}
             {isAdmin && (
-              <Link href="/admin" className="nav-icon p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110 hover:opacity-100 hover:scale-110" title="Admin">
-                <Shield className="w-4 h-4 md:w-7 md:h-7" />
+              <Link href="/admin" className="nav-icon p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110" title="Admin" aria-label="Admin dashboard">
+                <Shield className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
               </Link>
             )}
-            <Link href={isLoggedIn ? '/account' : '/auth'} className={`p-2 md:p-3 rounded transition-colors hover:opacity-100 hover:scale-110 ${isLoggedIn ? 'nav-icon-active' : 'nav-icon'}`}>
-              <User className="w-4 h-4 md:w-7 md:h-7" />
+            <Link href={isLoggedIn ? '/account' : '/auth'} className={`p-2 md:p-3 rounded transition-colors hover:opacity-100 hover:scale-110 ${isLoggedIn ? 'nav-icon-active' : 'nav-icon'}`} aria-label={isLoggedIn ? 'Your account' : 'Sign in'}>
+              <User className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
             </Link>
             <ThemeToggle />
             <button

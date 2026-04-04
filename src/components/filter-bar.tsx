@@ -64,6 +64,7 @@ function Tag({ active, onClick, label, activeColor }: {
   return (
     <button
       onClick={onClick}
+      aria-pressed={active}
       className="font-bold uppercase tracking-wider whitespace-nowrap flex-shrink-0 transition-all"
       style={{
         fontFamily: 'var(--font-display)',

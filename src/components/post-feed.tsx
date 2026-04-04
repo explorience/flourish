@@ -63,11 +63,11 @@ export function PostFeed({ initialPosts, isModerator = false }: PostFeedProps) {
           <p
             className="text-xl font-bold uppercase tracking-wide mb-2 font-display color-heading"
           >
-            {posts.length === 0 ? 'The board is quiet' : 'Nothing matches'}
+            {posts.length === 0 ? 'No posts yet' : 'Nothing matches'}
           </p>
           <p className="text-sm mb-8 color-sub">
             {posts.length === 0
-              ? 'Be the first to share something with your neighbours.'
+              ? 'Be the first to share a need or offer!'
               : 'Try adjusting your filters.'}
           </p>
           {posts.length === 0 && <CreatePostButton />}

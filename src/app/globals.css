@@ -509,3 +509,32 @@
 .card-theme { background: var(--card); border: 1px solid var(--border); }
 .glow-need { background: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(208,112,64,0.12) 0%, transparent 70%); }
 .glow-offer { background: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(58,106,74,0.18) 0%, transparent 70%); }
+
+/* Skip to content link — visually hidden until focused */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 9999;
+  padding: 12px 24px;
+  background: var(--card);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  border: 2px solid var(--border);
+}
+.skip-to-content:focus {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  width: auto;
+  height: auto;
+  overflow: visible;
+}

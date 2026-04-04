@@ -78,7 +78,7 @@ export function AuthForm() {
       {/* Mode tabs */}
       <div className="flex gap-0 mb-8" style={{ border: '1.5px solid var(--border)' }}>
         {[
-          { val: 'magic' as Mode, label: 'Magic Link' },
+          { val: 'magic' as Mode, label: 'Email Login' },
           { val: 'sign_in' as Mode, label: 'Password' },
           { val: 'sign_up' as Mode, label: 'Sign Up' },
         ].map((m) => (
@@ -131,7 +131,7 @@ export function AuthForm() {
       )}
 
       <p className="text-center text-xs mt-6" style={{ color: 'var(--sub)' }}>
-        You don&apos;t need an account to post or respond. Accounts let you edit and close your own posts.
+        Sign in to post or respond to your neighbours. Your account lets you manage your posts and send messages.
       </p>
     </div>
   );

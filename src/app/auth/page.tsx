@@ -35,7 +35,7 @@ export default async function AuthPage({
               Flourish
             </h1>
             <p className="text-sm italic font-serif color-sub">
-              Sign in to manage your posts
+              Sign in to post or respond
             </p>
           </div>
           <AuthForm />

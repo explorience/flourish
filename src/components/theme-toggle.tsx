@@ -70,10 +70,13 @@ export function ThemeToggle() {
               className={`theme-option w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold uppercase tracking-wider ${
                 current === t.id ? 'theme-option-active' : ''
               }`}
+              aria-label={`${t.label} theme${current === t.id ? ' (active)' : ''}`}
+              aria-pressed={current === t.id}
             >
               <span
                 className="w-4 h-4 rounded-full border"
                 style={{ background: t.swatch, borderColor: 'var(--border)' }}
+                aria-hidden="true"
               />
               {t.label}
             </button>
