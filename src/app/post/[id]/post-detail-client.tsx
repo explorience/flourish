@@ -8,6 +8,7 @@ import { RespondDialog } from '@/components/respond-dialog';
 import { EditPostForm } from '@/components/edit-post-form';
 import { formatDistanceToNow } from 'date-fns';
 import { MessageSquare, Pencil, RefreshCw } from 'lucide-react';
+import { MeTooButton } from '@/components/me-too-button';
 import type { PostWithResponses } from '@/types/database';
 
 interface PostDetailClientProps {
@@ -106,6 +107,17 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
 
   return (
     <>
+      {/* Me too button — need posts only */}
+      {post.status === 'active' && (
+        <div className="mb-4">
+          <MeTooButton
+            postId={post.id}
+            postType={post.type as 'need' | 'offer'}
+            isOwner={!!isPoster}
+          />
+        </div>
+      )}
+
       {/* Extend button — shown to post owner when expiring within 7 days */}
       {isPoster && post.status === 'active' && isExpiringSoon && (
         <div className="mb-6">

@@ -5,6 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { CATEGORIES } from '@/lib/constants';
 import { RespondDialog } from './respond-dialog';
 import Link from 'next/link';
+import { MeTooButton } from './me-too-button';
 import type { PostWithResponses, PostWithProfile } from '@/types/database';
 
 interface PostCardProps {
@@ -131,6 +132,9 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
               </span>
             )}
           </div>
+
+          {/* Me too count for need posts */}
+          <MeTooButton postId={post.id} postType={post.type as 'need' | 'offer'} compact />
 
           {/* Action button */}
           <button
