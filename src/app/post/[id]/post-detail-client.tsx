@@ -81,8 +81,51 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
     setThreading(null);
   };
 
+  const extendPost = async () => {
+    setExtending(true);
+    try {
+      const res = await fetch(`/api/posts/${post.id}/extend`, { method: 'POST' });
+      if (res.ok) {
+        const { newExpiresAt } = await res.json();
+        setExtendedUntil(newExpiresAt);
+        router.refresh();
+      }
+    } catch (err) {
+      console.error('Extend error:', err);
+    } finally {
+      setExtending(false);
+    }
+  };
+
+  // Calculate whether post is expiring soon (within 7 days)
+  const expiresAt = extendedUntil || (post as any).expires_at;
+  const daysUntilExpiry = expiresAt
+    ? Math.ceil((new Date(expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+    : null;
+  const isExpiringSoon = daysUntilExpiry !== null && daysUntilExpiry <= 7;
+
   return (
     <>
+      {/* Extend button — shown to post owner when expiring within 7 days */}
+      {isPoster && post.status === 'active' && isExpiringSoon && (
+        <div className="mb-6">
+          <button
+            onClick={extendPost}
+            disabled={extending || !!extendedUntil}
+            className="inline-flex items-center gap-2 px-4 py-2.5 font-display text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-60"
+            style={{
+              fontSize: '0.6rem',
+              border: '1.5px solid var(--offer)',
+              color: 'var(--offer)',
+              background: 'transparent',
+            }}
+          >
+            <RefreshCw className={`w-3 h-3 ${extending ? 'animate-spin' : ''}`} />
+            {extendedUntil ? 'Extended ✓' : extending ? 'Extending…' : 'Extend 30 days'}
+          </button>
+        </div>
+      )}
+
       {/* Respond button — shown to non-posters, vouched users only */}
       {!isPoster && post.status === 'active' && (
         <div className="mb-8">
