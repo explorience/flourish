@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { sendEmail, responseNotificationEmail } from '@/lib/email';
+import { sendPushNotification } from '@/lib/push';
 
 function getSupabase() {
   return createClient(
@@ -87,7 +88,18 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 3. SMS notification — only for posts that came in via SMS
+    // 3. Push notification for logged-in users (fire-and-forget alongside other channels)
+    if (post.user_id) {
+      const pushTitle = `${responderName} responded to "${post.title}"`;
+      const pushBody = responderMessage
+        ? responderMessage.slice(0, 120)
+        : `Someone wants to ${post.type === 'need' ? 'help' : 'connect'} with your ${post.type}.`;
+      sendPushNotification(post.user_id, pushTitle, pushBody, `${appUrl}/post/${postId}`).catch(
+        (err) => console.error('Push notification error:', err)
+      );
+    }
+
+    // 4. SMS notification — only for posts that came in via SMS
     if (!notified && post.source === 'sms' && post.source_phone) {
       const accountSid = process.env.TWILIO_ACCOUNT_SID;
       const authToken = process.env.TWILIO_AUTH_TOKEN;
