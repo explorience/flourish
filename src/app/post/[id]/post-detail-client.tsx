@@ -169,7 +169,7 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
             onClick={() => setShowEdit(true)}
             className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all"
             style={{
-              ...ds,
+              fontFamily: 'var(--font-display)',
               fontSize: '0.6rem',
               border: '1.5px solid var(--border-card)',
               color: 'var(--ink-muted)',
