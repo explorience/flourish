@@ -7,6 +7,7 @@ import { isVouchRequiredClient } from '@/lib/settings-client';
 import { RespondDialog } from '@/components/respond-dialog';
 import { formatDistanceToNow } from 'date-fns';
 import { MessageSquare } from 'lucide-react';
+import { MeTooButton } from '@/components/me-too-button';
 import type { PostWithResponses } from '@/types/database';
 
 interface PostDetailClientProps {
@@ -82,6 +83,17 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
 
   return (
     <>
+      {/* Me too button — need posts only */}
+      {post.status === 'active' && (
+        <div className="mb-4">
+          <MeTooButton
+            postId={post.id}
+            postType={post.type as 'need' | 'offer'}
+            isOwner={!!isPoster}
+          />
+        </div>
+      )}
+
       {/* Respond button — shown to non-posters, vouched users only */}
       {!isPoster && post.status === 'active' && (
         <div className="mb-8">
