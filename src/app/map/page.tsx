@@ -16,16 +16,16 @@ export default async function MapPage() {
     .order('created_at', { ascending: false });
 
   return (
-    <main className="min-h-screen flex flex-col" style={{ background: 'var(--bg)' }}>
+    <main className="min-h-screen flex flex-col bg-page">
       <header className="sticky top-0 z-40 backdrop-blur-xl border-b" style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}>
         <div className="max-w-xl mx-auto px-5 flex items-center justify-between" style={{ height: '3.25rem' }}>
-          <Link href="/" className="inline-flex items-center gap-2 text-xs" style={{ color: 'var(--sub)' }}>
+          <Link href="/" className="inline-flex items-center gap-2 text-xs color-sub">
             <ArrowLeft className="w-4 h-4" /> Back
           </Link>
-          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--heading)', fontFamily: 'var(--font-display)' }}>
+          <span className="text-xs font-bold uppercase tracking-widest font-display color-heading">
             Map view
           </span>
-          <span className="text-xs" style={{ color: 'var(--sub)' }}>{posts?.length || 0} posts</span>
+          <span className="text-xs color-sub">{posts?.length || 0} posts</span>
         </div>
       </header>
 

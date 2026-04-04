@@ -61,12 +61,11 @@ export function PostFeed({ initialPosts, isModerator = false }: PostFeedProps) {
       {filtered.length === 0 ? (
         <div className="text-center py-16 animate-fade-up w-full">
           <p
-            className="text-xl font-bold uppercase tracking-wide mb-2"
-            style={{ color: 'var(--heading)', fontFamily: 'var(--font-display)' }}
+            className="text-xl font-bold uppercase tracking-wide mb-2 font-display color-heading"
           >
             {posts.length === 0 ? 'The board is quiet' : 'Nothing matches'}
           </p>
-          <p className="text-sm mb-8" style={{ color: 'var(--sub)' }}>
+          <p className="text-sm mb-8 color-sub">
             {posts.length === 0
               ? 'Be the first to share something with your neighbours.'
               : 'Try adjusting your filters.'}

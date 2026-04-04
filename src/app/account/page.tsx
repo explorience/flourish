@@ -26,13 +26,13 @@ export default async function AccountPage() {
   const vouchCount = profile?.vouch_count || 0;
 
   return (
-    <main className="min-h-screen" style={{ background: 'var(--bg)' }}>
+    <main className="min-h-screen bg-page">
       <header className="sticky top-0 z-40 backdrop-blur-xl border-b" style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}>
         <div className="max-w-xl mx-auto px-5 flex items-center justify-between" style={{ height: '3.25rem' }}>
-          <Link href="/" className="inline-flex items-center gap-2 text-xs" style={{ color: 'var(--sub)' }}>
+          <Link href="/" className="inline-flex items-center gap-2 text-xs color-sub">
             <ArrowLeft className="w-4 h-4" /> Flourish
           </Link>
-          <span className="text-xs" style={{ color: 'var(--sub)', fontFamily: 'var(--font-display)' }}>
+          <span className="text-xs font-display color-sub">
             {user.email}
           </span>
         </div>
@@ -40,11 +40,10 @@ export default async function AccountPage() {
 
       <div className="max-w-xl mx-auto px-5 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-extrabold uppercase tracking-wide mb-1"
-            style={{ fontFamily: 'var(--font-display)', color: 'var(--heading)' }}>
+          <h1 className="text-3xl font-extrabold uppercase tracking-wide mb-1 font-display color-heading">
             Your posts
           </h1>
-          <p className="text-sm italic" style={{ fontFamily: 'var(--font-serif)', color: 'var(--sub)' }}>
+          <p className="text-sm italic font-serif color-sub">
             {posts?.length || 0} {posts?.length === 1 ? 'post' : 'posts'} from you
           </p>
         </div>
@@ -53,20 +52,20 @@ export default async function AccountPage() {
         {vouchStatus === 'unvouched' && (
           <div className="mb-6 px-4 py-4" style={{ background: 'rgba(208,112,64,0.1)', border: '1px solid var(--need)' }}>
             <div className="flex items-center gap-2 mb-2">
-              <Shield className="w-4 h-4" style={{ color: 'var(--need)' }} />
-              <span className="text-xs font-bold uppercase tracking-wider" style={{ fontFamily: 'var(--font-display)', color: 'var(--need)' }}>
+              <Shield className="w-4 h-4 color-need" />
+              <span className="text-xs font-bold uppercase tracking-wider font-display color-need">
                 Not yet vouched
               </span>
             </div>
-            <p className="text-xs" style={{ fontFamily: 'var(--font-serif)', color: 'var(--sub)' }}>
+            <p className="text-xs font-serif color-sub">
               You need a vouch from an existing member to post or respond. Ask someone in the community, or use an invite link.
             </p>
           </div>
         )}
         {vouchStatus !== 'unvouched' && (
           <div className="mb-6 px-4 py-3 flex items-center gap-2" style={{ background: 'rgba(58,106,74,0.1)', border: '1px solid var(--offer)' }}>
-            <Shield className="w-4 h-4" style={{ color: 'var(--offer)' }} />
-            <span className="text-xs font-bold uppercase tracking-wider" style={{ fontFamily: 'var(--font-display)', color: 'var(--offer)' }}>
+            <Shield className="w-4 h-4 color-offer" />
+            <span className="text-xs font-bold uppercase tracking-wider font-display color-offer">
               Trusted member {vouchCount > 0 ? `· ${vouchCount} vouch${vouchCount > 1 ? 'es' : ''}` : ''}
             </span>
           </div>
