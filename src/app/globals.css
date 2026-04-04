@@ -459,3 +459,41 @@
 .font-preview-nunito { font-family: 'Nunito', system-ui, sans-serif; }
 .font-preview-source-serif { font-family: 'Source Serif 4', Georgia, serif; }
 .font-preview-merriweather { font-family: 'Merriweather', Georgia, serif; }
+
+/* Utility classes for inline style replacement */
+.font-display { font-family: var(--font-display); }
+.font-serif { font-family: var(--font-serif); }
+.font-body { font-family: var(--font-body); }
+.bg-page { background: var(--bg); }
+.bg-card { background: var(--card); }
+.bg-card-hover { background: var(--card-hover); }
+.bg-alpha { background: var(--bg-alpha); }
+.border-theme { border: 1px solid var(--border); }
+.border-card { border: 1px solid var(--border-card); }
+.border-dashed-theme { border: 1px dashed var(--border); }
+.border-t-theme { border-top: 1px solid var(--border); }
+.border-b-theme { border-bottom: 1px solid var(--border); }
+.color-heading { color: var(--heading); }
+.color-ink { color: var(--ink); }
+.color-ink-light { color: var(--ink-light); }
+.color-ink-muted { color: var(--ink-muted); }
+.color-sub { color: var(--sub); }
+.color-need { color: var(--need); }
+.color-offer { color: var(--offer); }
+.color-card { color: var(--card); }
+.bg-need { background: var(--need); }
+.bg-offer { background: var(--offer); }
+.header-blur { background: var(--bg-alpha); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.label-sm { font-family: var(--font-display); font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--sub); }
+.label-xs { font-family: var(--font-display); font-size: 0.55rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+.form-input { background: var(--bg-light); border: 1px solid var(--border); color: var(--heading); padding: 10px 14px; font-size: 0.85rem; font-family: var(--font-body); outline: none; width: 100%; }
+.form-input:focus { border-color: var(--offer); }
+.form-label { display: block; font-family: var(--font-display); font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--sub); margin-bottom: 0.3125rem; }
+.form-textarea { background: var(--bg-light); border: 1px solid var(--border); color: var(--heading); padding: 10px 14px; font-size: 0.85rem; font-family: var(--font-body); outline: none; width: 100%; min-height: 120px; resize: vertical; }
+.btn-need { background: var(--need); color: var(--card); font-family: var(--font-display); }
+.btn-offer { background: var(--offer); color: var(--card); font-family: var(--font-display); }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--sub); font-family: var(--font-display); }
+.btn-ink { background: var(--ink); color: var(--card); font-family: var(--font-display); }
+.card-theme { background: var(--card); border: 1px solid var(--border); }
+.glow-need { background: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(208,112,64,0.12) 0%, transparent 70%); }
+.glow-offer { background: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(58,106,74,0.18) 0%, transparent 70%); }
