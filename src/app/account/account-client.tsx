@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
-import { CheckCircle, XCircle, LogOut, MessageCircle, MessageSquare, UserCircle, Bell, BellOff } from 'lucide-react';
+import { CheckCircle, XCircle, Trash2, LogOut, MessageCircle, MessageSquare, UserCircle, Bell, BellOff } from 'lucide-react';
 import type { PostWithResponses } from '@/types/database';
 import type { User } from '@supabase/supabase-js';
 import Link from 'next/link';
@@ -50,6 +50,17 @@ export function AccountClient({ user, posts }: { user: User; posts: PostWithResp
     setUpdating(postId);
     const supabase = createClient();
     await supabase.from('posts').update({ status }).eq('id', postId);
+    router.refresh();
+    setUpdating(null);
+  };
+
+  const deletePost = async (postId: string) => {
+    if (!confirm('Delete this post? This cannot be undone.')) return;
+    setUpdating(postId);
+    const supabase = createClient();
+    // Delete responses first, then the post
+    await supabase.from('responses').delete().eq('post_id', postId);
+    await supabase.from('posts').delete().eq('id', postId);
     router.refresh();
     setUpdating(null);
   };
@@ -126,6 +137,20 @@ export function AccountClient({ user, posts }: { user: User; posts: PostWithResp
                     className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-all"
                     style={{ ...ds, border: '1.5px solid var(--border-card)', color: 'var(--ink-muted)', background: 'transparent', fontSize: '0.6rem' }}>
                     <XCircle className="w-3 h-3" /> Close
+                  </button>
+                  <button onClick={() => deletePost(post.id)} disabled={updating === post.id}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-all"
+                    style={{ ...ds, border: '1.5px solid rgba(208,112,64,0.3)', color: 'var(--need)', background: 'transparent', fontSize: '0.6rem' }}>
+                    <Trash2 className="w-3 h-3" /> Delete
+                  </button>
+                </div>
+              )}
+              {post.status !== 'active' && (
+                <div className="flex gap-2 pt-3" style={{ borderTop: '1px dashed var(--border-card)' }}>
+                  <button onClick={() => deletePost(post.id)} disabled={updating === post.id}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-all"
+                    style={{ ...ds, border: '1.5px solid rgba(208,112,64,0.3)', color: 'var(--need)', background: 'transparent', fontSize: '0.6rem' }}>
+                    <Trash2 className="w-3 h-3" /> Delete
                   </button>
                 </div>
               )}

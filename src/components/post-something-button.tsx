@@ -8,7 +8,7 @@ import { isVouchRequiredClient } from '@/lib/settings-client';
 
 export function PostSomethingButton() {
   const [showCreate, setShowCreate] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [vouchStatus, setVouchStatus] = useState<string>('unvouched');
   const [vouchRequired, setVouchRequired] = useState(false);
   const [showVouchMsg, setShowVouchMsg] = useState(false);
@@ -28,6 +28,7 @@ export function PostSomethingButton() {
   }, []);
 
   const handleClick = () => {
+    if (isLoggedIn === null) return; // Still loading, do nothing
     if (!isLoggedIn) {
       window.location.href = '/auth?next=/';
       return;
@@ -45,6 +46,7 @@ export function PostSomethingButton() {
       <button
         onClick={handleClick}
         className="post-btn px-8 py-3 text-sm font-bold uppercase tracking-wider transition-colors"
+        style={{ opacity: isLoggedIn === null ? 0.7 : 1 }}
       >
         Post something
       </button>

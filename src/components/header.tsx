@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/client';
 
 export function Header() {
   const [showCreate, setShowCreate] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [unread, setUnread] = useState(0);
 
@@ -96,7 +96,10 @@ export function Header() {
             </Link>
             <ThemeToggle />
             <button
-              onClick={() => isLoggedIn ? setShowCreate(true) : window.location.href = '/auth?next=/'}
+              onClick={() => {
+                if (isLoggedIn === null) return;
+                isLoggedIn ? setShowCreate(true) : window.location.href = '/auth?next=/';
+              }}
               className="post-btn ml-1 px-4 py-2 md:ml-2 md:px-7 md:py-3 text-xs md:text-base font-bold uppercase tracking-wider transition-colors"
             >
               Post
