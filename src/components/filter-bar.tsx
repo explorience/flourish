@@ -18,7 +18,7 @@ export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategory
   return (
     <div className="space-y-2 animate-fade-up">
       {/* Type filters + category filters on one row on mobile */}
-      <div className="flex items-center justify-center gap-x-2 md:gap-x-5 flex-nowrap overflow-x-auto pb-1 md:pb-3 w-full" style={{ scrollbarWidth: 'none' }}>
+      <div className="flex items-center justify-center gap-x-3 md:gap-x-5 flex-wrap pb-1 md:pb-3 w-full">
         {POST_TYPES.map((t) => (
           <Tag
             key={t.value}
@@ -67,7 +67,7 @@ function Tag({ active, onClick, label, activeColor }: {
       className="font-bold uppercase tracking-wider whitespace-nowrap flex-shrink-0 transition-all"
       style={{
         fontFamily: 'var(--font-display)',
-        fontSize: 'clamp(0.6rem, 0.6rem + 0.4vw, 1.1rem)',
+        fontSize: 'clamp(0.65rem, 0.6rem + 0.4vw, 1.1rem)',
         letterSpacing: '0.06em',
         color: active
           ? (activeColor || 'var(--heading)')

@@ -156,11 +156,23 @@
   font-family: var(--font-display);
   letter-spacing: 0.1em;
 }
+.nav-link:hover {
+  color: var(--heading);
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+}
 .nav-icon {
   color: var(--sub);
 }
+.nav-icon:hover {
+  color: var(--heading);
+}
 .nav-icon-active {
   color: var(--offer);
+}
+.nav-icon-active:hover {
+  color: var(--offer);
+  filter: brightness(1.2);
 }
 .nav-badge {
   background: var(--need);

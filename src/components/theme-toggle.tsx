@@ -3,9 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 
 const THEMES = [
-  { id: 'forest-dark', label: 'Forest Dark', swatch: '#1a2a20' },
-  { id: 'light', label: 'Light', swatch: '#faf8f4' },
   { id: 'evergreen', label: 'Evergreen', swatch: '#1e3a28' },
+  { id: 'light', label: 'Light', swatch: '#faf8f4' },
   { id: 'slate', label: 'Slate', swatch: '#22222a' },
   { id: 'parchment', label: 'Parchment', swatch: '#f5f0e0' },
 ] as const;
@@ -13,8 +12,11 @@ const THEMES = [
 type ThemeId = typeof THEMES[number]['id'];
 
 function getStoredTheme(): ThemeId {
-  if (typeof window === 'undefined') return 'forest-dark';
-  return (localStorage.getItem('flourish-theme') as ThemeId) || 'forest-dark';
+  if (typeof window === 'undefined') return 'evergreen';
+  const stored = localStorage.getItem('flourish-theme') as ThemeId;
+  // Migrate forest-dark users to evergreen
+  if (!stored || stored === ('forest-dark' as string)) return 'evergreen';
+  return stored;
 }
 
 function applyTheme(id: ThemeId) {

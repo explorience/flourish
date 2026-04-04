@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { CreatePostForm } from './create-post-form';
 import { ThemeToggle } from './theme-toggle';
-import { Search, Map, User, MessageSquare } from 'lucide-react';
+import { Search, Map, User, MessageSquare, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
@@ -12,12 +12,17 @@ export function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [unread, setUnread] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       setIsLoggedIn(!!user);
       setUserId(user?.id || null);
+      if (user?.email) {
+        supabase.from('moderators').select('role').eq('email', user.email).single()
+          .then(({ data }) => { if (data) setIsAdmin(true); });
+      }
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setIsLoggedIn(!!session?.user);
@@ -69,20 +74,20 @@ export function Header() {
           </Link>
 
           <div className="flex items-center gap-1 md:gap-3">
-            <Link href="/about" className="nav-link hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-colors">
+            <Link href="/about" className="nav-link hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-all hover:opacity-100">
               About
             </Link>
-            <Link href="/feedback" className="nav-link hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-colors">
+            <Link href="/feedback" className="nav-link hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-all hover:opacity-100">
               Feedback
             </Link>
-            <Link href="/search" className="nav-icon p-2 md:p-3 rounded transition-colors">
+            <Link href="/search" className="nav-icon p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110">
               <Search className="w-4 h-4 md:w-7 md:h-7" />
             </Link>
-            <Link href="/map" className="nav-icon p-2 md:p-3 rounded transition-colors">
+            <Link href="/map" className="nav-icon p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110">
               <Map className="w-4 h-4 md:w-7 md:h-7" />
             </Link>
             {isLoggedIn && (
-              <Link href="/messages" className={`relative p-2 md:p-3 rounded transition-colors ${unread > 0 ? 'nav-icon-active' : 'nav-icon'}`}>
+              <Link href="/messages" className={`relative p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110 ${unread > 0 ? 'nav-icon-active' : 'nav-icon'}`}>
                 <MessageSquare className="w-4 h-4 md:w-7 md:h-7" />
                 {unread > 0 && (
                   <span className="nav-badge absolute top-1 right-1 md:top-1.5 md:right-1.5 flex items-center justify-center text-white font-bold">
@@ -91,7 +96,12 @@ export function Header() {
                 )}
               </Link>
             )}
-            <Link href={isLoggedIn ? '/account' : '/auth'} className={`p-2 md:p-3 rounded transition-colors ${isLoggedIn ? 'nav-icon-active' : 'nav-icon'}`}>
+            {isAdmin && (
+              <Link href="/admin" className="nav-icon p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110 hover:opacity-100 hover:scale-110" title="Admin">
+                <Shield className="w-4 h-4 md:w-7 md:h-7" />
+              </Link>
+            )}
+            <Link href={isLoggedIn ? '/account' : '/auth'} className={`p-2 md:p-3 rounded transition-colors hover:opacity-100 hover:scale-110 ${isLoggedIn ? 'nav-icon-active' : 'nav-icon'}`}>
               <User className="w-4 h-4 md:w-7 md:h-7" />
             </Link>
             <ThemeToggle />
@@ -100,7 +110,7 @@ export function Header() {
                 if (isLoggedIn === null) return;
                 isLoggedIn ? setShowCreate(true) : window.location.href = '/auth?next=/';
               }}
-              className="post-btn ml-1 px-4 py-2 md:ml-2 md:px-7 md:py-3 text-xs md:text-base font-bold uppercase tracking-wider transition-colors"
+              className="post-btn ml-1 px-4 py-2 md:ml-2 md:px-7 md:py-3 text-xs md:text-base font-bold uppercase tracking-wider transition-all hover:scale-105 hover:brightness-110"
             >
               Post
             </button>
