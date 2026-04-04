@@ -17,10 +17,8 @@ export function MeTooButton({ postId, postType, isOwner = false, compact = false
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // Only show on need posts
-  if (postType !== 'need') return null;
-
   useEffect(() => {
+    if (postType !== 'need') return;
     fetch(`/api/posts/${postId}/metoo`)
       .then(r => r.json())
       .then(data => {
@@ -28,7 +26,10 @@ export function MeTooButton({ postId, postType, isOwner = false, compact = false
         setUpvoted(data.upvoted || false);
       })
       .catch(() => {});
-  }, [postId]);
+  }, [postId, postType]);
+
+  // Only show on need posts
+  if (postType !== 'need') return null;
 
   // Compact mode: just show count text on cards
   if (compact) {
