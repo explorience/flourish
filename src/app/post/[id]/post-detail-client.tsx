@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { isVouchRequiredClient } from '@/lib/settings-client';
 import { RespondDialog } from '@/components/respond-dialog';
+import { EditPostForm } from '@/components/edit-post-form';
 import { formatDistanceToNow } from 'date-fns';
-import { MessageSquare } from 'lucide-react';
+import { MessageSquare, Pencil, RefreshCw } from 'lucide-react';
 import type { PostWithResponses } from '@/types/database';
 
 interface PostDetailClientProps {
@@ -16,6 +17,9 @@ interface PostDetailClientProps {
 
 export function PostDetailClient({ post, isModerator = false }: PostDetailClientProps) {
   const [showRespond, setShowRespond] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [extending, setExtending] = useState(false);
+  const [extendedUntil, setExtendedUntil] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [vouchStatus, setVouchStatus] = useState<string>('unvouched');
   const [vouchRequired, setVouchRequired] = useState(false);
@@ -100,6 +104,34 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
               {isNeed ? 'I can help with this' : 'I\'m interested in this'}
             </button>
           )}
+        </div>
+      )}
+
+      {/* Edit button — shown to post owner only */}
+      {isPoster && post.status === 'active' && (
+        <div className="mb-6">
+          <button
+            onClick={() => setShowEdit(true)}
+            className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all"
+            style={{
+              ...ds,
+              fontSize: '0.6rem',
+              border: '1.5px solid var(--border-card)',
+              color: 'var(--ink-muted)',
+              background: 'transparent',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'var(--ink)';
+              e.currentTarget.style.color = 'var(--ink)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-card)';
+              e.currentTarget.style.color = 'var(--ink-muted)';
+            }}
+          >
+            <Pencil className="w-3 h-3" />
+            Edit post
+          </button>
         </div>
       )}
 
@@ -245,6 +277,14 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
       )}
 
       <RespondDialog post={post} open={showRespond} onClose={() => setShowRespond(false)} />
+
+      {showEdit && (
+        <EditPostForm
+          post={post}
+          onClose={() => setShowEdit(false)}
+          onSuccess={() => router.refresh()}
+        />
+      )}
     </>
   );
 }

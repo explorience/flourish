@@ -22,6 +22,14 @@ export default async function PostDetail({ params }: { params: { id: string } })
   const dateStr = format(new Date(post.created_at), 'MMMM d, yyyy');
   const isNeed = post.type === 'need';
 
+  // Show "edited" when updated_at is more than 1 minute after created_at
+  const createdMs = new Date(post.created_at).getTime();
+  const updatedMs = new Date(post.updated_at).getTime();
+  const wasEdited = updatedMs - createdMs > 60_000;
+  const editedAgo = wasEdited
+    ? formatDistanceToNow(new Date(post.updated_at), { addSuffix: true })
+    : null;
+
   return (
     <main className="min-h-screen" style={{
       background: 'var(--bg)',
@@ -69,6 +77,11 @@ export default async function PostDetail({ params }: { params: { id: string } })
           )}
           <span>&mdash;</span>
           <span title={dateStr}>{timeAgo}</span>
+          {editedAgo && (
+            <span style={{ color: 'var(--ink-muted)', fontStyle: 'italic' }}>
+              · edited {editedAgo}
+            </span>
+          )}
           {categoryInfo && <><span>&mdash;</span><span>{categoryInfo.label}</span></>}
           {post.urgency !== 'flexible' && (
             <span className="inline-flex items-center gap-1 px-2 py-0.5" style={{ background: post.urgency === 'today' ? 'rgba(208,112,64,0.15)' : 'rgba(224,216,192,0.15)', color: post.urgency === 'today' ? 'var(--need)' : 'var(--heading)' }}>
