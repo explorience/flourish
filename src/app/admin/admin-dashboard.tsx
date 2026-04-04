@@ -36,6 +36,7 @@ interface AdminDashboardProps {
   moderators: Moderator[];
   isAdmin: boolean;
   currentUserEmail: string;
+  settings?: Record<string, any>;
 }
 
 export function AdminDashboard({
@@ -44,10 +45,13 @@ export function AdminDashboard({
   moderators: initialModerators,
   isAdmin,
   currentUserEmail,
+  settings: initialSettings,
 }: AdminDashboardProps) {
   const [stats, setStats] = useState(initialStats);
   const [posts, setPosts] = useState(initialPosts);
   const [moderators, setModerators] = useState(initialModerators);
+  const [vouchRequired, setVouchRequired] = useState(initialSettings?.require_vouch === true);
+  const [togglingVouch, setTogglingVouch] = useState(false);
   const [moderating, setModerating] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState<Record<string, string>>({});
   const [showRejectInput, setShowRejectInput] = useState<string | null>(null);
@@ -218,6 +222,60 @@ export function AdminDashboard({
           ))}
         </div>
       </section>
+
+      {/* ─── Settings ─── */}
+      {isAdmin && (
+        <section>
+          <h2
+            className="text-xs font-bold uppercase tracking-widest mb-4"
+            style={{ ...ds, color: 'var(--sub)' }}
+          >
+            Settings
+          </h2>
+          <div className="p-5" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <div className="text-sm font-medium" style={{ color: 'var(--ink)' }}>
+                  Require vouching to post
+                </div>
+                <div className="text-xs mt-1" style={{ ...sr, color: 'var(--ink-muted)' }}>
+                  {vouchRequired
+                    ? 'Users must be vouched by an existing member before they can post or respond.'
+                    : 'Anyone with the site URL can post freely. Turn this on when you need more trust controls.'}
+                </div>
+              </div>
+              <button
+                onClick={async () => {
+                  setTogglingVouch(true);
+                  try {
+                    const res = await fetch('/api/admin/settings', {
+                      method: 'PUT',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ key: 'require_vouch', value: !vouchRequired }),
+                    });
+                    if (res.ok) setVouchRequired(!vouchRequired);
+                  } catch (e) {
+                    console.error('Toggle error:', e);
+                  } finally {
+                    setTogglingVouch(false);
+                  }
+                }}
+                disabled={togglingVouch}
+                className="flex-shrink-0 px-4 py-2 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-all"
+                style={{
+                  ...ds,
+                  fontSize: '0.65rem',
+                  background: vouchRequired ? 'var(--offer)' : 'transparent',
+                  color: vouchRequired ? 'var(--card)' : 'var(--ink-muted)',
+                  border: vouchRequired ? 'none' : '1px solid var(--border)',
+                }}
+              >
+                {togglingVouch ? '...' : vouchRequired ? 'On' : 'Off'}
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ─── Posts needing moderation ─── */}
       <section>
