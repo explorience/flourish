@@ -4,17 +4,41 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
-import { CheckCircle, XCircle, Trash2, LogOut, MessageCircle, MessageSquare, UserCircle } from 'lucide-react';
+import { CheckCircle, XCircle, Trash2, LogOut, MessageCircle, MessageSquare, UserCircle, Bell, BellOff } from 'lucide-react';
 import type { PostWithResponses } from '@/types/database';
 import type { User } from '@supabase/supabase-js';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 const ds = { fontFamily: 'var(--font-display)' };
 const sr = { fontFamily: 'var(--font-serif)' };
 
 export function AccountClient({ user, posts }: { user: User; posts: PostWithResponses[] }) {
   const [updating, setUpdating] = useState<string | null>(null);
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [emailToggling, setEmailToggling] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.from('profiles').select('email_notifications').eq('id', user.id).single()
+      .then(({ data }) => {
+        if (data) setEmailNotifications(data.email_notifications ?? true);
+      });
+  }, [user.id]);
+
+  const toggleEmailNotifications = async () => {
+    setEmailToggling(true);
+    const supabase = createClient();
+    const newVal = !emailNotifications;
+    await supabase.from('profiles').upsert({
+      id: user.id,
+      email_notifications: newVal,
+      display_name: user.email?.split('@')[0] || '',
+    }, { onConflict: 'id' });
+    setEmailNotifications(newVal);
+    setEmailToggling(false);
+  };
 
   const signOut = async () => {
     const supabase = createClient();
@@ -145,6 +169,19 @@ export function AccountClient({ user, posts }: { user: User; posts: PostWithResp
           style={{ ...ds, background: 'var(--card)', color: 'var(--ink)', border: '1px solid var(--border)' }}>
           <MessageSquare className="w-4 h-4" /> My Messages
         </Link>
+      </div>
+
+      {/* Email notifications toggle */}
+      <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--border)' }}>
+        <button
+          onClick={toggleEmailNotifications}
+          disabled={emailToggling}
+          className="inline-flex items-center gap-2 px-4 py-3 text-xs font-bold uppercase tracking-wider transition-all w-full disabled:opacity-40"
+          style={{ ...ds, background: emailNotifications ? 'rgba(58,106,74,0.1)' : 'var(--card)', color: 'var(--ink)', border: `1px solid ${emailNotifications ? 'var(--offer)' : 'var(--border-card)'}` }}
+        >
+          {emailNotifications ? <Bell className="w-4 h-4" style={{ color: 'var(--offer)' }} /> : <BellOff className="w-4 h-4" />}
+          Email notifications {emailNotifications ? 'on' : 'off'}
+        </button>
       </div>
 
       {/* Sign out */}

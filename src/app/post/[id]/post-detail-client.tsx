@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { isVouchRequiredClient } from '@/lib/settings-client';
 import { RespondDialog } from '@/components/respond-dialog';
 import { formatDistanceToNow } from 'date-fns';
 import { MessageSquare } from 'lucide-react';
@@ -16,6 +17,8 @@ interface PostDetailClientProps {
 export function PostDetailClient({ post, isModerator = false }: PostDetailClientProps) {
   const [showRespond, setShowRespond] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [vouchStatus, setVouchStatus] = useState<string>('unvouched');
+  const [vouchRequired, setVouchRequired] = useState(false);
   const [threading, setThreading] = useState<string | null>(null);
   const [modAction, setModAction] = useState<'approved' | 'rejected' | null>(null);
   const [moderating, setModerating] = useState(false);
@@ -25,7 +28,16 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id || null));
+    isVouchRequiredClient().then(setVouchRequired);
+    supabase.auth.getUser().then(({ data }) => {
+      setCurrentUserId(data.user?.id || null);
+      if (data.user) {
+        supabase.from('profiles').select('vouch_status').eq('id', data.user.id).single()
+          .then(({ data: profile }) => {
+            if (profile?.vouch_status) setVouchStatus(profile.vouch_status);
+          });
+      }
+    });
   }, []);
 
   const isPoster = currentUserId && post.user_id === currentUserId;
@@ -70,16 +82,27 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
 
   return (
     <>
-      {/* Respond button — shown to non-posters */}
+      {/* Respond button — shown to non-posters, vouched users only */}
       {!isPoster && post.status === 'active' && (
         <div className="mb-8">
-          <button
-            onClick={() => setShowRespond(true)}
-            className="w-full py-4 text-sm font-bold uppercase tracking-wider transition-all"
-            style={{ ...ds, background: isNeed ? 'var(--need)' : 'var(--offer)', color: 'var(--card)' }}
-          >
-            {isNeed ? 'I can help with this' : 'I\'m interested in this'}
-          </button>
+          {currentUserId && vouchRequired && vouchStatus === 'unvouched' ? (
+            <div className="w-full py-4 px-4 text-center text-sm" style={{ background: 'rgba(240,236,224,0.08)', border: '1px dashed var(--border)' }}>
+              <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ ...ds, color: 'var(--sub)' }}>
+                Vouch needed to respond
+              </p>
+              <p className="text-xs" style={{ color: 'var(--ink-muted)', fontFamily: 'var(--font-serif)' }}>
+                Ask a member to vouch for you, or <a href="/join" style={{ color: 'var(--offer)', textDecoration: 'underline' }}>use an invite link</a>
+              </p>
+            </div>
+          ) : (
+            <button
+              onClick={() => currentUserId ? setShowRespond(true) : window.location.assign('/auth?next=/post/' + post.id)}
+              className="w-full py-4 text-sm font-bold uppercase tracking-wider transition-all"
+              style={{ ...ds, background: isNeed ? 'var(--need)' : 'var(--offer)', color: 'var(--card)' }}
+            >
+              {isNeed ? 'I can help with this' : 'I\'m interested in this'}
+            </button>
+          )}
         </div>
       )}
 

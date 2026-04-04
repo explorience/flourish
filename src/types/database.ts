@@ -61,13 +61,44 @@ export interface Message {
   created_at: string;
 }
 
+export type VouchStatus = 'unvouched' | 'vouched' | 'voucher';
+
 export interface Profile {
   id: string;
   display_name: string;
   neighbourhood: string | null;
   bio: string | null;
+  vouch_status: VouchStatus;
+  vouch_count: number;
+  wallet_address: string | null;
+  email_notifications: boolean;
   created_at: string;
   updated_at: string;
+}
+
+export interface Vouch {
+  id: string;
+  voucher_id: string;
+  vouchee_id: string;
+  attestation_uid: string | null;
+  tx_hash: string | null;
+  context: string | null;
+  status: 'pending' | 'confirmed' | 'revoked';
+  created_at: string;
+}
+
+export interface VouchInvite {
+  id: string;
+  code: string;
+  voucher_id: string;
+  max_uses: number;
+  used_count: number;
+  expires_at: string;
+  created_at: string;
+}
+
+export interface VouchWithProfile extends Vouch {
+  voucher_profile: Pick<Profile, 'display_name' | 'neighbourhood'> | null;
 }
 
 export interface PostWithProfile extends Post {

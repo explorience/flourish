@@ -1,8 +1,9 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { AccountClient } from './account-client';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Shield } from 'lucide-react';
 import Link from 'next/link';
+import { InviteSection } from '@/components/invite-section';
 
 export default async function AccountPage() {
   const supabase = await createClient();
@@ -14,6 +15,15 @@ export default async function AccountPage() {
     .select('*, responses(*)')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false });
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('vouch_status, vouch_count')
+    .eq('id', user.id)
+    .single();
+
+  const vouchStatus = profile?.vouch_status || 'unvouched';
+  const vouchCount = profile?.vouch_count || 0;
 
   return (
     <main className="min-h-screen" style={{ background: 'var(--bg)' }}>
@@ -39,7 +49,33 @@ export default async function AccountPage() {
           </p>
         </div>
 
+        {/* Vouch Status */}
+        {vouchStatus === 'unvouched' && (
+          <div className="mb-6 px-4 py-4" style={{ background: 'rgba(208,112,64,0.1)', border: '1px solid var(--need)' }}>
+            <div className="flex items-center gap-2 mb-2">
+              <Shield className="w-4 h-4" style={{ color: 'var(--need)' }} />
+              <span className="text-xs font-bold uppercase tracking-wider" style={{ fontFamily: 'var(--font-display)', color: 'var(--need)' }}>
+                Not yet vouched
+              </span>
+            </div>
+            <p className="text-xs" style={{ fontFamily: 'var(--font-serif)', color: 'var(--sub)' }}>
+              You need a vouch from an existing member to post or respond. Ask someone in the community, or use an invite link.
+            </p>
+          </div>
+        )}
+        {vouchStatus !== 'unvouched' && (
+          <div className="mb-6 px-4 py-3 flex items-center gap-2" style={{ background: 'rgba(58,106,74,0.1)', border: '1px solid var(--offer)' }}>
+            <Shield className="w-4 h-4" style={{ color: 'var(--offer)' }} />
+            <span className="text-xs font-bold uppercase tracking-wider" style={{ fontFamily: 'var(--font-display)', color: 'var(--offer)' }}>
+              Trusted member {vouchCount > 0 ? `· ${vouchCount} vouch${vouchCount > 1 ? 'es' : ''}` : ''}
+            </span>
+          </div>
+        )}
+
         <AccountClient user={user} posts={posts || []} />
+
+        {/* Invite Section */}
+        <InviteSection vouchStatus={vouchStatus} />
       </div>
     </main>
   );

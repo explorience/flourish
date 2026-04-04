@@ -69,17 +69,31 @@ export async function POST(req: NextRequest) {
         .eq('id', post.id);
     }
 
-    // Send confirmation email if poster provided email
-    if (post && contact_method === 'email' && contact_value) {
+    // Send confirmation email to all logged-in users (look up auth email)
+    if (post) {
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://example.com';
-      const { subject, html, text } = postConfirmationEmail({
-        posterName: contact_name,
-        postTitle: title,
-        postType: type,
-        postUrl: `${appUrl}/post/${post.id}`,
-      });
-      sendEmail({ to: { email: contact_value, name: contact_name }, subject, html, text })
-        .catch(() => {}); // fire-and-forget
+      const postUrl = `${appUrl}/post/${post.id}`;
+
+      let recipientEmail = contact_method === 'email' ? contact_value : null;
+
+      // If user is logged in, get their auth email regardless of contact method
+      if (!recipientEmail && user_id) {
+        try {
+          const { data: { user } } = await supabase.auth.admin.getUserById(user_id);
+          recipientEmail = user?.email || null;
+        } catch {}
+      }
+
+      if (recipientEmail) {
+        const { subject, html, text } = postConfirmationEmail({
+          posterName: contact_name,
+          postTitle: title,
+          postType: type,
+          postUrl,
+        });
+        sendEmail({ to: { email: recipientEmail, name: contact_name }, subject, html, text })
+          .catch(() => {}); // fire-and-forget
+      }
     }
 
     return NextResponse.json({ ok: true, post: { ...post, location_fuzzed_lat, location_fuzzed_lng } });
