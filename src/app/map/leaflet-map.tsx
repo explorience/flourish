@@ -14,6 +14,7 @@ interface MapPost {
   created_at: string;
   status: string;
   location_label: string | null;
+  location_crossstreet: string | null;
   location_fuzzed_lat: number;
   location_fuzzed_lng: number;
 }
