@@ -4,6 +4,7 @@ import { AccountClient } from './account-client';
 import { ArrowLeft, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { InviteSection } from '@/components/invite-section';
+import { isVouchRequired } from '@/lib/settings';
 
 export default async function AccountPage() {
   const supabase = await createClient();
@@ -24,6 +25,7 @@ export default async function AccountPage() {
 
   const vouchStatus = profile?.vouch_status || 'unvouched';
   const vouchCount = profile?.vouch_count || 0;
+  const vouchingEnabled = await isVouchRequired();
 
   return (
     <main className="min-h-screen bg-page">
@@ -48,8 +50,8 @@ export default async function AccountPage() {
           </p>
         </div>
 
-        {/* Vouch Status */}
-        {vouchStatus === 'unvouched' && (
+        {/* Vouch Status - only show when vouching is enabled */}
+        {vouchingEnabled && vouchStatus === 'unvouched' && (
           <div className="mb-6 px-4 py-4" style={{ background: 'rgba(208,112,64,0.1)', border: '1px solid var(--need)' }}>
             <div className="flex items-center gap-2 mb-2">
               <Shield className="w-4 h-4 color-need" />
@@ -62,7 +64,7 @@ export default async function AccountPage() {
             </p>
           </div>
         )}
-        {vouchStatus !== 'unvouched' && (
+        {vouchingEnabled && vouchStatus !== 'unvouched' && (
           <div className="mb-6 px-4 py-3 flex items-center gap-2" style={{ background: 'rgba(58,106,74,0.1)', border: '1px solid var(--offer)' }}>
             <Shield className="w-4 h-4 color-offer" />
             <span className="text-xs font-bold uppercase tracking-wider font-display color-offer">
@@ -73,8 +75,8 @@ export default async function AccountPage() {
 
         <AccountClient user={user} posts={posts || []} />
 
-        {/* Invite Section */}
-        <InviteSection vouchStatus={vouchStatus} />
+        {/* Invite Section - only show when vouching is enabled */}
+        {vouchingEnabled && <InviteSection vouchStatus={vouchStatus} />}
       </div>
     </main>
   );
