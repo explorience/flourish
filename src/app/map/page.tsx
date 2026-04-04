@@ -11,7 +11,7 @@ export default async function MapPage() {
     .from('posts')
     .select('id, type, title, details, category, contact_name, created_at, status, location_label, location_crossstreet, location_fuzzed_lat, location_fuzzed_lng')
     .eq('status', 'active')
-    .neq('moderation_status', 'rejected')
+    .or('moderation_status.eq.approved,moderation_status.is.null')
     .not('location_fuzzed_lat', 'is', null)
     .order('created_at', { ascending: false });
 

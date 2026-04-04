@@ -4,10 +4,19 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
-export default async function AuthPage() {
+export default async function AuthPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const params = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (user) redirect('/account');
+  if (user) {
+    // If already logged in, go where they wanted (default: home, not account)
+    const next = params.next || '/';
+    redirect(next);
+  }
 
   return (
     <main className="min-h-screen flex flex-col" style={{ background: 'var(--bg)' }}>
