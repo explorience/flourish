@@ -29,27 +29,25 @@ export default async function Home() {
     .or('moderation_status.eq.approved,moderation_status.is.null');
 
   return (
-    <main className="min-h-screen" style={{ background: 'var(--bg)' }}>
+    <main className="min-h-screen bg-page">
       <Header />
 
       {/* Hero */}
       <section className="text-center px-5 pt-12 pb-8">
         <h1
-          className="text-5xl sm:text-6xl font-extrabold uppercase tracking-wide leading-none mb-2"
-          style={{ color: 'var(--heading)', fontFamily: 'var(--font-display)' }}
+          className="text-5xl sm:text-6xl font-extrabold uppercase tracking-wide leading-none mb-2 font-display color-heading"
         >
           {APP_NAME}
         </h1>
         <p
-          className="text-base sm:text-xl mb-6"
-          style={{ color: 'var(--sub)', fontFamily: 'var(--font-serif)' }}
+          className="text-base sm:text-xl mb-6 font-serif color-sub"
         >
           {APP_DESCRIPTION}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
           <PostSomethingButton />
-          <a href="/map" className="px-8 py-3 text-sm font-bold uppercase tracking-wider transition-colors"
-            style={{ border: '1.5px solid rgba(232,224,204,0.2)', color: 'var(--heading)', fontFamily: 'var(--font-display)' }}>
+          <a href="/map" className="px-8 py-3 text-sm font-bold uppercase tracking-wider transition-colors font-display color-heading"
+            style={{ border: '1.5px solid rgba(232,224,204,0.2)' }}>
             View map
           </a>
         </div>

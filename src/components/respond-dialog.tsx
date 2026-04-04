@@ -76,35 +76,35 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
 
   return (
     <div className="fixed inset-0 flex items-end sm:items-center justify-center z-50 animate-fade-in" style={{ background: 'rgba(0,0,0,0.5)' }} onClick={onClose}>
-      <div className="w-full max-w-md animate-slide-up sm:rounded-md" style={{ background: 'var(--card)' }} onClick={(e) => e.stopPropagation()}>
+      <div className="w-full max-w-md animate-slide-up sm:rounded-md bg-card" onClick={(e) => e.stopPropagation()}>
         {submitted ? (
           <div className="text-center py-16 px-6">
             <div className="text-3xl mb-4">🤝</div>
-            <p className="text-lg font-bold uppercase tracking-wide mb-2" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+            <p className="text-lg font-bold uppercase tracking-wide mb-2 font-display color-ink">
               {isNeed ? 'You\'re offering to help' : 'You\'re interested'}
             </p>
-            <p className="text-sm leading-relaxed" style={{ fontFamily: 'var(--font-serif)', color: 'var(--ink-light)', fontStyle: 'italic' }}>
+            <p className="text-sm leading-relaxed font-serif color-ink-light" style={{ fontStyle: 'italic' }}>
               {post.contact_name} will hear from you soon.
             </p>
-            <p className="text-xs mt-4" style={{ color: 'var(--ink-muted)' }}>This is how communities work.</p>
+            <p className="text-xs mt-4 color-ink-muted">This is how communities work.</p>
           </div>
         ) : (
           <div className="p-6">
             <div className="flex items-start justify-between mb-5">
               <div>
-                <h3 className="text-sm font-bold uppercase tracking-wide" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                <h3 className="text-sm font-bold uppercase tracking-wide font-display color-ink">
                   {isNeed ? 'Offer to help' : 'Express interest'}
                 </h3>
-                <p className="text-xs mt-1 italic" style={{ fontFamily: 'var(--font-serif)', color: 'var(--ink-muted)' }}>Re: {post.title}</p>
+                <p className="text-xs mt-1 italic font-serif color-ink-muted">Re: {post.title}</p>
               </div>
-              <button onClick={onClose} className="p-1" style={{ color: 'var(--ink-muted)' }}><X className="w-4 h-4" /></button>
+              <button onClick={onClose} className="p-1 color-ink-muted"><X className="w-4 h-4" /></button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <Field label="Your name" value={name} onChange={setName} placeholder="First name" required autoFocus />
               <Field label="Message" value={message} onChange={setMessage} placeholder="Anything you want them to know... you can include your contact info here if you'd like." optional textarea />
               <div className="flex gap-3 pt-1">
-                <button type="button" onClick={onClose} className="flex-1 py-3 text-xs font-bold uppercase tracking-wider" style={{ border: '1.5px solid var(--border-card)', color: 'var(--ink-light)' }}>Cancel</button>
-                <button type="submit" disabled={submitting || !name.trim()} className="flex-1 py-3 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-colors" style={{ background: isNeed ? 'var(--need)' : 'var(--offer)', color: 'var(--card)', fontFamily: 'var(--font-display)' }}>
+                <button type="button" onClick={onClose} className="flex-1 py-3 text-xs font-bold uppercase tracking-wider color-ink-light" style={{ border: '1.5px solid var(--border-card)' }}>Cancel</button>
+                <button type="submit" disabled={submitting || !name.trim()} className="flex-1 py-3 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-colors font-display color-card" style={{ background: isNeed ? 'var(--need)' : 'var(--offer)' }}>
                   {submitting ? 'Sending...' : 'Send'}
                 </button>
               </div>
@@ -120,14 +120,14 @@ function Field({ label, value, onChange, placeholder, required, optional, autoFo
   const Tag = textarea ? 'textarea' : 'input';
   return (
     <div>
-      <label className="block text-xs font-bold uppercase tracking-wider mb-1.5" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink-light)', fontSize: '0.6rem' }}>
-        {label} {optional && <span className="normal-case tracking-normal font-normal" style={{ color: 'var(--ink-muted)' }}>(optional)</span>}
+      <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>
+        {label} {optional && <span className="normal-case tracking-normal font-normal color-ink-muted">(optional)</span>}
       </label>
       <Tag
         value={value}
         onChange={(e: any) => onChange(e.target.value)}
-        className="w-full px-4 py-3 text-sm focus:outline-none transition-all"
-        style={{ background: '#fff', border: '1px solid var(--border-card)', color: 'var(--ink)', fontFamily: 'var(--font-body)' }}
+        className="w-full px-4 py-3 text-sm focus:outline-none transition-all font-body color-ink"
+        style={{ background: '#fff', border: '1px solid var(--border-card)' }}
         placeholder={placeholder}
         required={required}
         autoFocus={autoFocus}

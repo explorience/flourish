@@ -12,9 +12,6 @@ export default function FeedbackPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
-  const ds: React.CSSProperties = { fontFamily: 'var(--font-display)' };
-  const sr: React.CSSProperties = { fontFamily: 'var(--font-serif)' };
-
   const inputStyle: React.CSSProperties = {
     background: 'var(--card)',
     border: '1px solid var(--border-card)',
@@ -24,17 +21,6 @@ export default function FeedbackPage() {
     fontSize: '0.9rem',
     fontFamily: 'var(--font-body)',
     outline: 'none',
-  };
-
-  const labelStyle: React.CSSProperties = {
-    display: 'block',
-    fontSize: '0.6rem',
-    fontWeight: 700,
-    textTransform: 'uppercase',
-    letterSpacing: '0.12em',
-    color: 'var(--sub)',
-    marginBottom: '0.375rem',
-    ...ds,
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,7 +50,7 @@ export default function FeedbackPage() {
   };
 
   return (
-    <main className="min-h-screen" style={{ background: 'var(--bg)' }}>
+    <main className="min-h-screen bg-page">
       <Header />
 
       <div className="flex-1 flex items-start justify-center px-5 py-14">
@@ -72,20 +58,18 @@ export default function FeedbackPage() {
 
           <div className="mb-10">
             <p
-              className="text-xs font-bold uppercase tracking-widest mb-2"
-              style={{ ...ds, color: 'var(--sub)' }}
+              className="text-xs font-bold uppercase tracking-widest mb-2 font-display color-sub"
             >
               Community
             </p>
             <h1
-              className="text-4xl font-extrabold uppercase tracking-wide leading-none mb-3"
-              style={{ ...ds, color: 'var(--heading)' }}
+              className="text-4xl font-extrabold uppercase tracking-wide leading-none mb-3 font-display color-heading"
             >
               Feedback
             </h1>
             <p
-              className="text-sm leading-relaxed"
-              style={{ ...sr, color: 'var(--sub)', fontStyle: 'italic' }}
+              className="text-sm leading-relaxed font-serif color-sub"
+              style={{ fontStyle: 'italic' }}
             >
               Got a thought, a bug report, or a suggestion? We&apos;d love to hear it.
             </p>
@@ -97,21 +81,19 @@ export default function FeedbackPage() {
               style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
             >
               <div
-                className="text-2xl font-extrabold uppercase tracking-wide mb-3"
-                style={{ ...ds, color: 'var(--offer)' }}
+                className="text-2xl font-extrabold uppercase tracking-wide mb-3 font-display color-offer"
               >
                 Thank you
               </div>
               <p
-                className="text-sm leading-relaxed mb-6"
-                style={{ ...sr, color: 'var(--ink-light)', fontStyle: 'italic' }}
+                className="text-sm leading-relaxed mb-6 font-serif color-ink-light"
+                style={{ fontStyle: 'italic' }}
               >
                 Your message has been sent. We read every piece of feedback.
               </p>
               <Link
                 href="/"
-                className="inline-block px-6 py-3 text-xs font-bold uppercase tracking-wider"
-                style={{ ...ds, background: 'var(--ink)', color: 'var(--card)' }}
+                className="inline-block px-6 py-3 text-xs font-bold uppercase tracking-wider font-display btn-ink"
               >
                 Back to the board
               </Link>
@@ -123,8 +105,8 @@ export default function FeedbackPage() {
             >
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label style={labelStyle}>
-                    Name <span style={{ color: 'var(--ink-muted)' }}>(optional)</span>
+                  <label className="form-label">
+                    Name <span className="color-ink-muted normal-case tracking-normal font-normal">(optional)</span>
                   </label>
                   <input
                     type="text"
@@ -136,8 +118,8 @@ export default function FeedbackPage() {
                 </div>
 
                 <div>
-                  <label style={labelStyle}>
-                    Email <span style={{ color: 'var(--ink-muted)' }}>(optional — if you want a reply)</span>
+                  <label className="form-label">
+                    Email <span className="color-ink-muted normal-case tracking-normal font-normal">(optional — if you want a reply)</span>
                   </label>
                   <input
                     type="email"
@@ -149,8 +131,8 @@ export default function FeedbackPage() {
                 </div>
 
                 <div>
-                  <label style={labelStyle}>
-                    Message <span style={{ color: 'var(--need)' }}>*</span>
+                  <label className="form-label">
+                    Message <span className="color-need">*</span>
                   </label>
                   <textarea
                     value={message}
@@ -182,8 +164,7 @@ export default function FeedbackPage() {
                 <button
                   type="submit"
                   disabled={loading || !message.trim()}
-                  className="w-full py-3.5 text-sm font-bold uppercase tracking-wider disabled:opacity-40 transition-all"
-                  style={{ ...ds, background: 'var(--ink)', color: 'var(--card)' }}
+                  className="w-full py-3.5 text-sm font-bold uppercase tracking-wider disabled:opacity-40 transition-all font-display btn-ink"
                 >
                   {loading ? 'Sending…' : 'Send feedback'}
                 </button>
@@ -192,10 +173,10 @@ export default function FeedbackPage() {
           )}
 
           <p
-            className="text-xs text-center mt-6"
-            style={{ ...ds, color: 'var(--ink-muted)', letterSpacing: '0.08em' }}
+            className="text-xs text-center mt-6 font-display color-ink-muted"
+            style={{ letterSpacing: '0.08em' }}
           >
-            <Link href="/" style={{ color: 'var(--sub)' }}>Back to the board</Link>
+            <Link href="/" className="color-sub">Back to the board</Link>
           </p>
         </div>
       </div>

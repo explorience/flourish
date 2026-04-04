@@ -19,10 +19,10 @@ export default async function AuthPage({
   }
 
   return (
-    <main className="min-h-screen flex flex-col" style={{ background: 'var(--bg)' }}>
+    <main className="min-h-screen flex flex-col bg-page">
       <header className="sticky top-0 z-40 backdrop-blur-xl border-b" style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}>
         <div className="max-w-xl mx-auto px-5 flex items-center" style={{ height: "156px" }}>
-          <Link href="/" className="inline-flex items-center gap-2 text-xs" style={{ color: 'var(--sub)' }}>
+          <Link href="/" className="inline-flex items-center gap-2 text-xs color-sub">
             <ArrowLeft className="w-4 h-4" /> Back
           </Link>
         </div>
@@ -31,11 +31,10 @@ export default async function AuthPage({
       <div className="flex-1 flex items-center justify-center px-5 py-12">
         <div className="w-full max-w-sm">
           <div className="text-center mb-10">
-            <h1 className="text-4xl font-extrabold uppercase tracking-wide mb-2"
-              style={{ fontFamily: 'var(--font-display)', color: 'var(--heading)' }}>
+            <h1 className="text-4xl font-extrabold uppercase tracking-wide mb-2 font-display color-heading">
               Flourish
             </h1>
-            <p className="text-sm italic" style={{ fontFamily: 'var(--font-serif)', color: 'var(--sub)' }}>
+            <p className="text-sm italic font-serif color-sub">
               Sign in to manage your posts
             </p>
           </div>
