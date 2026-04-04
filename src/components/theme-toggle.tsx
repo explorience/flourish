@@ -11,14 +11,6 @@ const THEMES = [
 
 type ThemeId = typeof THEMES[number]['id'];
 
-function getStoredTheme(): ThemeId {
-  if (typeof window === 'undefined') return 'evergreen';
-  const stored = localStorage.getItem('flourish-theme');
-  // Migrate forest-dark users to evergreen
-  if (!stored || stored === 'forest-dark') return 'evergreen';
-  return stored as ThemeId;
-}
-
 function applyTheme(id: ThemeId) {
   document.documentElement.setAttribute('data-theme', id);
   localStorage.setItem('flourish-theme', id);
@@ -29,20 +21,19 @@ export function ThemeToggle() {
   const [current, setCurrent] = useState<ThemeId>('evergreen');
   const ref = useRef<HTMLDivElement>(null);
 
+  // Read current theme from DOM (already set by inline script in layout)
   useEffect(() => {
-    const stored = getStoredTheme();
-    setCurrent(stored);
-    applyTheme(stored);
+    const applied = document.documentElement.getAttribute('data-theme') as ThemeId;
+    if (applied) setCurrent(applied);
   }, []);
 
+  // Close on outside click
   useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
   }, []);
 
   return (
@@ -68,20 +59,23 @@ export function ThemeToggle() {
 
       {open && (
         <div className="theme-menu rounded">
-          {THEMES.map((theme) => (
+          {THEMES.map((t) => (
             <button
-              key={theme.id}
+              key={t.id}
               onClick={() => {
-                setCurrent(theme.id);
-                applyTheme(theme.id);
+                setCurrent(t.id);
+                applyTheme(t.id);
                 setOpen(false);
               }}
               className={`theme-option w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold uppercase tracking-wider ${
-                current === theme.id ? 'theme-option-active' : ''
+                current === t.id ? 'theme-option-active' : ''
               }`}
             >
-              <span className="theme-swatch" style={{ background: theme.swatch }} />
-              {theme.label}
+              <span
+                className="w-4 h-4 rounded-full border"
+                style={{ background: t.swatch, borderColor: 'var(--border)' }}
+              />
+              {t.label}
             </button>
           ))}
         </div>

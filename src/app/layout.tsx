@@ -7,7 +7,6 @@ export const metadata: Metadata = {
   title: `${APP_NAME} — ${APP_TAGLINE}`,
   description: APP_DESCRIPTION,
   manifest: '/manifest.json',
-  themeColor: '#1a1a1a',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -18,7 +17,15 @@ export const metadata: Metadata = {
     description: APP_DESCRIPTION,
     type: 'website',
   },
+  twitter: {
+    card: 'summary',
+    title: `${APP_NAME} — ${APP_TAGLINE}`,
+    description: APP_DESCRIPTION,
+  },
 };
+
+// Inline script to apply theme before React hydration (prevents FOUC and setAttribute loop)
+const themeScript = `(function(){try{var t=localStorage.getItem('flourish-theme');if(!t||t==='forest-dark')t='evergreen';document.documentElement.setAttribute('data-theme',t)}catch(e){}})()`;
 
 export default function RootLayout({
   children,
@@ -26,8 +33,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="evergreen" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <link rel="apple-touch-icon" href="/icon-192.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>
