@@ -89,12 +89,14 @@ export async function POST(req: NextRequest) {
         vouch_count: (voucheeProfile as any).vouch_count ? (voucheeProfile as any).vouch_count + 1 : 1
       }).eq('id', voucheeId);
     } else {
-      await admin.rpc('increment_vouch_count', { profile_id: voucheeId }).catch(() => {
+      try {
+        await admin.rpc('increment_vouch_count', { profile_id: voucheeId });
+      } catch {
         // Fallback if RPC doesn't exist
-        admin.from('profiles').update({ 
+        await admin.from('profiles').update({ 
           vouch_count: ((voucheeProfile as any).vouch_count || 0) + 1 
         }).eq('id', voucheeId);
-      });
+      }
     }
 
     // Send notification email to vouchee
