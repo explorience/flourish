@@ -13,10 +13,10 @@ type ThemeId = typeof THEMES[number]['id'];
 
 function getStoredTheme(): ThemeId {
   if (typeof window === 'undefined') return 'evergreen';
-  const stored = localStorage.getItem('flourish-theme') as ThemeId;
+  const stored = localStorage.getItem('flourish-theme');
   // Migrate forest-dark users to evergreen
-  if (!stored || stored === ('forest-dark' as string)) return 'evergreen';
-  return stored;
+  if (!stored || stored === 'forest-dark') return 'evergreen';
+  return stored as ThemeId;
 }
 
 function applyTheme(id: ThemeId) {
@@ -26,7 +26,7 @@ function applyTheme(id: ThemeId) {
 
 export function ThemeToggle() {
   const [open, setOpen] = useState(false);
-  const [current, setCurrent] = useState<ThemeId>('forest-dark');
+  const [current, setCurrent] = useState<ThemeId>('evergreen');
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

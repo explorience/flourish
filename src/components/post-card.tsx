@@ -126,7 +126,7 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
               </>
             )}
 
-            {post.responses.length > 0 && (
+            {'responses' in post && post.responses.length > 0 && (
               <span className="color-ink-muted" style={{ fontSize: '0.68rem' }}>
                 &mdash; {post.responses.length} {post.responses.length === 1 ? 'response' : 'responses'}
               </span>
