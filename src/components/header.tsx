@@ -72,6 +72,9 @@ export function Header() {
             <Link href="/about" className="nav-link hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-colors">
               About
             </Link>
+            <Link href="/faq" className="nav-link hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-colors">
+              FAQ
+            </Link>
             <Link href="/feedback" className="nav-link hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-colors">
               Feedback
             </Link>
@@ -108,6 +111,10 @@ export function Header() {
       <div className="mobile-nav flex md:hidden items-center justify-center gap-4 py-1.5 border-b text-center">
         <Link href="/about" className="nav-link text-xs font-bold uppercase tracking-wider">
           About
+        </Link>
+        <span className="mobile-nav-sep">|</span>
+        <Link href="/faq" className="nav-link text-xs font-bold uppercase tracking-wider">
+          FAQ
         </Link>
         <span className="mobile-nav-sep">|</span>
         <Link href="/feedback" className="nav-link text-xs font-bold uppercase tracking-wider">

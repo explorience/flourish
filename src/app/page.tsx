@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server';
 import { PostFeed } from '@/components/post-feed';
 import { Header } from '@/components/header';
 import { PostSomethingButton } from '@/components/post-something-button';
+import { Walkthrough } from '@/components/walkthrough';
+import { WelcomeBanner } from '@/components/welcome-banner';
 import { APP_NAME, APP_TAGLINE, APP_DESCRIPTION } from '@/lib/constants';
 import { getModeratorByEmail } from '@/lib/admin';
 
@@ -31,6 +33,7 @@ export default async function Home() {
   return (
     <main className="min-h-screen" style={{ background: 'var(--bg)' }}>
       <Header />
+      <Walkthrough />
 
       {/* Hero */}
       <section className="text-center px-5 pt-12 pb-8">
@@ -54,6 +57,9 @@ export default async function Home() {
           </a>
         </div>
       </section>
+
+      {/* Welcome banner for new visitors */}
+      <WelcomeBanner />
 
       {/* Feed */}
       <section className="w-full px-4 sm:px-6 lg:px-8 pb-24 flex flex-col items-center">

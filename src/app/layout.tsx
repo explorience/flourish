@@ -17,6 +17,12 @@ export const metadata: Metadata = {
     title: `${APP_NAME} — ${APP_TAGLINE}`,
     description: APP_DESCRIPTION,
     type: 'website',
+    siteName: APP_NAME,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${APP_NAME} — ${APP_TAGLINE}`,
+    description: APP_DESCRIPTION,
   },
 };
 
