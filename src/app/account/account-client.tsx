@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
 import { CheckCircle, XCircle, Trash2, LogOut, MessageCircle, MessageSquare, UserCircle, Bell, BellOff } from 'lucide-react';
+import { PushManager } from '@/components/push-manager';
 import type { PostWithResponses } from '@/types/database';
 import type { User } from '@supabase/supabase-js';
 import Link from 'next/link';
@@ -177,6 +178,7 @@ export function AccountClient({ user, posts }: { user: User; posts: PostWithResp
           {emailNotifications ? <Bell className="w-4 h-4 color-offer" /> : <BellOff className="w-4 h-4" />}
           Email notifications {emailNotifications ? 'on' : 'off'}
         </button>
+        <PushManager />
       </div>
 
       {/* Sign out */}

@@ -45,14 +45,12 @@ export interface PushPayload {
   title: string;
   body: string;
   url: string;
-  icon?: string;
-  badge?: string;
 }
 
 /**
  * Send a push notification to all subscriptions for a user.
  * Silently skips if VAPID keys are not configured.
- * Automatically removes expired/invalid subscriptions (HTTP 410).
+ * Automatically removes expired/invalid subscriptions (HTTP 410 or 404).
  */
 export async function sendPushNotification(
   userId: string,

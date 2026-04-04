@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createClient } from '@/lib/supabase/server';
+import { createClient as createAdmin } from '@supabase/supabase-js';
+
+function getAdmin() {
+  return createAdmin(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+}
 
 /**
  * POST /api/push/subscribe
@@ -10,13 +17,10 @@ import { cookies } from 'next/headers';
  */
 export async function POST(req: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -30,9 +34,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid subscription data' }, { status: 400 });
     }
 
-    const { error } = await supabase.from('push_subscriptions').upsert(
+    const admin = getAdmin();
+    const { error } = await admin.from('push_subscriptions').upsert(
       {
-        user_id: session.user.id,
+        user_id: user.id,
         endpoint,
         p256dh: keys.p256dh,
         auth: keys.auth,
@@ -60,13 +65,10 @@ export async function POST(req: NextRequest) {
  */
 export async function DELETE(req: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session) {
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -77,10 +79,11 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'endpoint is required' }, { status: 400 });
     }
 
-    const { error } = await supabase
+    const admin = getAdmin();
+    const { error } = await admin
       .from('push_subscriptions')
       .delete()
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .eq('endpoint', endpoint);
 
     if (error) {

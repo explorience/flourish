@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 3. Push notification for logged-in users (runs in parallel with other channels)
+    // 3. Push notification for logged-in users (fire-and-forget alongside other channels)
     if (post.user_id) {
       const pushTitle = `${responderName} responded to "${post.title}"`;
       const pushBody = responderMessage
