@@ -18,6 +18,11 @@ export function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
   const [urgency, setUrgency] = useState<Urgency>(post.urgency);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>((post as any).image_url || null);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>((post as any).image_url || null);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const isNeed = post.type === 'need';
 
@@ -35,6 +40,7 @@ export function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
           details: details.trim() || null,
           category,
           urgency,
+          image_url: imageUrl,
         }),
       });
 
@@ -49,6 +55,23 @@ export function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
       setError('Network error — please try again');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/posts/${post.id}`, { method: 'DELETE' });
+      if (res.ok) {
+        window.location.href = '/';
+      } else {
+        const data = await res.json();
+        setError(data.error || 'Failed to delete');
+      }
+    } catch {
+      setError('Network error — please try again');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -202,6 +225,40 @@ export function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
             </div>
           </div>
 
+          {/* Image upload */}
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>
+              Photo <span className="normal-case tracking-normal font-normal" style={{ color: 'var(--ink-muted)' }}>(optional)</span>
+            </label>
+            {imagePreview ? (
+              <div className="relative inline-block">
+                <img src={imagePreview} alt="Preview" className="max-h-32 rounded" />
+                <button
+                  type="button"
+                  onClick={() => { setImagePreview(null); setImageUrl(null); }}
+                  className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center"
+                  style={{ background: 'var(--need)', color: 'white', fontFamily: 'var(--font-display)', fontSize: '0.65rem', fontWeight: 'bold' }}
+                >×</button>
+              </div>
+            ) : (
+              <label className="block w-full py-3 text-center text-xs font-bold uppercase tracking-wider cursor-pointer font-display" style={{ fontSize: '0.6rem', border: '1.5px dashed var(--border-card)', color: 'var(--ink-muted)' }}>
+                {imageUrl ? 'Change photo' : 'Add a photo'}
+                <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setImagePreview(URL.createObjectURL(file));
+                  setImageUploading(true);
+                  const { uploadPostImage } = await import('@/lib/upload-post-image');
+                  const result = await uploadPostImage(file);
+                  if ('url' in result) setImageUrl(result.url);
+                  else alert(result.error);
+                  setImageUploading(false);
+                }} />
+              </label>
+            )}
+            {imageUploading && <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>Uploading…</p>}
+          </div>
+
           {/* Error */}
           {error && (
             <p
@@ -231,6 +288,36 @@ export function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
           >
             {submitting ? 'Saving…' : 'Save changes'}
           </button>
+
+          {/* Delete */}
+          {showDeleteConfirm ? (
+            <div className="flex gap-2">
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex-1 py-3 text-xs font-bold uppercase tracking-wider disabled:opacity-40"
+                style={{ background: 'var(--need)', color: 'white', ...ds }}
+              >
+                {deleting ? 'Deleting…' : 'Yes, delete post'}
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 py-3 text-xs font-bold uppercase tracking-wider"
+                style={{ background: 'transparent', color: 'var(--ink-muted)', border: '1px solid var(--border-card)', ...ds }}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setShowDeleteConfirm(true)}
+              className="w-full py-3 text-xs font-bold uppercase tracking-wider"
+              style={{ background: 'transparent', color: 'var(--need)', border: '1px solid var(--need)', ...ds }}
+            >
+              Delete post
+            </button>
+          )}
         </div>
       </div>
     </div>

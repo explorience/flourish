@@ -26,6 +26,7 @@ export interface Post {
   location_lat: number | null;
   location_lng: number | null;
   moderation_status: ModerationStatus | null;
+  image_url: string | null;
   created_at: string;
   updated_at: string;
 }
