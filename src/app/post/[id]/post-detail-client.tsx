@@ -138,13 +138,25 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
         </div>
       )}
 
+      {/* Post image */}
+      {(post as any).image_url && (
+        <div className="mb-6">
+          <img
+            src={(post as any).image_url}
+            alt=""
+            className="w-full rounded-sm"
+            style={{ maxHeight: '400px', objectFit: 'cover' }}
+          />
+        </div>
+      )}
+
       {/* Respond button — shown to non-posters, vouched users only */}
       {!isPoster && post.status === 'active' && (
         <div className="mb-8">
           {currentUserId && vouchRequired && vouchStatus === 'unvouched' ? (
             <div className="w-full py-4 px-4 text-center text-sm border-dashed-theme" style={{ background: 'rgba(240,236,224,0.08)' }}>
               <p className="text-xs font-bold uppercase tracking-wider mb-1 font-display color-sub">
-                Vouch needed to respond
+                You need a vouch to respond
               </p>
               <p className="text-xs font-serif color-ink-muted">
                 Ask a member to vouch for you, or <a href="/join" className="color-offer" style={{ textDecoration: 'underline' }}>use an invite link</a>

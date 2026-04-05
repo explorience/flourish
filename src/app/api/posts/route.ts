@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
       source, source_phone, user_id,
       location_label, location_crossstreet,
       location_lat: providedLat, location_lng: providedLng,
+      image_url,
     } = body;
 
     let location_lat = providedLat || null;
@@ -53,6 +54,7 @@ export async function POST(req: NextRequest) {
       location_lat,
       location_lng,
       expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      image_url: image_url || null,
     }).select().single();
 
     if (error) {

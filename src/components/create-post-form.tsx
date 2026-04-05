@@ -23,6 +23,9 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
   const [crossStreet, setCrossStreet] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     if (!type || !title.trim() || !contactName.trim()) return;
@@ -48,6 +51,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
         user_id: user?.id || null,
         location_label: crossStreet.trim() || null,
         location_crossstreet: crossStreet.trim() || null,
+        image_url: imageUrl,
       }),
     });
 
@@ -175,6 +179,40 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                       style={{ background: '#fff', border: '1px solid var(--border-card)' }}
                       placeholder="e.g. Dundas & Adelaide, or Oxford & Wharncliffe"
                     />
+                  </div>
+
+                  {/* Image upload */}
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>
+                      Photo <span className="normal-case tracking-normal font-normal color-ink-muted">(optional)</span>
+                    </label>
+                    {imagePreview ? (
+                      <div className="relative inline-block">
+                        <img src={imagePreview} alt="Preview" className="max-h-32 rounded" />
+                        <button
+                          type="button"
+                          onClick={() => { setImagePreview(null); setImageUrl(null); }}
+                          className="absolute -top-2 -right-2 w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center"
+                          style={{ background: 'var(--need)', color: 'white', fontFamily: 'var(--font-display)', fontSize: '0.65rem' }}
+                        >×</button>
+                      </div>
+                    ) : (
+                      <label className="block w-full py-3 text-center text-xs font-bold uppercase tracking-wider cursor-pointer font-display" style={{ fontSize: '0.6rem', border: '1.5px dashed var(--border-card)', color: 'var(--ink-muted)' }}>
+                        Add a photo
+                        <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          setImagePreview(URL.createObjectURL(file));
+                          setImageUploading(true);
+                          const { uploadPostImage } = await import('@/lib/upload-post-image');
+                          const result = await uploadPostImage(file);
+                          if ('url' in result) setImageUrl(result.url);
+                          else alert(result.error);
+                          setImageUploading(false);
+                        }} />
+                      </label>
+                    )}
+                    {imageUploading && <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>Uploading…</p>}
                   </div>
 
                   <button onClick={() => setStep(3)} disabled={!title.trim()}

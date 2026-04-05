@@ -77,6 +77,17 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
 
         {/* Title */}
         <Link href={`/post/${post.id}`}>
+          {post.image_url && (
+            <div className="mb-2">
+              <img
+                src={post.image_url}
+                alt=""
+                className="w-full rounded-sm"
+                style={{ maxHeight: '140px', objectFit: 'cover' }}
+                loading="lazy"
+              />
+            </div>
+          )}
           <h3
             className="text-base leading-snug mb-1 hover:underline font-serif color-ink"
             style={{
