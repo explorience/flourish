@@ -138,15 +138,18 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
         </div>
       )}
 
-      {/* Post image */}
-      {(post as any).image_url && (
+      {/* Post images */}
+      {(post as any).image_urls && (post as any).image_urls.length > 0 && (
         <div className="mb-6">
-          <img
-            src={(post as any).image_url}
-            alt=""
-            className="w-full rounded-sm"
-            style={{ maxHeight: '400px', objectFit: 'cover' }}
-          />
+          {(post as any).image_urls.map((url: string, i: number) => (
+            <img
+              key={i}
+              src={url}
+              alt=""
+              className="w-full rounded-sm mb-2"
+              style={{ maxHeight: '400px', objectFit: 'cover' }}
+            />
+          ))}
         </div>
       )}
 

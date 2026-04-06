@@ -1,12 +1,16 @@
+-- Add image_urls column to posts (text array, up to 10 images)
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS image_urls text[] DEFAULT '{}'::text[];
+
 -- Create storage bucket for post images
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (
   'post-images',
   'post-images',
   true,
-  1048576,
+  10485760, -- 10MB per file
   array['image/jpeg', 'image/png', 'image/webp', 'image/gif']
-);
+)
+on conflict (id) do update set file_size_limit = 10485760;
 
 create policy "Authenticated users can upload post images"
   on storage.objects for insert

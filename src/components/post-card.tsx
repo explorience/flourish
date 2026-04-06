@@ -77,15 +77,20 @@ export function PostCard({ post, index = 0, isModerator = false }: PostCardProps
 
         {/* Title */}
         <Link href={`/post/${post.id}`}>
-          {post.image_url && (
+          {post.image_urls && post.image_urls.length > 0 && (
             <div className="mb-2">
               <img
-                src={post.image_url}
+                src={post.image_urls[0]}
                 alt=""
                 className="w-full rounded-sm"
                 style={{ maxHeight: '140px', objectFit: 'cover' }}
                 loading="lazy"
               />
+              {post.image_urls.length > 1 && (
+                <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>
+                  +{post.image_urls.length - 1} more photo{post.image_urls.length > 2 ? 's' : ''}
+                </p>
+              )}
             </div>
           )}
           <h3

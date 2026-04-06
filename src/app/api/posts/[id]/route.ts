@@ -33,7 +33,7 @@ export async function PUT(
     }
 
     const body = await req.json();
-    const { title, details, category, urgency, image_url } = body;
+    const { title, details, category, urgency, image_urls } = body;
 
     if (!title?.trim()) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 });
@@ -47,7 +47,7 @@ export async function PUT(
         category: category || 'other',
         urgency: urgency || 'flexible',
         updated_at: new Date().toISOString(),
-        image_url: image_url !== undefined ? (image_url || null) : undefined,
+        image_urls: image_urls !== undefined ? (image_urls || []) : undefined,
       })
       .eq('id', id)
       .select()
@@ -60,48 +60,6 @@ export async function PUT(
     return NextResponse.json({ ok: true, post: updated });
   } catch (err) {
     console.error('Post update error:', err);
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
-  }
-}
-
-// DELETE /api/posts/[id] — delete a post (owner only)
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    const { id } = params;
-
-    const { data: existing } = await supabase
-      .from('posts')
-      .select('id, user_id, image_url')
-      .eq('id', id)
-      .single();
-
-    if (!existing) {
-      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
-    }
-    if (existing.user_id !== user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-
-    // Delete image from storage if exists
-    if (existing.image_url) {
-      const pathMatch = existing.image_url.match(/\/post-images\/(.+)/);
-      if (pathMatch) {
-        await supabase.storage.from('post-images').remove([pathMatch[1]]);
-      }
-    }
-
-    await supabase.from('posts').delete().eq('id', id);
-    return NextResponse.json({ ok: true });
-  } catch (err) {
-    console.error('Post delete error:', err);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }
 }

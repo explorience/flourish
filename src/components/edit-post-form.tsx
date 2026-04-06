@@ -18,11 +18,11 @@ export function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
   const [urgency, setUrgency] = useState<Urgency>(post.urgency);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>((post as any).image_url || null);
+  const [imagePreviews, setImagePreviews] = useState<string[]>((post as any).image_urls || []);
   const [imageUploading, setImageUploading] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | null>((post as any).image_url || null);
-  const [deleting, setDeleting] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [imageUrls, setImageUrls] = useState<string[]>((post as any).image_urls || []);
+  const [archiving, setArchiving] = useState(false);
+  const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
 
   const isNeed = post.type === 'need';
 
@@ -40,7 +40,7 @@ export function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
           details: details.trim() || null,
           category,
           urgency,
-          image_url: imageUrl,
+          image_urls: imageUrls,
         }),
       });
 
@@ -58,20 +58,20 @@ export function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
     }
   };
 
-  const handleDelete = async () => {
-    setDeleting(true);
+  const handleArchive = async () => {
+    setArchiving(true);
     try {
-      const res = await fetch(`/api/posts/${post.id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/posts/${post.id}/archive`, { method: 'POST' });
       if (res.ok) {
         window.location.href = '/';
       } else {
         const data = await res.json();
-        setError(data.error || 'Failed to delete');
+        setError(data.error || 'Failed to archive');
       }
     } catch {
       setError('Network error — please try again');
     } finally {
-      setDeleting(false);
+      setArchiving(false);
     }
   };
 
@@ -225,35 +225,54 @@ export function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
             </div>
           </div>
 
-          {/* Image upload */}
+          {/* Image upload — up to 10 */}
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider mb-2" style={{ ...ds, color: 'var(--ink-light)', fontSize: '0.6rem' }}>
-              Photo <span className="normal-case tracking-normal font-normal" style={{ color: 'var(--ink-muted)' }}>(optional)</span>
+              Photos <span className="normal-case tracking-normal font-normal" style={{ color: 'var(--ink-muted)' }}>(optional — up to 10)</span>
             </label>
-            {imagePreview ? (
-              <div className="relative inline-block">
-                <img src={imagePreview} alt="Preview" className="max-h-32 rounded" />
-                <button
-                  type="button"
-                  onClick={() => { setImagePreview(null); setImageUrl(null); }}
-                  className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center"
-                  style={{ background: 'var(--need)', color: 'white', fontFamily: 'var(--font-display)', fontSize: '0.65rem', fontWeight: 'bold' }}
-                >×</button>
+            {imagePreviews.length > 0 && (
+              <div className="flex gap-2 flex-wrap mb-2">
+                {imagePreviews.map((src, i) => (
+                  <div key={i} className="relative">
+                    <img src={src} alt="" className="w-14 h-14 object-cover rounded" style={{ objectFit: 'cover' }} />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newUrls = imageUrls.filter((_, idx) => idx !== i);
+                        const newPreviews = imagePreviews.filter((_, idx) => idx !== i);
+                        setImageUrls(newUrls);
+                        setImagePreviews(newPreviews);
+                      }}
+                      className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{ background: 'var(--need)', color: 'white', fontFamily: 'var(--font-display)', fontSize: '0.6rem', fontWeight: 'bold' }}
+                    >×</button>
+                  </div>
+                ))}
               </div>
-            ) : (
+            )}
+            {imageUrls.length < 10 && (
               <label className="block w-full py-3 text-center text-xs font-bold uppercase tracking-wider cursor-pointer font-display" style={{ fontSize: '0.6rem', border: '1.5px dashed var(--border-card)', color: 'var(--ink-muted)' }}>
-                {imageUrl ? 'Change photo' : 'Add a photo'}
-                <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  setImagePreview(URL.createObjectURL(file));
-                  setImageUploading(true);
-                  const { uploadPostImage } = await import('@/lib/upload-post-image');
-                  const result = await uploadPostImage(file);
-                  if ('url' in result) setImageUrl(result.url);
-                  else alert(result.error);
-                  setImageUploading(false);
-                }} />
+                {imageUrls.length === 0 ? 'Add photos' : `${10 - imageUrls.length} more`}
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={async (e) => {
+                    const files = Array.from(e.target.files || []);
+                    if (!files.length) return;
+                    const remaining = 10 - imageUrls.length;
+                    const toUpload = files.slice(0, remaining);
+                    const newPreviews = toUpload.map(f => URL.createObjectURL(f));
+                    setImagePreviews(prev => [...prev, ...newPreviews]);
+                    setImageUploading(true);
+                    const { uploadPostImages } = await import('@/lib/upload-post-image');
+                    const result = await uploadPostImages(toUpload);
+                    if ('urls' in result) setImageUrls(prev => [...prev, ...result.urls]);
+                    else { alert(result.error); setImagePreviews(prev => prev.slice(0, -toUpload.length)); }
+                    setImageUploading(false);
+                  }}
+                />
               </label>
             )}
             {imageUploading && <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>Uploading…</p>}
@@ -289,19 +308,19 @@ export function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
             {submitting ? 'Saving…' : 'Save changes'}
           </button>
 
-          {/* Delete */}
-          {showDeleteConfirm ? (
+          {/* Archive */}
+          {showArchiveConfirm ? (
             <div className="flex gap-2">
               <button
-                onClick={handleDelete}
-                disabled={deleting}
+                onClick={handleArchive}
+                disabled={archiving}
                 className="flex-1 py-3 text-xs font-bold uppercase tracking-wider disabled:opacity-40"
                 style={{ background: 'var(--need)', color: 'white', ...ds }}
               >
-                {deleting ? 'Deleting…' : 'Yes, delete post'}
+                {archiving ? 'Archiving…' : 'Yes, archive post'}
               </button>
               <button
-                onClick={() => setShowDeleteConfirm(false)}
+                onClick={() => setShowArchiveConfirm(false)}
                 className="flex-1 py-3 text-xs font-bold uppercase tracking-wider"
                 style={{ background: 'transparent', color: 'var(--ink-muted)', border: '1px solid var(--border-card)', ...ds }}
               >
@@ -311,11 +330,11 @@ export function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
           ) : (
             <button
               type="button"
-              onClick={() => setShowDeleteConfirm(true)}
+              onClick={() => setShowArchiveConfirm(true)}
               className="w-full py-3 text-xs font-bold uppercase tracking-wider"
               style={{ background: 'transparent', color: 'var(--need)', border: '1px solid var(--need)', ...ds }}
             >
-              Delete post
+              Archive post
             </button>
           )}
         </div>
