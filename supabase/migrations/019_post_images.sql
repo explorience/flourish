@@ -23,3 +23,12 @@ create policy "Post images are publicly accessible"
 create policy "Users can delete own post images"
   on storage.objects for delete
   using (bucket_id = 'post-images' and auth.uid()::text = (storage.foldername(name))[1]);
+
+-- PWA install prompt settings (defaults — admin can adjust in dashboard)
+insert into app_settings (key, value, updated_at)
+values ('pwa_prompt_max_shows', 7, NOW())
+on conflict (key) do update set value = EXCLUDED.value, updated_at = NOW();
+
+insert into app_settings (key, value, updated_at)
+values ('pwa_prompt_every_n_visits', 10, NOW())
+on conflict (key) do update set value = EXCLUDED.value, updated_at = NOW();
