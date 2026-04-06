@@ -33,7 +33,7 @@ export async function PUT(
     }
 
     const body = await req.json();
-    const { title, details, category, urgency } = body;
+    const { title, details, category, urgency, image_urls } = body;
 
     if (!title?.trim()) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 });
@@ -47,6 +47,7 @@ export async function PUT(
         category: category || 'other',
         urgency: urgency || 'flexible',
         updated_at: new Date().toISOString(),
+        image_urls: image_urls !== undefined ? (image_urls || []) : undefined,
       })
       .eq('id', id)
       .select()

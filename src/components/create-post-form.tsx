@@ -23,6 +23,9 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
   const [crossStreet, setCrossStreet] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
 
   const handleSubmit = async () => {
     if (!type || !title.trim() || !contactName.trim()) return;
@@ -48,6 +51,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
         user_id: user?.id || null,
         location_label: crossStreet.trim() || null,
         location_crossstreet: crossStreet.trim() || null,
+        image_urls: imageUrls,
       }),
     });
 
@@ -175,6 +179,59 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                       style={{ background: '#fff', border: '1px solid var(--border-card)' }}
                       placeholder="e.g. Dundas & Adelaide, or Oxford & Wharncliffe"
                     />
+                  </div>
+
+                  {/* Image upload — up to 10 */}
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-2 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>
+                      Photos <span className="normal-case tracking-normal font-normal color-ink-muted">(optional — up to 10)</span>
+                    </label>
+                    {imagePreviews.length > 0 && (
+                      <div className="flex gap-2 flex-wrap mb-2">
+                        {imagePreviews.map((src, i) => (
+                          <div key={i} className="relative">
+                            <img src={src} alt="" className="w-16 h-16 object-cover rounded" style={{ objectFit: 'cover' }} />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newUrls = imageUrls.filter((_, idx) => idx !== i);
+                                const newPreviews = imagePreviews.filter((_, idx) => idx !== i);
+                                setImageUrls(newUrls);
+                                setImagePreviews(newPreviews);
+                              }}
+                              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
+                              style={{ background: 'var(--need)', color: 'white', fontFamily: 'var(--font-display)', fontSize: '0.6rem', fontWeight: 'bold' }}
+                            >×</button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {imageUrls.length < 10 && (
+                      <label className="block w-full py-3 text-center text-xs font-bold uppercase tracking-wider cursor-pointer font-display" style={{ fontSize: '0.6rem', border: '1.5px dashed var(--border-card)', color: 'var(--ink-muted)' }}>
+                        {imageUrls.length === 0 ? 'Add photos' : `${10 - imageUrls.length} more`}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          className="hidden"
+                          onChange={async (e) => {
+                            const files = Array.from(e.target.files || []);
+                            if (!files.length) return;
+                            const remaining = 10 - imageUrls.length;
+                            const toUpload = files.slice(0, remaining);
+                            const newPreviews = toUpload.map(f => URL.createObjectURL(f));
+                            setImagePreviews(prev => [...prev, ...newPreviews]);
+                            setImageUploading(true);
+                            const { uploadPostImages } = await import('@/lib/upload-post-image');
+                            const result = await uploadPostImages(toUpload);
+                            if ('urls' in result) setImageUrls(prev => [...prev, ...result.urls]);
+                            else { alert(result.error); setImagePreviews(prev => prev.slice(0, -toUpload.length)); }
+                            setImageUploading(false);
+                          }}
+                        />
+                      </label>
+                    )}
+                    {imageUploading && <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>Uploading…</p>}
                   </div>
 
                   <button onClick={() => setStep(3)} disabled={!title.trim()}

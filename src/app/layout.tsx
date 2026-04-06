@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toast';
+import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
 import { APP_NAME, APP_DESCRIPTION, APP_TAGLINE } from '@/lib/constants';
 
 export const metadata: Metadata = {
@@ -43,6 +44,7 @@ export default function RootLayout({
         <a href="#main-content" className="skip-to-content">Skip to content</a>
         {children}
         <Toaster />
+        <PWAInstallPrompt />
         <script dangerouslySetInnerHTML={{ __html: `
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js').catch(() => {});
