@@ -16,7 +16,7 @@ export default async function Home() {
   
   const { data: posts } = await supabase
     .from('posts')
-    .select('*, responses(*), profiles(display_name, neighbourhood)')
+    .select('*, responses(*)')
     .eq('status', 'active')
     // Show approved posts, or posts without a moderation_status (legacy/unmoderated)
     .or('moderation_status.eq.approved,moderation_status.is.null')

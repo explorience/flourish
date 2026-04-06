@@ -9,7 +9,7 @@ import { getModeratorByEmail } from '@/lib/admin';
 
 export default async function PostDetail({ params }: { params: { id: string } }) {
   const supabase = await createClient();
-  const { data: post } = await supabase.from('posts').select('*, responses(*), profiles(display_name, neighbourhood)').eq('id', params.id).single();
+  const { data: post } = await supabase.from('posts').select('*, responses(*)').eq('id', params.id).single();
 
   // Check moderation status for the current user
   const { data: { user } } = await supabase.auth.getUser();
