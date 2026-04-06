@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toast';
 import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
+import { ServiceWorkerRegister } from '@/components/service-worker-register';
 import { APP_NAME, APP_DESCRIPTION, APP_TAGLINE } from '@/lib/constants';
 
 export const metadata: Metadata = {
@@ -45,6 +46,7 @@ export default function RootLayout({
         {children}
         <Toaster />
         <PWAInstallPrompt />
+        <ServiceWorkerRegister />
         <script dangerouslySetInnerHTML={{ __html: `
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js').catch(() => {});

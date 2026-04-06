@@ -1,11 +1,11 @@
 {
   "name": "Flourish",
   "short_name": "Flourish",
-  "description": "Share what you have. Ask for what you need.",
+  "description": "Share what you need. Give what you can.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1a2a20",
-  "theme_color": "#1a2a20",
+  "background_color": "#FCF8F0",
+  "theme_color": "#EA7000",
   "orientation": "portrait-primary",
   "icons": [
     {
@@ -17,12 +17,6 @@
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
     }
   ]
 }
