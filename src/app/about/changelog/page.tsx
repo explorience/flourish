@@ -32,6 +32,76 @@ const changelog = [
         title: 'Mobile home screen prompt',
         desc: 'On mobile devices, visitors will occasionally see a prompt to add Flourish to their home screen. It\'s shown periodically and easy to dismiss.',
       },
+      {
+        type: 'feature',
+        title: 'Offline support',
+        desc: 'Post detail pages are now cached so you can view them even without a connection. If you submit a post while offline, it queues and sends when you\'re back online.',
+      },
+      {
+        type: 'fix',
+        title: 'Fixed mobile prompt timing',
+        desc: 'The home screen prompt now appears on visit 2 instead of visit 1, giving new visitors a chance to explore first.',
+      },
+    ],
+  },
+  {
+    date: '2026-04-05',
+    changes: [
+      {
+        type: 'fix',
+        title: 'Vouch badge visibility',
+        desc: 'The vouch badge on posts now displays correctly for all users.',
+      },
+      {
+        type: 'feature',
+        title: 'Image uploads on posts',
+        desc: 'Posts can now include photos. Upload up to 10 images when creating or editing a post.',
+      },
+      {
+        type: 'feature',
+        title: 'Delete your own posts',
+        desc: 'Post authors can now delete their own posts from the detail page.',
+      },
+    ],
+  },
+  {
+    date: '2026-04-04',
+    changes: [
+      {
+        type: 'fix',
+        title: 'Vouch prompt hidden when vouching is disabled',
+        desc: 'The vouch prompt no longer appears when the community has vouching turned off.',
+      },
+      {
+        type: 'fix',
+        title: 'Accessibility improvements',
+        desc: 'Improved keyboard navigation, screen reader labels, and contrast across the app.',
+      },
+      {
+        type: 'fix',
+        title: 'Theme toggle stability',
+        desc: 'Fixed an issue where the theme toggle could cause excessive re-renders in production.',
+      },
+      {
+        type: 'fix',
+        title: 'MeToo button reliability',
+        desc: 'Fixed a React hooks violation in the MeTooButton that could cause it to malfunction.',
+      },
+      {
+        type: 'fix',
+        title: 'Error boundary added',
+        desc: 'Added a global error boundary to gracefully handle unexpected errors without crashing the whole app.',
+      },
+      {
+        type: 'fix',
+        title: 'Type error fixes',
+        desc: 'Fixed type errors in post-card responses, theme-toggle, map components, and the vouch route.',
+      },
+      {
+        type: 'fix',
+        title: 'Navigation polish',
+        desc: 'Fixed mobile text cutoff issues, improved hover effects, removed the forest dark theme option, and added an admin link.',
+      },
     ],
   },
 ];
@@ -79,7 +149,7 @@ export default async function ChangelogPage() {
               className="text-xs font-bold uppercase tracking-widest mb-4 pb-2 border-b"
               style={{ color: 'var(--sub)', borderColor: 'var(--border)', fontFamily: 'var(--font-display)' }}
             >
-              {new Date(entry.date).toLocaleDateString('en-CA', {
+              {new Date(entry.date + 'T12:00:00').toLocaleDateString('en-CA', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
