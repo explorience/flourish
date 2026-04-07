@@ -17,8 +17,8 @@ export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategory
 
   return (
     <div className="space-y-2 animate-fade-up">
-      {/* Type filters + category filters on one row on mobile */}
-      <div className="flex items-center justify-center gap-x-3 md:gap-x-5 flex-wrap pb-1 md:pb-3 w-full">
+      {/* Type filters + category filters on one row, scrolls horizontally if needed */}
+      <div className="flex items-center justify-center md:justify-center gap-x-1.5 md:gap-x-4 pb-1 md:pb-3 w-full overflow-x-auto no-scrollbar px-2" style={{ scrollbarWidth: 'none' }}>
         {POST_TYPES.map((t) => (
           <Tag
             key={t.value}
@@ -28,7 +28,7 @@ export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategory
             activeColor={t.value === 'need' ? 'var(--need)' : 'var(--offer)'}
           />
         ))}
-        <span className="flex-shrink-0 opacity-30 text-xs" style={{ color: 'var(--sub)' }}>·</span>
+        <span className="flex-shrink-0 opacity-30 text-xs px-0.5" style={{ color: 'var(--sub)' }}>·</span>
         {CATEGORIES.map((c) => (
           <Tag
             key={c.value}
@@ -68,8 +68,8 @@ function Tag({ active, onClick, label, activeColor }: {
       className="font-bold uppercase tracking-wider whitespace-nowrap flex-shrink-0 transition-all"
       style={{
         fontFamily: 'var(--font-display)',
-        fontSize: 'clamp(0.65rem, 0.6rem + 0.4vw, 1.1rem)',
-        letterSpacing: '0.06em',
+        fontSize: 'clamp(0.6rem, 0.55rem + 0.35vw, 1.05rem)',
+        letterSpacing: '0.04em',
         color: active
           ? (activeColor || 'var(--heading)')
           : 'var(--sub)',

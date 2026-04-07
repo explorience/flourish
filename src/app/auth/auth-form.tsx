@@ -57,7 +57,7 @@ export function AuthForm() {
     color: 'var(--ink)',
     padding: '12px 16px',
     width: '100%',
-    fontSize: '0.9rem',
+    fontSize: '16px', // Prevent iOS auto-zoom on focus
     fontFamily: 'var(--font-body)',
     outline: 'none',
   };
@@ -110,7 +110,7 @@ export function AuthForm() {
           )}
           <div>
             <label style={labelStyle}>Email</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} placeholder="you@example.com" required autoFocus />
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} placeholder="you@example.com" required />
           </div>
           {(mode === 'sign_in' || mode === 'sign_up') && (
             <div>

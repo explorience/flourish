@@ -86,40 +86,81 @@ export function PWAInstallPrompt() {
 
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
+  // iOS share button is at the BOTTOM of Safari (in the toolbar).
+  // Android Chrome menu is at the TOP-RIGHT.
+  // We anchor the bubble to whichever is correct, with an arrow pointing at it.
+  const anchorBottom = isIOS;
+
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4"
-      style={{ pointerEvents: 'auto' }}
+      className="fixed left-0 right-0 z-50 px-4 pointer-events-none"
+      style={{
+        top: anchorBottom ? 'auto' : '4rem',
+        bottom: anchorBottom ? '4.5rem' : 'auto',
+      }}
     >
       <div
-        className="max-w-md mx-auto rounded-sm p-4 shadow-lg"
+        className="max-w-xs mx-auto relative pointer-events-auto animate-bounce-in"
         style={{
-          background: 'var(--card)',
-          border: '1.5px solid var(--border-card)',
+          background: '#ffd84a',
+          color: '#2a1a00',
+          padding: '14px 16px',
+          borderRadius: '14px',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.35), 0 0 0 3px rgba(0,0,0,0.15)',
+          border: '2px solid #2a1a00',
         }}
       >
+        {/* Arrow pointer - points DOWN to share button on iOS, UP to menu on Android */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            left: anchorBottom ? '50%' : 'auto',
+            right: anchorBottom ? 'auto' : '20px',
+            transform: anchorBottom ? 'translateX(-50%)' : 'none',
+            top: anchorBottom ? 'auto' : '-12px',
+            bottom: anchorBottom ? '-12px' : 'auto',
+            width: 0,
+            height: 0,
+            borderLeft: '12px solid transparent',
+            borderRight: '12px solid transparent',
+            ...(anchorBottom
+              ? { borderTop: '12px solid #ffd84a', filter: 'drop-shadow(0 2px 0 #2a1a00)' }
+              : { borderBottom: '12px solid #ffd84a', filter: 'drop-shadow(0 -2px 0 #2a1a00)' }),
+          }}
+        />
+
         <div className="flex items-start gap-3">
           <div className="flex-1">
             <p
-              className="text-sm font-bold mb-1"
-              style={{ color: 'var(--ink)', ...{} }}
+              className="font-bold mb-0.5"
+              style={{ fontSize: '0.95rem', lineHeight: 1.2 }}
             >
-              Add to your home screen
+              {isIOS ? '👇 Install this app' : '☝ Install this app'}
             </p>
-            <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>
+            <p style={{ fontSize: '0.78rem', lineHeight: 1.35, fontWeight: 500 }}>
               {isIOS
-                ? 'Tap the share button below, then tap "Add to Home Screen"'
-                : 'Tap the menu (⋮) above, then tap "Add to Home Screen" or "Install app"'}
+                ? 'Tap the share button, then "Add to Home Screen"'
+                : 'Tap the menu (⋮), then "Install app"'}
             </p>
           </div>
           <button
             onClick={() => { setSessionDismissed(true); setVisible(false); }}
-            className="flex-shrink-0 p-1"
-            style={{ color: 'var(--ink-muted)' }}
+            className="flex-shrink-0"
+            style={{
+              color: '#2a1a00',
+              background: 'rgba(0,0,0,0.1)',
+              borderRadius: '50%',
+              width: '24px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             aria-label="Dismiss"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+              <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
             </svg>
           </button>
         </div>
