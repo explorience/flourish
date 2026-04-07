@@ -114,14 +114,6 @@ export function Header() {
                 )}
               </Link>
             )}
-                <MessageSquare className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
-                {unread > 0 && (
-                  <span className="nav-badge absolute top-1 right-1 md:top-1.5 md:right-1.5 flex items-center justify-center text-white font-bold">
-                    {unread > 9 ? '9+' : unread}
-                  </span>
-                )}
-              </Link>
-            )}
             {isAdmin && (
               <Link href="/admin" className="nav-icon p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110" title="Admin" aria-label="Admin dashboard">
                 <Shield className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />

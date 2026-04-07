@@ -89,7 +89,6 @@ export function PWAInstallPrompt() {
   // On iOS Safari: share button is at bottom of screen (toolbar)
   // On Android Chrome: menu is at top-right corner
   // We position our bubble accordingly, with an arrow pointing at the target
-  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   const isAndroid = /Android/i.test(navigator.userAgent);
 
   // On iPhone with Dynamic Island, the toolbar is taller - detect it
