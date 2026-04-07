@@ -131,8 +131,8 @@ export function PWAInstallPrompt() {
             </p>
             <p style={{ fontSize: '0.78rem', lineHeight: 1.35, fontWeight: 500 }}>
               {isIOS
-                ? 'Tap the share button below, then "Add to Home Screen"'
-                : 'Tap the menu (⋮) in the top-right, then "Add to Home screen"'
+                ? "Tap 'Share', then 'Add to Home Screen'"
+                : "Tap the menu (⋮), then 'Add to Home screen'"
               }
             </p>
           </div>
