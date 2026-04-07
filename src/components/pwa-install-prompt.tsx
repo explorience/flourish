@@ -85,57 +85,41 @@ export function PWAInstallPrompt() {
   if (!visible || !settings) return null;
 
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  // Android: menu (⋮) is top-right; iOS: share button is bottom toolbar
 
-  // On iOS Safari: share button is at bottom of screen (toolbar)
-  // On Android Chrome: menu is at top-right corner
-  // We position our bubble accordingly, with an arrow pointing at the target
-  const isAndroid = /Android/i.test(navigator.userAgent);
+  // iOS toolbar height varies by device
+  const hasDynamicIsland = window.screen.height >= 852 && window.screen.width >= 390;
+  const iosToolbarHeight = hasDynamicIsland ? 54 : 44; // px, rough estimate
+  const gap = 16;
 
-  // On iPhone with Dynamic Island, the toolbar is taller - detect it
-  const hasDynamicIsland = window.screen.height === 852 && window.screen.width === 393; // iPhone 14/15 Pro Max
-  const isIPhoneWithNotch = /iPhone/.test(navigator.userAgent) && !window.matchMedia('(max-width: 375px)').matches;
-  const toolbarHeight = isIPhoneWithNotch ? (hasDynamicIsland ? 39 : 34) : 0; // pixels
-  const bubbleDistance = 20; // px between bubble and toolbar
+  // Positioning
+  const wrapperStyle: React.CSSProperties = isIOS
+    ? { position: 'fixed', left: 0, right: 0, bottom: `${iosToolbarHeight + gap}px`, zIndex: 50, padding: '0 16px', pointerEvents: 'none' }
+    : { position: 'fixed', left: 0, right: 0, top: '56px', zIndex: 50, padding: '0 16px', pointerEvents: 'none' };
+
+  // Arrow: points DOWN on iOS (toward bottom toolbar), UP on Android (toward top menu)
+  const arrowStyle: React.CSSProperties = isIOS
+    ? { position: 'absolute', left: '50%', bottom: '-12px', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '12px solid transparent', borderRight: '12px solid transparent', borderTop: '12px solid #ffd84a', filter: 'drop-shadow(0 2px 0 rgba(0,0,0,0.3))' }
+    : { position: 'absolute', right: '20px', top: '-12px', width: 0, height: 0, borderLeft: '12px solid transparent', borderRight: '12px solid transparent', borderBottom: '12px solid #ffd84a', filter: 'drop-shadow(0 -2px 0 rgba(0,0,0,0.3))' };
 
   return (
-    <div
-      className="fixed left-0 right-0 z-50 px-4 pointer-events-none"
-      style={{
-        top: 'auto',
-        // Position 20px above the toolbar on iOS, or 60px below top on Android
-        bottom: isIOS ? `${toolbarHeight + bubbleDistance}px` : 'auto',
-      }}
-    >
+    <div style={wrapperStyle}>
       <div
-        className="max-w-xs mx-auto relative pointer-events-auto animate-bounce-in"
+        className="max-w-xs relative pointer-events-auto animate-bounce-in"
         style={{
+          marginLeft: isIOS ? 'auto' : 'auto',
+          marginRight: isIOS ? 'auto' : '0',
           background: '#ffd84a',
           color: '#2a1a00',
           padding: '14px 16px',
           borderRadius: '14px',
           boxShadow: '0 8px 24px rgba(0,0,0,0.35), 0 0 0 3px rgba(0,0,0,0.15)',
           border: '2px solid #2a1a00',
-          // Prevent text selection
           WebkitUserSelect: 'none',
           userSelect: 'none',
         }}
       >
-        {/* Arrow pointer - always points DOWN on iOS */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            left: '50%',
-            bottom: '-12px',
-            transform: 'translateX(-50%)',
-            width: 0,
-            height: 0,
-            borderLeft: '12px solid transparent',
-            borderRight: '12px solid transparent',
-            borderTop: '12px solid #ffd84a',
-            filter: 'drop-shadow(0 2px 0 #2a1a00)',
-          }}
-        />
+        <div aria-hidden="true" style={arrowStyle} />
 
         <div className="flex items-start gap-3">
           <div className="flex-1">
@@ -143,10 +127,13 @@ export function PWAInstallPrompt() {
               className="font-bold mb-0.5"
               style={{ fontSize: '0.95rem', lineHeight: 1.2 }}
             >
-              👇 Install this app
+              {isIOS ? '👇 Install this app' : '☝️ Install this app'}
             </p>
             <p style={{ fontSize: '0.78rem', lineHeight: 1.35, fontWeight: 500 }}>
-              Tap the share button below, then "Add to Home Screen"
+              {isIOS
+                ? 'Tap the share button below, then "Add to Home Screen"'
+                : 'Tap the menu (⋮) in the top-right, then "Add to Home screen"'
+              }
             </p>
           </div>
           <button
