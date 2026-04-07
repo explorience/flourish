@@ -86,17 +86,25 @@ export function PWAInstallPrompt() {
 
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-  // iOS share button is at the BOTTOM of Safari (in the toolbar).
-  // Android Chrome menu is at the TOP-RIGHT.
-  // We anchor the bubble to whichever is correct, with an arrow pointing at it.
-  const anchorBottom = isIOS;
+  // On iOS Safari: share button is at bottom of screen (toolbar)
+  // On Android Chrome: menu is at top-right corner
+  // We position our bubble accordingly, with an arrow pointing at the target
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isAndroid = /Android/i.test(navigator.userAgent);
+
+  // On iPhone with Dynamic Island, the toolbar is taller - detect it
+  const hasDynamicIsland = window.screen.height === 852 && window.screen.width === 393; // iPhone 14/15 Pro Max
+  const isIPhoneWithNotch = /iPhone/.test(navigator.userAgent) && !window.matchMedia('(max-width: 375px)').matches;
+  const toolbarHeight = isIPhoneWithNotch ? (hasDynamicIsland ? 39 : 34) : 0; // pixels
+  const bubbleDistance = 20; // px between bubble and toolbar
 
   return (
     <div
       className="fixed left-0 right-0 z-50 px-4 pointer-events-none"
       style={{
-        top: anchorBottom ? 'auto' : '4rem',
-        bottom: anchorBottom ? '4.5rem' : 'auto',
+        top: 'auto',
+        // Position 20px above the toolbar on iOS, or 60px below top on Android
+        bottom: isIOS ? `${toolbarHeight + bubbleDistance}px` : 'auto',
       }}
     >
       <div
@@ -108,25 +116,25 @@ export function PWAInstallPrompt() {
           borderRadius: '14px',
           boxShadow: '0 8px 24px rgba(0,0,0,0.35), 0 0 0 3px rgba(0,0,0,0.15)',
           border: '2px solid #2a1a00',
+          // Prevent text selection
+          WebkitUserSelect: 'none',
+          userSelect: 'none',
         }}
       >
-        {/* Arrow pointer - points DOWN to share button on iOS, UP to menu on Android */}
+        {/* Arrow pointer - always points DOWN on iOS */}
         <div
           aria-hidden="true"
           style={{
             position: 'absolute',
-            left: anchorBottom ? '50%' : 'auto',
-            right: anchorBottom ? 'auto' : '20px',
-            transform: anchorBottom ? 'translateX(-50%)' : 'none',
-            top: anchorBottom ? 'auto' : '-12px',
-            bottom: anchorBottom ? '-12px' : 'auto',
+            left: '50%',
+            bottom: '-12px',
+            transform: 'translateX(-50%)',
             width: 0,
             height: 0,
             borderLeft: '12px solid transparent',
             borderRight: '12px solid transparent',
-            ...(anchorBottom
-              ? { borderTop: '12px solid #ffd84a', filter: 'drop-shadow(0 2px 0 #2a1a00)' }
-              : { borderBottom: '12px solid #ffd84a', filter: 'drop-shadow(0 -2px 0 #2a1a00)' }),
+            borderTop: '12px solid #ffd84a',
+            filter: 'drop-shadow(0 2px 0 #2a1a00)',
           }}
         />
 
@@ -136,12 +144,10 @@ export function PWAInstallPrompt() {
               className="font-bold mb-0.5"
               style={{ fontSize: '0.95rem', lineHeight: 1.2 }}
             >
-              {isIOS ? '👇 Install this app' : '☝ Install this app'}
+              👇 Install this app
             </p>
             <p style={{ fontSize: '0.78rem', lineHeight: 1.35, fontWeight: 500 }}>
-              {isIOS
-                ? 'Tap the share button, then "Add to Home Screen"'
-                : 'Tap the menu (⋮), then "Install app"'}
+              Tap the share button below, then "Add to Home Screen"
             </p>
           </div>
           <button

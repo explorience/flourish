@@ -73,21 +73,47 @@ export function Header() {
             Flourish
           </Link>
 
-          <div className="flex items-center gap-1 md:gap-3">
-            <Link href="/about" className="nav-link hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-all hover:opacity-100">
-              About
-            </Link>
-            <Link href="/feedback" className="nav-link hidden md:inline-block px-2 py-1 text-xs font-bold uppercase tracking-wider transition-all hover:opacity-100">
-              Feedback
-            </Link>
-            <Link href="/search" className="nav-icon p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110" aria-label="Search posts">
-              <Search className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
-            </Link>
-            <Link href="/map" className="nav-icon p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110" aria-label="View map">
-              <Map className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
-            </Link>
+          <div className="flex items-center gap-2 md:gap-3 min-w-0">
+            <button
+              onClick={() => {
+                const menu = document.getElementById('nav-menu');
+                if (menu) menu.classList.toggle('hidden');
+              }}
+              className="flex items-center justify-center p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110"
+              aria-label="Menu"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+            <div id="nav-menu" className="nav-menu hidden fixed top-[3.25rem] right-4 bg-card border border-border-card rounded-sm shadow-lg z-50 min-w-48">
+              <div className="py-2">
+                <Link href="/about" className="block px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-bg-light transition-colors">
+                  About
+                </Link>
+                <Link href="/feedback" className="block px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-bg-light transition-colors">
+                  Feedback
+                </Link>
+                <Link href="/guide" className="block px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-bg-light transition-colors">
+                  Using Flourish
+                </Link>
+                <Link href="/code-of-conduct" className="block px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-bg-light transition-colors">
+                  Code of Conduct
+                </Link>
+              </div>
+            </div>
             {isLoggedIn && (
               <Link href="/messages" className={`relative p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110 ${unread > 0 ? 'nav-icon-active' : 'nav-icon'}`} aria-label={`Messages${unread > 0 ? ` (${unread} unread)` : ''}`}>
+                <MessageSquare className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
+                {unread > 0 && (
+                  <span className="nav-badge absolute top-1 right-1 md:top-1.5 md:right-1.5 flex items-center justify-center text-white font-bold">
+                    {unread > 9 ? '9+' : unread}
+                  </span>
+                )}
+              </Link>
+            )}
                 <MessageSquare className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
                 {unread > 0 && (
                   <span className="nav-badge absolute top-1 right-1 md:top-1.5 md:right-1.5 flex items-center justify-center text-white font-bold">
@@ -101,32 +127,34 @@ export function Header() {
                 <Shield className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
               </Link>
             )}
-            <Link href={isLoggedIn ? '/account' : '/auth'} className={`p-2 md:p-3 rounded transition-colors hover:opacity-100 hover:scale-110 ${isLoggedIn ? 'nav-icon-active' : 'nav-icon'}`} aria-label={isLoggedIn ? 'Your account' : 'Sign in'}>
-              <User className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
-            </Link>
+            {isLoggedIn && (
+              <Link href="/account" className="p-2 md:p-3 rounded transition-colors hover:opacity-100 hover:scale-110 nav-icon-active" aria-label="Your account">
+                <User className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
+              </Link>
+            )}
             <ThemeToggle />
-            <button
-              onClick={() => {
-                if (isLoggedIn === null) return;
-                isLoggedIn ? setShowCreate(true) : window.location.href = '/auth?next=/';
-              }}
-              className="post-btn ml-1 px-4 py-2 md:ml-2 md:px-7 md:py-3 text-xs md:text-base font-bold uppercase tracking-wider transition-all hover:scale-105 hover:brightness-110"
-            >
-              Post
-            </button>
+            {isLoggedIn && (
+              <button
+                onClick={() => setShowCreate(true)}
+                className="post-btn ml-1 px-3 py-2 md:ml-2 md:px-5 md:py-2 text-xs font-bold uppercase tracking-wider transition-all hover:scale-105 hover:brightness-110"
+              >
+                Post
+              </button>
+            )}
           </div>
         </div>
       </header>
 
-      <div className="mobile-nav flex md:hidden items-center justify-center gap-4 py-1.5 border-b text-center">
-        <Link href="/about" className="nav-link text-xs font-bold uppercase tracking-wider">
-          About
-        </Link>
-        <span className="mobile-nav-sep">|</span>
-        <Link href="/feedback" className="nav-link text-xs font-bold uppercase tracking-wider">
-          Feedback
-        </Link>
-      </div>
+      <div className="mobile-nav-spacer h-1" />
+
+      <style jsx>{`
+        .nav-menu.hidden {
+          display: none;
+        }
+        .mobile-nav-spacer {
+          height: 0.0625rem;
+        }
+      `}</style>
 
       {showCreate && <CreatePostForm onClose={() => setShowCreate(false)} />}
     </>
