@@ -1,13 +1,56 @@
-const CACHE_NAME = 'mutual-exchange-v1';
-const PRECACHE = ['/', '/search'];
+// Flourish Service Worker — offline support + background sync
+const CACHE_NAME = 'flourish-v1';
+const QUEUE_STORE = 'flourish_offline_queue';
+const DB_NAME = 'flourish-sw';
 
+const STATIC_ASSETS = ['/', '/manifest.json'];
+
+// ─── IndexedDB helpers ────────────────────────────────────────────────────────
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore(QUEUE_STORE, { keyPath: 'timestamp' });
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function getQueue() {
+  const db = await openDB();
+  return db.getAll(QUEUE_STORE);
+}
+
+async function removeFromQueue(item) {
+  const db = await openDB();
+  const all = await db.getAll(QUEUE_STORE);
+  const tx = db.transaction(QUEUE_STORE, 'readwrite');
+  const store = tx.objectStore(QUEUE_STORE);
+  for (let i = 0; i < all.length; i++) {
+    const entry = all[i];
+    if (entry.url === item.url && entry.timestamp === item.timestamp) {
+      store.delete(i);
+      break;
+    }
+  }
+  await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
+}
+
+async function addToQueue(item) {
+  const db = await openDB();
+  const tx = db.transaction(QUEUE_STORE, 'readwrite');
+  tx.objectStore(QUEUE_STORE).put(item);
+  await new Promise((res, rej) => { tx.oncomplete = res; tx.onerror = rej; });
+}
+
+// ─── Install ────────────────────────────────────────────────────────────────
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
   );
   self.skipWaiting();
 });
 
+// ─── Activate ────────────────────────────────────────────────────────────────
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -17,108 +60,108 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Push notification handlers
-self.addEventListener('push', (event) => {
-  if (!event.data) return;
+// ─── Fetch ─────────────────────────────────────────────────────────────────
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
 
-  try {
-    const payload = event.data.json();
-    const { title, body, url } = payload;
+  // Skip non-GET and cross-origin (except API for background sync)
+  if (request.method !== 'GET' && !(request.method === 'POST' || request.method === 'PUT')) return;
+  if (request.method === 'GET' && url.origin !== location.origin) return;
 
-    event.waitUntil(
-      self.registration.showNotification(title || 'Flourish', {
-        body: body || 'You have a new notification',
-        icon: '/icon-192x192.png',
-        badge: '/icon-192x192.png',
-        data: { url: url || '/' },
-        tag: url || 'default',
+  // ── API: queue POST/PUT when offline ──
+  if ((request.method === 'POST' || request.method === 'PUT') &&
+      url.origin === location.origin && url.pathname.startsWith('/api/')) {
+    event.respondWith(
+      fetch(request.clone()).catch(async () => {
+        const body = await request.json().catch(() => null);
+        await addToQueue({ url: request.url, method: request.method, body, timestamp: Date.now() });
+        if ('sync' in self.registration) {
+          self.registration.sync.register('flourish-queue').catch(() => {});
+        }
+        return new Response(JSON.stringify({ queued: true }), {
+          headers: { 'Content-Type': 'application/json' },
+        });
       })
     );
-  } catch (err) {
-    console.error('Push event error:', err);
-  }
-});
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-
-  const url = event.notification.data?.url || '/';
-
-  event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
-      // Focus existing tab if open
-      for (const client of clients) {
-        if (client.url.includes(url) && 'focus' in client) {
-          return client.focus();
-        }
-      }
-      // Otherwise open new tab
-      return self.clients.openWindow(url);
-    })
-  );
-});
-
-self.addEventListener('fetch', (event) => {
-  // Network-first for API calls and dynamic pages
-  if (event.request.url.includes('/api/') || event.request.method !== 'GET') {
     return;
   }
 
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        return response;
+  // ── POST detail pages — cache-first, fallback to offline page ──
+  if (request.method === 'GET' && url.pathname.startsWith('/post/')) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(async (cache) => {
+        const cached = await cache.match(request);
+        if (cached) return cached;
+        try {
+          const response = await fetch(request);
+          if (response.ok) cache.put(request, response.clone());
+          return response;
+        } catch {
+          return new Response(
+            `<html><body style="font-family:sans-serif;padding:2rem;text-align:center;color:#555">
+              <h2>You're offline</h2>
+              <p>This page isn't cached yet. Check your connection and try again.</p>
+              <a href="/" style="color:#EA7000">Go home</a>
+            </body></html>`,
+            { headers: { 'Content-Type': 'text/html' } }
+          );
+        }
       })
-      .catch(() => caches.match(event.request))
-  );
-});
-
-// ─── Web Push ────────────────────────────────────────────────────────────────
-
-self.addEventListener('push', (event) => {
-  let data = { title: 'Flourish', body: 'You have a new notification.', url: '/' };
-
-  if (event.data) {
-    try {
-      data = { ...data, ...JSON.parse(event.data.text()) };
-    } catch {
-      data.body = event.data.text();
-    }
+    );
+    return;
   }
 
-  const options = {
-    body: data.body,
-    icon: '/icons/icon-192.png',
-    badge: '/icons/badge-72.png',
-    data: { url: data.url },
-    // Show on all clients even if the app is open in foreground
-    requireInteraction: false,
-  };
-
-  event.waitUntil(self.registration.showNotification(data.title, options));
-});
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-
-  const targetUrl = (event.notification.data && event.notification.data.url) || '/';
-
-  event.waitUntil(
-    self.clients
-      .matchAll({ type: 'window', includeUncontrolled: true })
-      .then((clientList) => {
-        // If a matching window is already open, focus it and navigate
-        for (const client of clientList) {
-          if (client.url === targetUrl && 'focus' in client) {
-            return client.focus();
-          }
-        }
-        // Otherwise open a new tab
-        if (self.clients.openWindow) {
-          return self.clients.openWindow(targetUrl);
+  // ── Home / map — network-first with cache fallback ──
+  if (request.method === 'GET' && (url.pathname === '/' || url.pathname === '/map')) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(async (cache) => {
+        try {
+          const response = await fetch(request);
+          if (response.ok) cache.put(request, response.clone());
+          return response;
+        } catch {
+          const cached = await cache.match(request);
+          return cached || new Response('Offline', { status: 503 });
         }
       })
-  );
+    );
+    return;
+  }
+
+  // ── Static assets — cache-first ──
+  if (request.method === 'GET') {
+    event.respondWith(
+      caches.match(request).then((cached) =>
+        cached ||
+        fetch(request).then((response) => {
+          if (response.ok) caches.open(CACHE_NAME).then((c) => c.put(request, response.clone()));
+          return response;
+        })
+      )
+    );
+  }
 });
+
+// ─── Background Sync ─────────────────────────────────────────────────────────
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'flourish-queue') {
+    event.waitUntil(replayQueuedRequests());
+  }
+});
+
+async function replayQueuedRequests() {
+  const queue = await getQueue();
+  for (const item of queue) {
+    try {
+      await fetch(item.url, {
+        method: item.method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item.body),
+      });
+      await removeFromQueue(item);
+    } catch {
+      break; // stop on first failure, will retry next sync
+    }
+  }
+}

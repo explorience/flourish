@@ -65,6 +65,7 @@ export function ProfileForm({
     color: 'var(--ink)',
     border: '1px solid var(--border-card)',
     fontFamily: 'var(--font-serif)',
+    fontSize: '16px', // Prevent iOS auto-zoom on focus
   };
 
   return (
@@ -80,7 +81,7 @@ export function ProfileForm({
             value={name}
             onChange={(e) => setName(e.target.value)}
             maxLength={50}
-            className="w-full px-4 py-3 text-sm"
+            className="w-full px-4 py-3"
             style={inputStyle}
             placeholder="How should people know you?"
           />
@@ -94,7 +95,7 @@ export function ProfileForm({
           <select
             value={NEIGHBOURHOODS.includes(neighbourhood) ? neighbourhood : neighbourhood ? 'Other' : ''}
             onChange={(e) => setNeighbourhood(e.target.value === 'Other' ? '' : e.target.value)}
-            className="w-full px-4 py-3 text-sm"
+            className="w-full px-4 py-3"
             style={inputStyle}
           >
             <option value="">Choose your neighbourhood</option>
@@ -108,7 +109,7 @@ export function ProfileForm({
               value={neighbourhood}
               onChange={(e) => setNeighbourhood(e.target.value)}
               maxLength={60}
-              className="w-full px-4 py-3 text-sm mt-2"
+              className="w-full px-4 py-3 mt-2"
               style={inputStyle}
               placeholder="Type your neighbourhood"
             />
@@ -125,7 +126,7 @@ export function ProfileForm({
             onChange={(e) => setBio(e.target.value.slice(0, 280))}
             maxLength={280}
             rows={3}
-            className="w-full px-4 py-3 text-sm resize-none"
+            className="w-full px-4 py-3 resize-none"
             style={inputStyle}
             placeholder="A little about you (optional)"
           />

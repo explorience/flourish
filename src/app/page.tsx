@@ -16,7 +16,7 @@ export default async function Home() {
   
   const { data: posts } = await supabase
     .from('posts')
-    .select('*, responses(*), profiles(display_name, neighbourhood)')
+    .select('*, responses(*)')
     .eq('status', 'active')
     // Show approved posts, or posts without a moderation_status (legacy/unmoderated)
     .or('moderation_status.eq.approved,moderation_status.is.null')
@@ -33,7 +33,7 @@ export default async function Home() {
       <Header />
 
       {/* Hero */}
-      <section className="text-center px-5 pt-12 pb-8">
+      <section className="text-center px-5 pt-4 pb-8">
         <h1 className="sr-only">{APP_NAME} — {APP_DESCRIPTION}</h1>
         <p
           className="text-5xl sm:text-6xl font-extrabold uppercase tracking-wide leading-none mb-2 font-display color-heading"
@@ -42,15 +42,27 @@ export default async function Home() {
           {APP_NAME}
         </p>
         <p
-          className="text-base sm:text-xl mb-6 font-serif color-sub"
+          className="text-base sm:text-xl mb-4 font-serif color-sub"
         >
           {APP_DESCRIPTION}
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
-          <PostSomethingButton />
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-0">
+          <button
+            onClick={() => window.location.href = '/auth?next=/post'}
+            className="post-btn px-8 py-3 text-sm font-bold uppercase tracking-wider transition-all hover:scale-105 hover:brightness-110"
+            style={{ background: 'var(--offer)', color: 'var(--card)' }}
+          >
+            Offer what you have
+          </button>
           <a href="/map" className="px-8 py-3 text-sm font-bold uppercase tracking-wider transition-colors font-display color-heading"
             style={{ border: '1.5px solid rgba(232,224,204,0.2)' }}>
             View map
+          </a>
+        </div>
+        <div className="flex items-center justify-center gap-3 mt-0.5">
+          <a href="/map" className="px-8 py-3 text-sm font-bold uppercase tracking-wider transition-colors font-display color-heading"
+            style={{ border: '1.5px solid var(--border)', fontSize: '0.78rem' }}>
+            See map
           </a>
         </div>
       </section>

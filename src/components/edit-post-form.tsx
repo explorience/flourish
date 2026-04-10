@@ -132,10 +132,9 @@ export function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-0 py-3 bg-transparent border-0 border-b-2 focus:outline-none text-lg"
-              style={{ borderColor: 'var(--border-card)', color: 'var(--ink)', ...sr }}
+              className="w-full px-0 py-3 bg-transparent border-0 border-b-2 focus:outline-none"
+              style={{ borderColor: 'var(--border-card)', color: 'var(--ink)', fontSize: '16px', ...sr }}
               placeholder={isNeed ? 'What do you need?' : 'What can you offer?'}
-              autoFocus
             />
           </div>
 
@@ -156,11 +155,12 @@ export function EditPostForm({ post, onClose, onSuccess }: EditPostFormProps) {
             <textarea
               value={details}
               onChange={(e) => setDetails(e.target.value)}
-              className="w-full px-4 py-3 text-sm focus:outline-none resize-none"
+              className="w-full px-4 py-3 focus:outline-none resize-none"
               style={{
                 background: 'rgba(240,236,224,0.06)',
                 border: '1px solid var(--border-card)',
                 color: 'var(--ink)',
+                fontSize: '16px',
               }}
               rows={3}
               placeholder="Any extra context..."

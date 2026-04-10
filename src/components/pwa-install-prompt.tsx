@@ -85,41 +85,74 @@ export function PWAInstallPrompt() {
   if (!visible || !settings) return null;
 
   const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  // Android: menu (⋮) is top-right; iOS: share button is bottom toolbar
+
+  // iOS toolbar height varies by device
+  const hasDynamicIsland = window.screen.height >= 852 && window.screen.width >= 390;
+  const iosToolbarHeight = hasDynamicIsland ? 54 : 44; // px, rough estimate
+  const gap = 16;
+
+  // Positioning
+  const wrapperStyle: React.CSSProperties = isIOS
+    ? { position: 'fixed', left: 0, right: 0, bottom: `${iosToolbarHeight + gap}px`, zIndex: 50, padding: '0 16px', pointerEvents: 'none' }
+    : { position: 'fixed', left: 0, right: 0, top: '56px', zIndex: 50, padding: '0 16px', pointerEvents: 'none' };
+
+  // Arrow: points DOWN on iOS (toward bottom toolbar), UP on Android (toward top menu)
+  const arrowStyle: React.CSSProperties = isIOS
+    ? { position: 'absolute', left: '50%', bottom: '-12px', transform: 'translateX(-50%)', width: 0, height: 0, borderLeft: '12px solid transparent', borderRight: '12px solid transparent', borderTop: '12px solid #ffd84a', filter: 'drop-shadow(0 2px 0 rgba(0,0,0,0.3))' }
+    : { position: 'absolute', right: '20px', top: '-12px', width: 0, height: 0, borderLeft: '12px solid transparent', borderRight: '12px solid transparent', borderBottom: '12px solid #ffd84a', filter: 'drop-shadow(0 -2px 0 rgba(0,0,0,0.3))' };
 
   return (
-    <div
-      className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4"
-      style={{ pointerEvents: 'auto' }}
-    >
+    <div style={wrapperStyle}>
       <div
-        className="max-w-md mx-auto rounded-sm p-4 shadow-lg"
+        className="max-w-xs relative pointer-events-auto animate-bounce-in"
         style={{
-          background: 'var(--card)',
-          border: '1.5px solid var(--border-card)',
+          marginLeft: isIOS ? 'auto' : 'auto',
+          marginRight: isIOS ? 'auto' : '0',
+          background: '#ffd84a',
+          color: '#2a1a00',
+          padding: '14px 16px',
+          borderRadius: '14px',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.35), 0 0 0 3px rgba(0,0,0,0.15)',
+          border: '2px solid #2a1a00',
+          WebkitUserSelect: 'none',
+          userSelect: 'none',
         }}
       >
+        <div aria-hidden="true" style={arrowStyle} />
+
         <div className="flex items-start gap-3">
           <div className="flex-1">
             <p
-              className="text-sm font-bold mb-1"
-              style={{ color: 'var(--ink)', ...{} }}
+              className="font-bold mb-0.5"
+              style={{ fontSize: '0.95rem', lineHeight: 1.2 }}
             >
-              Add to your home screen
+              {isIOS ? '👇 Install this app' : '☝️ Install this app'}
             </p>
-            <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>
+            <p style={{ fontSize: '0.78rem', lineHeight: 1.35, fontWeight: 500 }}>
               {isIOS
-                ? 'Tap the share button below, then tap "Add to Home Screen"'
-                : 'Tap the menu (⋮) above, then tap "Add to Home Screen" or "Install app"'}
+                ? "Tap 'Share', then 'Add to Home Screen'"
+                : "Tap the menu (⋮), then 'Add to Home screen'"
+              }
             </p>
           </div>
           <button
             onClick={() => { setSessionDismissed(true); setVisible(false); }}
-            className="flex-shrink-0 p-1"
-            style={{ color: 'var(--ink-muted)' }}
+            className="flex-shrink-0"
+            style={{
+              color: '#2a1a00',
+              background: 'rgba(0,0,0,0.1)',
+              borderRadius: '50%',
+              width: '24px',
+              height: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             aria-label="Dismiss"
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+              <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
             </svg>
           </button>
         </div>

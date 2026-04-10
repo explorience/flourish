@@ -117,8 +117,8 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                         background: type === opt.val ? '#fff' : 'transparent',
                       }}
                     >
-                      <p className="text-sm font-bold uppercase tracking-wide font-display color-ink">{opt.label}</p>
-                      <p className="text-xs mt-1 font-serif color-ink-muted" style={{ fontStyle: 'italic' }}>{opt.desc}</p>
+                      <p className="text-base font-bold uppercase tracking-wide font-display color-ink">{opt.label}</p>
+                      <p className="mt-1.5 font-serif color-ink-light" style={{ fontSize: '0.95rem', lineHeight: 1.4 }}>{opt.desc}</p>
                     </button>
                   ))}
                 </div>
@@ -126,29 +126,46 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
 
               {step === 2 && (
                 <div className="space-y-5 animate-fade-up">
-                  <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-0 py-3 bg-transparent border-0 border-b-2 focus:outline-none text-lg font-serif color-ink"
-                    style={{ borderColor: 'var(--border-card)' }}
-                    placeholder={type === 'need' ? 'Ride to appointment Tuesday' : 'Winter coats, kids sizes'}
-                    autoFocus
-                  />
+                  {/* Category FIRST so the field-of-choice is visible before the keyboard pops up */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider mb-2 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>Details <span className="normal-case tracking-normal font-normal color-ink-muted">(optional)</span></label>
-                    <textarea value={details} onChange={(e) => setDetails(e.target.value)}
-                      className="w-full px-4 py-3 text-sm focus:outline-none resize-none color-ink"
-                      style={{ background: '#fff', border: '1px solid var(--border-card)' }}
-                      rows={3} placeholder="Any extra context..."
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider mb-2 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>Category</label>
-                    <div className="flex gap-2 flex-wrap">
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-0.5 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>Category</label>
+                    <div className="flex gap-1 overflow-x-auto no-scrollbar" style={{ scrollbarWidth: 'none' }}>
                       {CATEGORIES.map((c) => (
                         <button key={c.value} type="button" onClick={() => setCategory(c.value)}
-                          className="px-3 py-2 text-xs font-bold uppercase tracking-wider transition-all font-display"
-                          style={{ fontSize: '0.6rem', background: category === c.value ? 'var(--ink)' : 'transparent', color: category === c.value ? 'var(--card)' : 'var(--ink-light)', border: `1.5px solid ${category === c.value ? 'var(--ink)' : 'var(--border-card)'}` }}
+                          className="px-2 py-1.5 text-xs font-bold uppercase tracking-wider transition-all font-display min-w-[68px]"
+                          style={{ fontSize: '0.58rem', background: category === c.value ? 'var(--ink)' : 'transparent', color: category === c.value ? 'var(--card)' : 'var(--ink-light)', border: `1.5px solid ${category === c.value ? 'var(--ink)' : 'var(--border-card)'}` }}
                         >{c.label}</button>
                       ))}
+                    </div>
+                  </div>
+                  <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
+                    className="w-full px-0 py-3 bg-transparent border-0 border-b-2 focus:outline-none font-serif color-ink"
+                    style={{ borderColor: 'var(--border-card)', fontSize: '16px' }}
+                    placeholder={type === 'need' ? 'Ride to appointment Tuesday' : 'Winter coats, kids sizes'}
+                  />
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-0.5 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>Details <span className="normal-case tracking-normal font-normal color-ink-muted">(optional)</span></label>
+                    <div
+                      className="w-full px-0 py-1 bg-transparent border-0 border-b border-border-card focus-within:border-ink focus-within:border-opacity-40"
+                      onClick={() => {
+                        if (details === '') {
+                          setDetails('');
+                          const textarea = document.querySelector('textarea[placeholder="Any extra context..."]') as HTMLTextAreaElement;
+                          if (textarea) textarea.focus();
+                        }
+                      }}
+                    >
+                      <div className="text-sm font-serif color-ink" style={{ fontFamily: 'var(--font-serif)', fontSize: '16px' }}>
+                        {details || 'Any extra context...'}
+                      </div>
+                      <textarea
+                        value={details}
+                        onChange={(e) => setDetails(e.target.value)}
+                        className="w-full px-0 py-1 bg-transparent border-0 border-b-2 focus:outline-none resize-none color-ink absolute inset-0 opacity-0"
+                        style={{ borderColor: 'var(--border-card)', fontSize: '16px' }}
+                        rows={3}
+                        placeholder=""
+                      />
                     </div>
                   </div>
                   <div>
@@ -165,20 +182,31 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
 
                   {/* Location — cross-street only */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider mb-1 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>
-                      Whereabouts? <span className="normal-case tracking-normal font-normal color-ink-muted">(optional — places a pin on the map)</span>
+                    <label className="block text-xs font-bold uppercase tracking-wider mb-0.5 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>
+                      Whereabouts? <span className="normal-case tracking-normal font-normal color-ink-muted">(optional)</span>
                     </label>
-                    <p className="text-xs mb-2 color-ink-muted" style={{ fontSize: '0.68rem' }}>
-                      Use a nearby intersection for best results (neighbourhood names alone won&apos;t appear on the map). We never show your exact location — only an approximate area.
-                    </p>
-                    <input
-                      type="text"
-                      value={crossStreet}
-                      onChange={(e) => setCrossStreet(e.target.value)}
-                      className="w-full px-4 py-3 text-sm focus:outline-none color-ink"
-                      style={{ background: '#fff', border: '1px solid var(--border-card)' }}
-                      placeholder="e.g. Dundas & Adelaide, or Oxford & Wharncliffe"
-                    />
+                    <div
+                      className="w-full px-0 py-1 bg-transparent border-0 border-b border-border-card focus-within:border-ink focus-within:border-opacity-40"
+                      onClick={() => {
+                        if (crossStreet === '') {
+                          setCrossStreet('');
+                          const input = document.querySelector('input[placeholder="e.g. Dundas & Adelaide, or Oxford & Wharncliffe"]') as HTMLInputElement;
+                          if (input) input.focus();
+                        }
+                      }}
+                    >
+                      <div className="text-sm font-serif color-ink" style={{ fontFamily: 'var(--font-serif)', fontSize: '16px' }}>
+                        {crossStreet || 'e.g. Dundas & Adelaide, or Oxford & Wharncliffe'}
+                      </div>
+                      <input
+                        type="text"
+                        value={crossStreet}
+                        onChange={(e) => setCrossStreet(e.target.value)}
+                        className="w-full px-0 py-1 bg-transparent border-0 border-b-2 focus:outline-none color-ink absolute inset-0 opacity-0"
+                        style={{ borderColor: 'var(--border-card)', fontSize: '16px' }}
+                        placeholder=""
+                      />
+                    </div>
                   </div>
 
                   {/* Image upload — up to 10 */}
@@ -235,7 +263,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                   </div>
 
                   <button onClick={() => setStep(3)} disabled={!title.trim()}
-                    className="w-full flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-all font-display btn-ink"
+                    className="w-full flex items-center justify-center gap-2 py-3.5 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-all font-display btn-ink"
                   >Continue <ArrowRight className="w-4 h-4" /></button>
                 </div>
               )}
@@ -245,9 +273,9 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider mb-2 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>Your name</label>
                     <input type="text" value={contactName} onChange={(e) => setContactName(e.target.value)}
-                      className="w-full px-4 py-3 text-sm focus:outline-none color-ink"
-                      style={{ background: '#fff', border: '1px solid var(--border-card)' }}
-                      placeholder="First name" autoFocus
+                      className="w-full px-4 py-3 focus:outline-none color-ink"
+                      style={{ background: '#fff', border: '1px solid var(--border-card)', fontSize: '16px' }}
+                      placeholder="First name"
                     />
                   </div>
                   <div className="p-3" style={{ background: 'rgba(58,106,74,0.08)', border: '1px solid var(--border-card)' }}>
