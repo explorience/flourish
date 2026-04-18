@@ -71,8 +71,8 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
   };
 
   return (
-    <div className="fixed inset-0 flex items-end sm:items-center justify-center z-50 animate-fade-in" style={{ background: 'rgba(0,0,0,0.5)' }} onClick={onClose}>
-      <div className="w-full max-w-lg max-h-[85vh] overflow-y-auto animate-slide-up sm:rounded-md bg-card" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 flex items-end sm:items-center justify-center z-50 animate-fade-in overflow-y-auto" style={{ background: 'rgba(0,0,0,0.5)' }} onClick={onClose}>
+      <div className="w-full max-w-lg max-h-[90vh] sm:max-h-[85vh] sm:min-h-0 flex flex-col animate-slide-up sm:rounded-md bg-card" onClick={(e) => e.stopPropagation()}>
         {submitted ? (
           <div className="text-center py-20 px-6">
             <p className="text-xl font-bold uppercase tracking-wide mb-3 font-display color-ink">Shared with the community</p>
@@ -103,7 +103,7 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
               ))}
             </div>
 
-            <div className="px-6 pb-8">
+            <div className="px-6 pb-8 overflow-y-auto">
               {step === 1 && (
                 <div className="space-y-3 animate-fade-up">
                   {[
@@ -145,28 +145,14 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                   />
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider mb-0.5 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>Details <span className="normal-case tracking-normal font-normal color-ink-muted">(optional)</span></label>
-                    <div
-                      className="w-full px-0 py-1 bg-transparent border-0 border-b border-border-card focus-within:border-ink focus-within:border-opacity-40"
-                      onClick={() => {
-                        if (details === '') {
-                          setDetails('');
-                          const textarea = document.querySelector('textarea[placeholder="Any extra context..."]') as HTMLTextAreaElement;
-                          if (textarea) textarea.focus();
-                        }
-                      }}
-                    >
-                      <div className="text-sm font-serif color-ink" style={{ fontFamily: 'var(--font-serif)', fontSize: '16px' }}>
-                        {details || 'Any extra context...'}
-                      </div>
-                      <textarea
-                        value={details}
-                        onChange={(e) => setDetails(e.target.value)}
-                        className="w-full px-0 py-1 bg-transparent border-0 border-b-2 focus:outline-none resize-none color-ink absolute inset-0 opacity-0"
-                        style={{ borderColor: 'var(--border-card)', fontSize: '16px' }}
-                        rows={3}
-                        placeholder=""
-                      />
-                    </div>
+                    <textarea
+                      value={details}
+                      onChange={(e) => setDetails(e.target.value)}
+                      rows={3}
+                      placeholder="Any extra context..."
+                      className="w-full px-3 py-2 bg-white border focus:outline-none resize-none color-ink font-serif"
+                      style={{ borderColor: 'var(--border-card)', fontSize: '16px', fontFamily: 'var(--font-serif)' }}
+                    />
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider mb-2 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>How soon?</label>
@@ -185,28 +171,14 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
                     <label className="block text-xs font-bold uppercase tracking-wider mb-0.5 font-display color-ink-light" style={{ fontSize: '0.6rem' }}>
                       Whereabouts? <span className="normal-case tracking-normal font-normal color-ink-muted">(optional)</span>
                     </label>
-                    <div
-                      className="w-full px-0 py-1 bg-transparent border-0 border-b border-border-card focus-within:border-ink focus-within:border-opacity-40"
-                      onClick={() => {
-                        if (crossStreet === '') {
-                          setCrossStreet('');
-                          const input = document.querySelector('input[placeholder="e.g. Dundas & Adelaide, or Oxford & Wharncliffe"]') as HTMLInputElement;
-                          if (input) input.focus();
-                        }
-                      }}
-                    >
-                      <div className="text-sm font-serif color-ink" style={{ fontFamily: 'var(--font-serif)', fontSize: '16px' }}>
-                        {crossStreet || 'e.g. Dundas & Adelaide, or Oxford & Wharncliffe'}
-                      </div>
-                      <input
-                        type="text"
-                        value={crossStreet}
-                        onChange={(e) => setCrossStreet(e.target.value)}
-                        className="w-full px-0 py-1 bg-transparent border-0 border-b-2 focus:outline-none color-ink absolute inset-0 opacity-0"
-                        style={{ borderColor: 'var(--border-card)', fontSize: '16px' }}
-                        placeholder=""
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      value={crossStreet}
+                      onChange={(e) => setCrossStreet(e.target.value)}
+                      placeholder="e.g. Dundas & Adelaide, or Oxford & Wharncliffe"
+                      className="w-full px-3 py-2 bg-white border focus:outline-none color-ink font-serif"
+                      style={{ borderColor: 'var(--border-card)', fontSize: '16px', fontFamily: 'var(--font-serif)' }}
+                    />
                   </div>
 
                   {/* Image upload — up to 10 */}
