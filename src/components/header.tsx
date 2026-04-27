@@ -67,7 +67,7 @@ export function Header() {
 
   return (
     <>
-      <header className="site-header sticky top-0 z-40 backdrop-blur-xl border-b">
+      <header className="site-header sticky top-0 z-40 backdrop-blur-md border-b">
         <div className="site-header-inner w-full px-5 flex items-center justify-between">
           <Link href="/" className="site-logo text-xs md:text-xl font-bold uppercase tracking-widest">
             Flourish
@@ -79,7 +79,7 @@ export function Header() {
                 const menu = document.getElementById('nav-menu');
                 if (menu) menu.classList.toggle('hidden');
               }}
-              className="flex items-center justify-center p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110"
+              className="flex items-center justify-center p-2 md:p-3 rounded"
               aria-label="Menu"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -88,24 +88,24 @@ export function Header() {
                 <line x1="3" y1="18" x2="21" y2="18" />
               </svg>
             </button>
-            <div id="nav-menu" className="nav-menu hidden fixed top-[3.25rem] right-4 bg-card border border-border-card rounded-sm shadow-lg z-50 min-w-48">
+            <div id="nav-menu" className="nav-menu hidden fixed top-[3.75rem] right-4 bg-card border border-border-card rounded-md shadow-md z-50 min-w-48">
               <div className="py-2">
-                <Link href="/about" className="block px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-bg-light transition-colors">
+                <Link href="/about" className="block px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-bg-light">
                   About
                 </Link>
-                <Link href="/feedback" className="block px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-bg-light transition-colors">
+                <Link href="/feedback" className="block px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-bg-light">
                   Feedback
                 </Link>
-                <Link href="/guide" className="block px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-bg-light transition-colors">
+                <Link href="/guide" className="block px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-bg-light">
                   Using Flourish
                 </Link>
-                <Link href="/code-of-conduct" className="block px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-bg-light transition-colors">
+                <Link href="/code-of-conduct" className="block px-4 py-2 text-sm font-bold uppercase tracking-wider hover:bg-bg-light">
                   Code of Conduct
                 </Link>
               </div>
             </div>
             {isLoggedIn && (
-              <Link href="/messages" className={`relative p-2 md:p-3 rounded transition-all hover:opacity-100 hover:scale-110 ${unread > 0 ? 'nav-icon-active' : 'nav-icon'}`} aria-label={`Messages${unread > 0 ? ` (${unread} unread)` : ''}`}>
+              <Link href="/messages" className={`relative p-2 md:p-3 rounded${unread > 0 ? 'nav-icon-active' : 'nav-icon'}`} aria-label={`Messages${unread > 0 ? ` (${unread} unread)` : ''}`}>
                 <MessageSquare className="w-4 h-4 md:w-7 md:h-7" aria-hidden="true" />
                 {unread > 0 && (
                   <span className="nav-badge absolute top-1 right-1 md:top-1.5 md:right-1.5 flex items-center justify-center text-white font-bold">
@@ -128,7 +128,7 @@ export function Header() {
             {isLoggedIn && (
               <button
                 onClick={() => setShowCreate(true)}
-                className="post-btn ml-1 px-3 py-2 md:ml-2 md:px-5 md:py-2 text-xs font-bold uppercase tracking-wider transition-all hover:scale-105 hover:brightness-110"
+                className="post-btn ml-1 px-3 py-2 md:ml-2 md:px-5 md:py-2 text-xs font-bold uppercase tracking-wider"
               >
                 Post
               </button>

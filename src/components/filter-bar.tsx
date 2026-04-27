@@ -18,7 +18,7 @@ export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategory
   return (
     <div className="space-y-2 animate-fade-up">
       {/* Type filters + category filters on one row, scrolls horizontally if needed */}
-      <div className="flex items-center justify-center md:justify-center gap-x-1.5 md:gap-x-4 pb-1 md:pb-3 w-full overflow-x-auto no-scrollbar px-2" style={{ scrollbarWidth: 'none' }}>
+      <div className="flex items-center justify-center md:justify-center gap-x-2 md:gap-x-4 py-2 md:py-3 w-full overflow-x-auto no-scrollbar px-2 rounded-full border border-border-card" style={{ scrollbarWidth: 'none' }}>
         {POST_TYPES.map((t) => (
           <Tag
             key={t.value}
@@ -44,8 +44,7 @@ export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategory
           <span>{filteredCount} of {totalCount}</span>
           <button
             onClick={() => { onTypeChange('all'); onCategoryChange('all'); }}
-            className="font-medium hover:underline"
-            style={{ color: 'var(--heading)' }}
+            className="font-bold text-sm color-ink hover:underline"
           >
             Clear
           </button>
@@ -65,20 +64,16 @@ function Tag({ active, onClick, label, activeColor }: {
     <button
       onClick={onClick}
       aria-pressed={active}
-      className="font-bold uppercase tracking-wider whitespace-nowrap flex-shrink-0 transition-all"
+      className="font-bold uppercase tracking-wider whitespace-nowrap flex-shrink-0 transition-all text-sm rounded-md px-3 py-1.5"
       style={{
         fontFamily: 'var(--font-display)',
-        fontSize: 'clamp(0.6rem, 0.55rem + 0.35vw, 1.05rem)',
         letterSpacing: '0.04em',
         color: active
           ? (activeColor || 'var(--heading)')
           : 'var(--sub)',
-        opacity: 1,
-        textDecoration: active ? 'underline' : 'none',
-        textUnderlineOffset: '0.1875rem',
-        background: 'transparent',
-        border: 'none',
-        padding: '2px 0',
+        background: active ? activeColor || 'var(--ink)' : 'transparent',
+        border: `1px solid ${active ? (activeColor || 'var(--border)') : 'transparent'}`,
+        transition: 'all 0.2s ease-in-out',
       }}
     >
       {label}

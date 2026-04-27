@@ -36,16 +36,7 @@ export function MeTooButton({ postId, postType, isOwner = false, compact = false
     if (count === 0) return null;
     return (
       <span
-        className="inline-flex items-center gap-1"
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: '0.55rem',
-          fontWeight: 700,
-          textTransform: 'uppercase' as const,
-          letterSpacing: '0.08em',
-          color: 'var(--need)',
-          opacity: 0.8,
-        }}
+        className="text-xs font-bold uppercase tracking-wider color-need opacity-80 inline-flex items-center gap-1"
       >
         <Hand className="w-3 h-3" />
         {count} {count === 1 ? 'other' : 'others'} need this too
@@ -58,15 +49,7 @@ export function MeTooButton({ postId, postType, isOwner = false, compact = false
     if (count === 0) return null;
     return (
       <div
-        className="inline-flex items-center gap-1.5 px-3 py-1.5"
-        style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: '0.6rem',
-          fontWeight: 700,
-          textTransform: 'uppercase' as const,
-          letterSpacing: '0.1em',
-          color: 'var(--need)',
-        }}
+        className="text-sm font-bold uppercase tracking-wider color-need inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-need-subtle"
       >
         <Hand className="w-3.5 h-3.5" />
         {count} {count === 1 ? 'person' : 'people'} also {count === 1 ? 'needs' : 'need'} this
@@ -107,20 +90,15 @@ export function MeTooButton({ postId, postType, isOwner = false, compact = false
     <button
       onClick={toggle}
       disabled={loading}
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 transition-all disabled:opacity-60"
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 transition-all disabled:opacity-60 rounded-full text-sm font-bold uppercase tracking-wider"
       style={{
-        fontFamily: 'var(--font-display)',
-        fontSize: '0.6rem',
-        fontWeight: 700,
-        textTransform: 'uppercase' as const,
-        letterSpacing: '0.1em',
-        border: upvoted ? '1.5px solid var(--need)' : '1.5px solid var(--border)',
-        color: upvoted ? 'var(--need)' : 'var(--sub)',
+        border: upvoted ? '1.5px solid var(--need)' : '1.5px solid var(--border-card)',
+        color: upvoted ? 'var(--need)' : 'var(--ink-light)',
         background: upvoted ? 'rgba(208, 112, 64, 0.08)' : 'transparent',
         cursor: 'pointer',
       }}
     >
-      <Hand className="w-3.5 h-3.5" style={{ fill: upvoted ? 'var(--need)' : 'none' }} />
+      <Hand className="w-3.5 h-3.5" style={{ color: upvoted ? 'var(--need)' : 'var(--ink-light)' }} />
       {upvoted ? 'Me too!' : 'Me too'}
       {count > 0 && <span style={{ opacity: 0.7 }}>({count})</span>}
     </button>

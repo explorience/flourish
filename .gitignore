@@ -9,3 +9,5 @@ out/
 supabase/.temp/
 *.tsbuildinfo
 .vercel
+.env.prod
+.env.vercel
