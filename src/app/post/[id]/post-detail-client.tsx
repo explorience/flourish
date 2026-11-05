@@ -9,6 +9,7 @@ import { EditPostForm } from '@/components/edit-post-form';
 import { formatDistanceToNow } from 'date-fns';
 import { MessageSquare, Pencil, RefreshCw } from 'lucide-react';
 import { MeTooButton } from '@/components/me-too-button';
+import { ReportBlock } from '@/components/report-block';
 import type { PostWithResponses } from '@/types/database';
 
 interface PostDetailClientProps {
@@ -385,6 +386,7 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
           onSuccess={() => router.refresh()}
         />
       )}
+      {!isPoster && <ReportBlock postId={post.id} authorId={post.user_id} />}
     </>
   );
 }
