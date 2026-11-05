@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import type { Post } from '@/types/database';
 import { X } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { usableName } from '@/lib/names';
 
 interface RespondDialogProps {
   post: Post;
@@ -31,10 +32,10 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
       } else {
         setUserId(data.user.id);
         // Pre-fill name from metadata if available
-        const metaName = data.user.user_metadata?.display_name || data.user.user_metadata?.name;
+        const metaName = usableName(data.user.user_metadata?.display_name || data.user.user_metadata?.name, data.user.email);
         if (metaName && !name) setName(metaName);
         supabase.from('profiles').select('display_name').eq('id', data.user.id).single()
-          .then(({ data: profile }) => { if (profile?.display_name) setName((cur) => cur || profile.display_name); });
+          .then(({ data: profile }) => { const n = usableName(profile?.display_name, data.user?.email); if (n) setName((cur) => cur || n); });
       }
     });
   }, [open]);

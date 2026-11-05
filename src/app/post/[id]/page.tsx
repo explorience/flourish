@@ -27,7 +27,8 @@ export default async function PostDetail({ params }: { params: { id: string } })
   // Show "edited" when updated_at is more than 1 minute after created_at
   const createdMs = new Date(post.created_at).getTime();
   const updatedMs = new Date(post.updated_at).getTime();
-  const wasEdited = updatedMs - createdMs > 60_000;
+  // Status changes (given, closed) also bump updated_at, so only flag edits on active posts
+  const wasEdited = post.status === 'active' && updatedMs - createdMs > 60_000;
   const editedAgo = wasEdited
     ? formatDistanceToNow(new Date(post.updated_at), { addSuffix: true })
     : null;

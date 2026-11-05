@@ -30,8 +30,9 @@ Everything was tested locally against seed data with a stand-in for Supabase. No
 | 15 | Flow | The landing never says what Flourish is or where | **Partly fixed**: one plain line under the tagline. The full fix is the Welcome mockup |
 | 16 | Flow | Someone who replies can't message the poster: they wait until the poster opens a thread. That's a dead end if the poster never does | **Open**: decision below |
 | 17 | Flow | A returning poster gets no signal on the board that someone replied (no badge until a thread exists) | **Open** |
-| 18 | Privacy | New accounts default their display name to the part of the email before the @ | **Open**: needs onboarding to ask for a first name (Welcome mockup) |
-| 19 | Bug | Marking a post given shows "edited less than a minute ago" | **Open**, cosmetic |
+| 18 | Privacy | New accounts default their display name to the part of the email before the @ | **Partly fixed**: no longer prefilled into posts or replies. Onboarding should still ask for a first name (Welcome mockup) |
+| 19 | Bug | Marking a post given showed "edited less than a minute ago" | **Fixed** |
+| 19b | Bug | Search hid every legacy post (moderation status empty) and put raw search text into the database filter | **Fixed** |
 | 20 | Safety | Some profile, reply and location columns are still readable more widely than they should be | **Open**: needs pages to select explicit columns first, then the columns can be locked down |
 | 21 | Safety | No age confirmation, terms or privacy page; code of conduct doesn't mention minors | **Open**: decision below |
 | 22 | Ops | No automated tests and no ESLint config in the repo (`npm run lint` asks to set one up) | **Open** |
