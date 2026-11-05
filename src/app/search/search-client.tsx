@@ -17,13 +17,18 @@ export function SearchClient() {
     if (!q.trim()) { setResults([]); setSearched(false); return; }
     setLoading(true); setSearched(true);
     const supabase = createClient();
-    const term = `%${q.trim()}%`;
-    const { data } = await supabase.from('posts').select('*, responses(*)')
+    // Strip characters that have meaning inside a PostgREST filter string
+    const safe = q.trim().replace(/[,()*%\\:"']/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!safe) { setResults([]); setLoading(false); return; }
+    const term = `%${safe}%`;
+    const { data } = await supabase.from('posts').select('*, responses(id)')
       .eq('status', 'active')
-      .neq('moderation_status', 'rejected')
       .or(`title.ilike.${term},details.ilike.${term},contact_name.ilike.${term}`)
       .order('created_at', { ascending: false }).limit(50);
-    setResults(data || []); setLoading(false);
+    // Same visibility rule as the board: approved or legacy (null). A plain
+    // neq('rejected') also dropped legacy posts, because NULL never matches neq.
+    const visible = (data || []).filter((p: any) => p.moderation_status === 'approved' || p.moderation_status == null);
+    setResults(visible as any); setLoading(false);
   }, []);
 
   useEffect(() => { const t = setTimeout(() => search(query), 300); return () => clearTimeout(t); }, [query, search]);

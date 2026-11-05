@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import type { Post } from '@/types/database';
 import { X } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { usableName } from '@/lib/names';
 
 interface RespondDialogProps {
   post: Post;
@@ -27,12 +28,14 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) {
         onClose();
-        router.push('/auth?next=/');
+        router.push('/auth?next=' + encodeURIComponent(window.location.pathname));
       } else {
         setUserId(data.user.id);
         // Pre-fill name from metadata if available
-        const metaName = data.user.user_metadata?.name;
+        const metaName = usableName(data.user.user_metadata?.display_name || data.user.user_metadata?.name, data.user.email);
         if (metaName && !name) setName(metaName);
+        supabase.from('profiles').select('display_name').eq('id', data.user.id).single()
+          .then(({ data: profile }) => { const n = usableName(profile?.display_name, data.user?.email); if (n) setName((cur) => cur || n); });
       }
     });
   }, [open]);
@@ -69,7 +72,7 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
           responderMessage: message.trim() || null,
         }),
       }).catch(() => {});
-      setTimeout(() => { setSubmitted(false); setName(''); setMessage(''); onClose(); }, 2500);
+      setTimeout(() => { setSubmitted(false); setMessage(''); onClose(); router.refresh(); }, 2500);
     }
     setSubmitting(false);
   };
@@ -84,9 +87,9 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
               {isNeed ? 'You\'re offering to help' : 'You\'re interested'}
             </p>
             <p className="text-sm leading-relaxed font-serif color-ink-light" style={{ fontStyle: 'italic' }}>
-              {post.contact_name} will hear from you soon.
+              We've let {post.contact_name} know.
             </p>
-            <p className="text-xs mt-4 color-ink-muted">This is how communities work.</p>
+            <p className="text-xs mt-4 color-ink-muted">When they reply, it'll show up in your messages. Meet somewhere you're comfortable: porch pickup or a public spot works great.</p>
           </div>
         ) : (
           <div className="p-6">
@@ -101,7 +104,7 @@ export function RespondDialog({ post, open, onClose }: RespondDialogProps) {
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <Field label="Your name" value={name} onChange={setName} placeholder="First name" required autoFocus />
-              <Field label="Message" value={message} onChange={setMessage} placeholder="Anything you want them to know... you can include your contact info here if you'd like." optional textarea />
+              <Field label="Message" value={message} onChange={setMessage} placeholder={`Say hi and when you could pick up. Only ${post.contact_name} sees this. No need to share your address or number yet.`} optional textarea />
               <div className="flex gap-3 pt-1">
                 <button type="button" onClick={onClose} className="flex-1 py-3 text-xs font-bold uppercase tracking-wider color-ink-light" style={{ border: '1.5px solid var(--border-card)' }}>Cancel</button>
                 <button type="submit" disabled={submitting || !name.trim()} className="flex-1 py-3 text-xs font-bold uppercase tracking-wider disabled:opacity-40 transition-colors font-display color-card" style={{ background: isNeed ? 'var(--need)' : 'var(--offer)' }}>

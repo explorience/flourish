@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email';
+import { rateLimit, clientIp } from '@/lib/security';
 
 function escapeHtml(str: string): string {
   return str
@@ -12,15 +13,22 @@ function escapeHtml(str: string): string {
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { name, email, message } = body;
+    if (!rateLimit(`feedback:${clientIp(req)}`, 5, 60 * 60 * 1000)) {
+      return NextResponse.json({ error: 'Too many messages. Please try again later.' }, { status: 429 });
+    }
 
-    if (!message || !message.trim()) {
+    const body = await req.json();
+    const name = typeof body?.name === 'string' ? body.name.slice(0, 100) : '';
+    const email = typeof body?.email === 'string' ? body.email.slice(0, 200) : '';
+    const message = typeof body?.message === 'string' ? body.message.slice(0, 5000) : '';
+
+    if (!message.trim()) {
       return NextResponse.json({ error: 'Message is required.' }, { status: 400 });
     }
 
-    const fromName = name?.trim() || 'Anonymous';
-    const fromEmail = email?.trim() || null;
+    // Strip CR/LF so user input can't inject into the subject line.
+    const fromName = (name.trim() || 'Anonymous').replace(/[\r\n]+/g, ' ');
+    const fromEmail = email.trim() || null;
 
     const html = `
 <!DOCTYPE html>

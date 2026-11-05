@@ -47,8 +47,9 @@ export default async function ThreadPage({ params }: { params: { threadId: strin
 
   // Get other participant's name
   const otherId = thread.poster_id === user.id ? thread.responder_id : thread.poster_id;
-  const { data: otherUser } = await admin.auth.admin.getUserById(otherId);
-  const otherName = otherUser?.user?.user_metadata?.name || otherUser?.user?.email?.split('@')[0] || 'Neighbour';
+  // Never derive names from email addresses: that leaks part of someone's email
+  const { data: otherProfile } = await admin.from('profiles').select('display_name').eq('id', otherId).single();
+  const otherName = otherProfile?.display_name || 'Neighbour';
 
   const post = thread.posts as any;
 

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 type Mode = 'sign_in' | 'sign_up' | 'magic';
 
-export function AuthForm() {
+export function AuthForm({ next = '/' }: { next?: string }) {
   const [mode, setMode] = useState<Mode>('magic');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,16 +28,16 @@ export function AuthForm() {
     if (mode === 'magic') {
       const { error } = await supabase.auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+        options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}` },
       });
       if (error) setError(error.message);
-      else setMessage('Check your email for a magic link!');
+      else setMessage(`We've sent a sign-in link to ${email}. Open it on this device and you'll land right back here.`);
     } else if (mode === 'sign_up') {
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
           data: { display_name: displayName || email.split('@')[0] },
         },
       });
@@ -46,7 +46,7 @@ export function AuthForm() {
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) setError(error.message);
-      else router.push('/account');
+      else { router.push(next); router.refresh(); }
     }
     setLoading(false);
   };

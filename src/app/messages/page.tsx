@@ -34,10 +34,11 @@ export default async function MessagesPage() {
     const [{ data: lastMsg }, { count: unread }, { data: otherUser }] = await Promise.all([
       admin.from('messages').select('content, sender_id, created_at').eq('thread_id', thread.id).order('created_at', { ascending: false }).limit(1).single(),
       admin.from('messages').select('*', { count: 'exact', head: true }).eq('thread_id', thread.id).eq('read', false).neq('sender_id', user.id),
-      admin.auth.admin.getUserById(otherId),
+      admin.from('profiles').select('display_name').eq('id', otherId).single(),
     ]);
 
-    const otherName = otherUser?.user?.user_metadata?.name || otherUser?.user?.email?.split('@')[0] || 'Neighbour';
+    // Never derive names from email addresses: that leaks part of someone's email
+    const otherName = otherUser?.display_name || 'Neighbour';
 
     return { ...thread, lastMsg, unread: unread || 0, otherName };
   }));

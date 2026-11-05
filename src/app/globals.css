@@ -35,6 +35,9 @@
     --primary: 150 25% 13%;
     --border-hsl: 140 20% 30%;
     --radius: 0.5rem;
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 22px;
   }
 
   [data-theme="light"] {
@@ -548,3 +551,15 @@
   height: auto;
   overflow: visible;
 }
+
+
+/* ---- Relaunch polish: rounder, friendlier, bigger tap targets ---- */
+.post-btn { border-radius: 999px; min-height: 48px; padding-left: 1.75rem; padding-right: 1.75rem; }
+.btn-ink { border-radius: 999px; min-height: 48px; }
+.card-theme { border-radius: var(--radius-md); }
+.bg-card.animate-slide-up { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+@media (min-width: 640px) { .bg-card.animate-slide-up { border-radius: var(--radius-lg); } }
+.bg-card.animate-slide-up input,
+.bg-card.animate-slide-up textarea { border-radius: 12px; }
+.bg-card.animate-slide-up button { border-radius: 14px; }
+.hero-secondary { border-radius: 999px; min-height: 48px; display: inline-flex; align-items: center; }

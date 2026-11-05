@@ -18,7 +18,7 @@ export function FilterBar({ typeFilter, categoryFilter, onTypeChange, onCategory
   return (
     <div className="space-y-2 animate-fade-up">
       {/* Type filters + category filters on one row, scrolls horizontally if needed */}
-      <div className="flex items-center justify-center md:justify-center gap-x-2 md:gap-x-4 py-2 md:py-3 w-full overflow-x-auto no-scrollbar px-2 rounded-full border border-border-card" style={{ scrollbarWidth: 'none' }}>
+      <div className="flex items-center justify-start md:justify-center gap-x-2 md:gap-x-4 py-2 md:py-3 w-full overflow-x-auto no-scrollbar px-2 rounded-full border border-border-card" style={{ scrollbarWidth: 'none' }}>
         {POST_TYPES.map((t) => (
           <Tag
             key={t.value}
@@ -64,13 +64,11 @@ function Tag({ active, onClick, label, activeColor }: {
     <button
       onClick={onClick}
       aria-pressed={active}
-      className="font-bold uppercase tracking-wider whitespace-nowrap flex-shrink-0 transition-all text-sm rounded-md px-3 py-1.5"
+      className="font-bold uppercase tracking-wider whitespace-nowrap flex-shrink-0 transition-all text-sm rounded-full px-4 py-2 min-h-[40px]"
       style={{
         fontFamily: 'var(--font-display)',
         letterSpacing: '0.04em',
-        color: active
-          ? (activeColor || 'var(--heading)')
-          : 'var(--sub)',
+        color: active ? 'var(--card)' : 'var(--sub)',
         background: active ? activeColor || 'var(--ink)' : 'transparent',
         border: `1px solid ${active ? (activeColor || 'var(--border)') : 'transparent'}`,
         transition: 'all 0.2s ease-in-out',

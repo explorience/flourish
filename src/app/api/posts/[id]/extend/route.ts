@@ -67,3 +67,14 @@ export async function POST(
 
   return NextResponse.json({ ok: true, newExpiresAt: newExpiresAt.toISOString() });
 }
+
+// Expiry-reminder emails link here with a plain GET. Don't mutate state on GET
+// (CSRF); send the user to their post where the Extend button does a POST.
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin;
+  const id = encodeURIComponent(params.id);
+  return NextResponse.redirect(`${appUrl}/post/${id}?action=extend`);
+}

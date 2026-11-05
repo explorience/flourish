@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { POST_EXPIRY_DAYS } from '@/lib/constants';
+import { isAuthorizedCron } from '@/lib/security';
 
 function getSupabase() {
   return createClient(
@@ -11,10 +12,8 @@ function getSupabase() {
 
 // Auto-expire old posts. Call via cron daily.
 export async function POST(req: NextRequest) {
-  // Simple auth check - use a secret or skip for now
-  const authHeader = req.headers.get('authorization');
-  const cronSecret = process.env.CRON_SECRET;
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  // Fails closed if CRON_SECRET is unset.
+  if (!isAuthorizedCron(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -31,7 +30,7 @@ export async function POST(req: NextRequest) {
 
   if (error) {
     console.error('Auto-expire error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Expire failed' }, { status: 500 });
   }
 
   return NextResponse.json({ 
@@ -40,3 +39,6 @@ export async function POST(req: NextRequest) {
     cutoffDate: cutoff.toISOString(),
   });
 }
+
+// Vercel Cron issues GET requests (with Authorization: Bearer $CRON_SECRET).
+export const GET = POST;

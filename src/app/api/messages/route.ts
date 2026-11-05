@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createAdmin } from '@supabase/supabase-js';
 import { sendEmail } from '@/lib/email';
+import { escapeHtml, rateLimit } from '@/lib/security';
+import { isBlockedEitherWay } from '@/lib/blocks';
+
+const MAX_MESSAGE_LENGTH = 4000;
+const MAX_MESSAGES_PER_HOUR = 60;
 
 function getAdmin() {
   return createAdmin(
@@ -17,9 +22,26 @@ export async function POST(req: NextRequest) {
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { threadId, content } = await req.json();
-    if (!threadId || !content?.trim()) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+    if (!threadId || typeof content !== 'string' || !content.trim()) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+    if (content.length > MAX_MESSAGE_LENGTH) {
+      return NextResponse.json({ error: `Messages are limited to ${MAX_MESSAGE_LENGTH} characters` }, { status: 400 });
+    }
+    if (!rateLimit(`msg:${user.id}`, 10, 60_000)) {
+      return NextResponse.json({ error: 'You are sending messages too quickly' }, { status: 429 });
+    }
 
     const admin = getAdmin();
+
+    // DB-backed rate limit (holds across serverless instances)
+    const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const { count: recent } = await admin
+      .from('messages')
+      .select('id', { count: 'exact', head: true })
+      .eq('sender_id', user.id)
+      .gte('created_at', hourAgo);
+    if ((recent || 0) >= MAX_MESSAGES_PER_HOUR) {
+      return NextResponse.json({ error: 'You are sending messages too quickly' }, { status: 429 });
+    }
 
     // Verify sender is a participant
     const { data: thread } = await admin
@@ -32,6 +54,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Not a participant' }, { status: 403 });
     }
 
+    const otherId = thread.poster_id === user.id ? thread.responder_id : thread.poster_id;
+    if (await isBlockedEitherWay(admin, user.id, otherId)) {
+      return NextResponse.json({ error: 'You can no longer message this person' }, { status: 403 });
+    }
+
     // Insert message
     const { data: message, error } = await admin
       .from('messages')
@@ -39,7 +66,10 @@ export async function POST(req: NextRequest) {
       .select()
       .single();
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) {
+      console.error('Message insert error:', error);
+      return NextResponse.json({ error: 'Could not send message' }, { status: 500 });
+    }
 
     // Update thread.last_message_at
     await admin.from('threads').update({ last_message_at: new Date().toISOString() }).eq('id', threadId);
@@ -61,8 +91,8 @@ export async function POST(req: NextRequest) {
           subject: `New message about "${postTitle}"`,
           html: `
             <div style="font-family: Georgia, serif; max-width: 500px; margin: 0 auto; padding: 32px; background: #f0ece0; color: #2c3a2e;">
-              <p style="font-size: 18px; margin-bottom: 8px;">Hey ${recipientName},</p>
-              <p style="margin-bottom: 24px; color: #4a5c4e;">Someone sent you a message about <strong>${postTitle}</strong>.</p>
+              <p style="font-size: 18px; margin-bottom: 8px;">Hey ${escapeHtml(recipientName)},</p>
+              <p style="margin-bottom: 24px; color: #4a5c4e;">Someone sent you a message about <strong>${escapeHtml(postTitle)}</strong>.</p>
               <a href="${threadUrl}" style="display: inline-block; background: #1a2a20; color: #f0ece0; padding: 12px 24px; text-decoration: none; font-family: sans-serif; font-size: 13px; font-weight: bold; letter-spacing: 0.05em; text-transform: uppercase;">View Conversation</a>
               <p style="margin-top: 32px; font-size: 12px; color: #7a8a78;">Flourish · Community Exchange</p>
             </div>

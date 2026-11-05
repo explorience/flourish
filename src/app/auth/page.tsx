@@ -14,14 +14,13 @@ export default async function AuthPage({
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
     // If already logged in, go where they wanted (default: home, not account)
-    const next = params.next || '/';
-    redirect(next);
+    redirect(safeNext(params.next));
   }
 
   return (
     <main className="min-h-screen flex flex-col bg-page">
       <header className="sticky top-0 z-40 backdrop-blur-xl border-b" style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}>
-        <div className="max-w-xl mx-auto px-5 flex items-center" style={{ height: "156px" }}>
+        <div className="max-w-xl mx-auto px-5 flex items-center" style={{ height: "64px" }}>
           <Link href="/" className="inline-flex items-center gap-2 text-xs color-sub">
             <ArrowLeft className="w-4 h-4" /> Back
           </Link>
@@ -38,9 +37,15 @@ export default async function AuthPage({
               Sign in to post or respond
             </p>
           </div>
-          <AuthForm />
+          <AuthForm next={safeNext(params.next)} />
         </div>
       </div>
     </main>
   );
+}
+
+// Only allow same-site relative paths (blocks //evil.example and scheme URLs).
+function safeNext(next?: string) {
+  if (!next || !next.startsWith('/') || next.startsWith('//') || next.includes('\\')) return '/';
+  return next;
 }

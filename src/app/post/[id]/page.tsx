@@ -6,15 +6,17 @@ import { PostDetailClient } from './post-detail-client';
 import { ArrowLeft, Clock, Phone, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { getModeratorByEmail } from '@/lib/admin';
+import { publicPost } from '@/lib/public-post';
 
 export default async function PostDetail({ params }: { params: { id: string } }) {
   const supabase = await createClient();
-  const { data: post } = await supabase.from('posts').select('*, responses(*)').eq('id', params.id).single();
+  const { data: rawPost } = await supabase.from('posts').select('*, responses(*)').eq('id', params.id).single();
 
   // Check moderation status for the current user
   const { data: { user } } = await supabase.auth.getUser();
   const isModerator = user?.email ? !!(await getModeratorByEmail(user.email)) : false;
-  if (!post) notFound();
+  if (!rawPost) notFound();
+  const post = publicPost(rawPost, user?.id);
 
   const categoryInfo = CATEGORIES.find((c) => c.value === post.category);
   const urgencyInfo = URGENCIES.find((u) => u.value === post.urgency);
@@ -25,7 +27,8 @@ export default async function PostDetail({ params }: { params: { id: string } })
   // Show "edited" when updated_at is more than 1 minute after created_at
   const createdMs = new Date(post.created_at).getTime();
   const updatedMs = new Date(post.updated_at).getTime();
-  const wasEdited = updatedMs - createdMs > 60_000;
+  // Status changes (given, closed) also bump updated_at, so only flag edits on active posts
+  const wasEdited = post.status === 'active' && updatedMs - createdMs > 60_000;
   const editedAgo = wasEdited
     ? formatDistanceToNow(new Date(post.updated_at), { addSuffix: true })
     : null;
@@ -38,7 +41,7 @@ export default async function PostDetail({ params }: { params: { id: string } })
         : 'radial-gradient(ellipse 80% 40% at 50% 0%, rgba(58,106,74,0.18) 0%, transparent 70%)',
     }}>
       <header className="sticky top-0 z-40 backdrop-blur-xl border-b" style={{ background: 'rgba(26,42,32,0.9)', borderColor: 'var(--border)' }}>
-        <div className="max-w-xl mx-auto px-5 flex items-center" style={{ height: "156px" }}>
+        <div className="max-w-xl mx-auto px-5 flex items-center" style={{ height: "64px" }}>
           <Link href="/" className="inline-flex items-center gap-2 text-xs color-sub">
             <ArrowLeft className="w-4 h-4" /> Back
           </Link>
