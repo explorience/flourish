@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { PostFeed } from '@/components/post-feed';
 import { Header } from '@/components/header';
 import { PostSomethingButton } from '@/components/post-something-button';
-import { APP_NAME, APP_TAGLINE, APP_DESCRIPTION } from '@/lib/constants';
+import { APP_NAME, APP_TAGLINE, APP_DESCRIPTION, APP_COMMUNITY } from '@/lib/constants';
 import { getModeratorByEmail } from '@/lib/admin';
 import { publicPost } from '@/lib/public-post';
 
@@ -43,13 +43,16 @@ export default async function Home() {
           {APP_NAME}
         </p>
         <p
-          className="text-base sm:text-xl mb-6 font-serif color-sub"
+          className="text-base sm:text-xl mb-3 font-serif color-sub"
         >
           {APP_DESCRIPTION}
         </p>
+        <p className="text-sm max-w-sm mx-auto mb-6 color-sub">
+          Neighbours in {APP_COMMUNITY} giving, lending and asking. No money, no selling. Porch pickup is the norm.
+        </p>
         <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
           <PostSomethingButton />
-          <a href="/map" className="px-8 py-3 text-sm font-bold uppercase tracking-wider transition-colors font-display color-heading"
+          <a href="/map" className="hero-secondary px-8 py-3 text-sm font-bold uppercase tracking-wider transition-colors font-display color-heading"
             style={{ border: '1.5px solid rgba(232,224,204,0.2)' }}>
             View map
           </a>
