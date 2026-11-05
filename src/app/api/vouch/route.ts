@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { createClient as createServerClient } from '@/lib/supabase/server';
 import { sendEmail } from '@/lib/email';
+import { escapeHtml } from '@/lib/security';
 
 function getAdminSupabase() {
   return createClient(
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
       .insert({
         voucher_id: user.id,
         vouchee_id: voucheeId,
-        context: context?.trim() || null,
+        context: typeof context === 'string' ? context.trim().slice(0, 500) || null : null,
         status: 'confirmed',
       })
       .select()
@@ -112,9 +113,9 @@ export async function POST(req: NextRequest) {
             <div style="max-width:560px;margin:0 auto;padding:40px 20px;background:#1a2a20;font-family:Georgia,serif;">
               <div style="background:#f0ece0;padding:36px;">
                 <div style="font-family:Arial,sans-serif;font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:0.15em;color:#7a8a78;margin-bottom:8px;">Welcome to the community</div>
-                <h1 style="font-size:22px;color:#1a2a20;margin:0 0 16px;line-height:1.3;">${voucherProfile.display_name} vouched for you!</h1>
+                <h1 style="font-size:22px;color:#1a2a20;margin:0 0 16px;line-height:1.3;">${escapeHtml(voucherProfile.display_name)} vouched for you!</h1>
                 <p style="font-size:15px;color:#4a5a48;margin:0 0 8px;">You're now a trusted member of ${appName}. You can post needs and offers, respond to others, and vouch for people you know.</p>
-                ${context ? `<p style="font-size:14px;color:#7a8a78;margin:16px 0 0;font-style:italic;">"${context}"</p>` : ''}
+                ${context ? `<p style="font-size:14px;color:#7a8a78;margin:16px 0 0;font-style:italic;">"${escapeHtml(String(context).slice(0, 500))}"</p>` : ''}
                 <a href="${appUrl}" style="display:block;margin-top:28px;padding:14px 24px;background:#3a6a4a;color:#f0ece0;text-decoration:none;font-family:Arial,sans-serif;font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:0.1em;text-align:center;">Start exchanging</a>
               </div>
             </div>

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { createPost } from '@/lib/posts';
+import { verifyTwilioSignature } from '@/lib/security';
 
 function getSupabase() {
   return createClient(
@@ -57,14 +59,49 @@ EXAMPLES OF GOOD RESPONSES:
 - "Got it - a ride to Vic Hospital on Tuesday afternoon. Want me to post that?"
 - "Posted! I'll text you when someone responds."`;
 
+// Max inbound SMS handled per phone per hour (limits LLM cost / abuse).
+const MAX_SMS_PER_HOUR = 30;
+
 export async function POST(req: NextRequest) {
   const supabase = getSupabase();
   const formData = await req.formData();
-  const body = (formData.get('Body') as string || '').trim();
-  const phone = formData.get('From') as string || '';
+
+  // Verify the request really came from Twilio. Without this anyone could
+  // POST a spoofed `From` number, read that person's conversation context
+  // back via the LLM reply and post on their behalf.
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  if (!authToken) {
+    console.error('TWILIO_AUTH_TOKEN not set — rejecting unverifiable SMS webhook');
+    return new NextResponse('Forbidden', { status: 403 });
+  }
+  const params: Record<string, string> = {};
+  formData.forEach((value, key) => {
+    if (typeof value === 'string') params[key] = value;
+  });
+  const candidateUrls = Array.from(new Set([
+    req.url,
+    `${APP_URL.replace(/\/$/, '')}/api/sms${req.nextUrl.search}`,
+  ]));
+  if (!verifyTwilioSignature(authToken, req.headers.get('x-twilio-signature'), candidateUrls, params)) {
+    return new NextResponse('Forbidden', { status: 403 });
+  }
+
+  const body = (params['Body'] || '').trim().slice(0, 1000);
+  const phone = params['From'] || '';
 
   if (!body || !phone) {
     return twiml('Text us to get started with Flourish.');
+  }
+
+  // Per-phone rate limit (DB-backed, so it holds across serverless instances).
+  const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  const { count: recentCount } = await supabase
+    .from('sms_sessions')
+    .select('id', { count: 'exact', head: true })
+    .eq('phone', phone)
+    .gte('created_at', hourAgo);
+  if ((recentCount || 0) >= MAX_SMS_PER_HOUR) {
+    return twiml("You've sent a lot of messages - give it a little while and try again.");
   }
 
   // Look up user in sms_users table (temporary — profiles migration pending)
@@ -142,31 +179,25 @@ export async function POST(req: NextRequest) {
   }
 
   // Create the post if LLM returned action data
-  if (postData) {
+  if (postData?.action === 'post') {
     const userName = user?.name || 'Neighbour';
-    const APP_ORIGIN = process.env.NEXT_PUBLIC_APP_URL || 'https://example.com';
 
-    // Use the posts API route so geocoding runs
-    const postRes = await fetch(`${APP_ORIGIN}/api/posts`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: postData.type,
-        title: postData.title,
-        details: postData.details || null,
-        category: postData.category || 'other',
-        urgency: 'flexible',
-        contact_name: userName,
-        contact_method: 'app',
-        contact_value: null,
-        source: 'sms',
-        source_phone: phone,
-        location_crossstreet: postData.location || null,
-        location_label: postData.location || null,
-      }),
-    });
+    // Create the post directly (geocoding runs inside createPost). The phone
+    // number comes from the Twilio-verified webhook, never from user input.
+    const result = await createPost(supabase, {
+      type: postData.type,
+      title: postData.title,
+      details: postData.details || null,
+      category: postData.category || 'other',
+      urgency: 'flexible',
+      contact_name: userName,
+      contact_method: 'app',
+      contact_value: null,
+      location_crossstreet: postData.location || null,
+      location_label: postData.location || null,
+    }, { smsPhone: phone });
 
-    if (!postRes.ok) {
+    if (result.error) {
       return twiml('Sorry, something went wrong posting that. Try again?');
     }
 

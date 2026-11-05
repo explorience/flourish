@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { isAuthorizedCron } from '@/lib/security';
 
 // Auto-post new listings to Facebook Page
 export async function POST(req: NextRequest) {
+  // Internal-only: previously unauthenticated, letting anyone publish arbitrary
+  // text to the community Facebook Page. Callers must send Bearer $CRON_SECRET.
+  if (!isAuthorizedCron(req)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   try {
     const { post } = await req.json();
     
@@ -39,7 +45,7 @@ export async function POST(req: NextRequest) {
     if (!response.ok) {
       const error = await response.text();
       console.error('Facebook post error:', error);
-      return NextResponse.json({ ok: false, error }, { status: 500 });
+      return NextResponse.json({ ok: false }, { status: 500 });
     }
 
     const result = await response.json();

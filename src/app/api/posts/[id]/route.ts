@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { sanitizeImageUrls } from '@/lib/security';
+
+const CATEGORIES = ['items', 'services', 'skills', 'space', 'other'];
+const URGENCIES = ['flexible', 'this_week', 'today'];
 
 // PUT /api/posts/[id] — update a post (owner only)
 export async function PUT(
@@ -35,21 +39,22 @@ export async function PUT(
     const body = await req.json();
     const { title, details, category, urgency, image_urls } = body;
 
-    if (!title?.trim()) {
+    if (typeof title !== 'string' || !title.trim()) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 });
     }
 
     const { data: updated, error: updateError } = await supabase
       .from('posts')
       .update({
-        title: title.trim(),
-        details: details?.trim() || null,
-        category: category || 'other',
-        urgency: urgency || 'flexible',
+        title: title.trim().slice(0, 200),
+        details: typeof details === 'string' ? details.trim().slice(0, 5000) || null : null,
+        category: CATEGORIES.includes(category) ? category : 'other',
+        urgency: URGENCIES.includes(urgency) ? urgency : 'flexible',
         updated_at: new Date().toISOString(),
-        image_urls: image_urls !== undefined ? (image_urls || []) : undefined,
+        image_urls: image_urls !== undefined ? sanitizeImageUrls(image_urls) : undefined,
       })
       .eq('id', id)
+      .eq('user_id', user.id)
       .select()
       .single();
 

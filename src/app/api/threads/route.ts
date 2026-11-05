@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createAdmin } from '@supabase/supabase-js';
+import { isBlockedEitherWay } from '@/lib/blocks';
 
 function getAdmin() {
   return createAdmin(
@@ -17,6 +18,7 @@ export async function POST(req: NextRequest) {
 
     const { postId, responderId } = await req.json();
     if (!postId || !responderId) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
+    if (responderId === user.id) return NextResponse.json({ error: 'Cannot message yourself' }, { status: 400 });
 
     const admin = getAdmin();
 
@@ -24,6 +26,23 @@ export async function POST(req: NextRequest) {
     const { data: post } = await admin.from('posts').select('id, user_id, title').eq('id', postId).single();
     if (!post || post.user_id !== user.id) {
       return NextResponse.json({ error: 'Only the poster can start a thread' }, { status: 403 });
+    }
+
+    // The other party must actually have responded to this post — otherwise a
+    // poster could open DMs with any user id on the platform.
+    const { data: response } = await admin
+      .from('responses')
+      .select('id')
+      .eq('post_id', postId)
+      .eq('user_id', responderId)
+      .limit(1)
+      .maybeSingle();
+    if (!response) {
+      return NextResponse.json({ error: 'That person has not responded to this post' }, { status: 403 });
+    }
+
+    if (await isBlockedEitherWay(admin, user.id, responderId)) {
+      return NextResponse.json({ error: 'You can no longer message this person' }, { status: 403 });
     }
 
     // Upsert thread (unique constraint handles existing threads)
@@ -46,7 +65,8 @@ export async function POST(req: NextRequest) {
         .eq('responder_id', responderId)
         .single();
       if (existing) return NextResponse.json({ threadId: existing.id });
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error('Thread upsert error:', error);
+      return NextResponse.json({ error: 'Could not start conversation' }, { status: 500 });
     }
 
     return NextResponse.json({ threadId: thread.id });

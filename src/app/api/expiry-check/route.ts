@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { sendEmail } from '@/lib/email';
+import { isAuthorizedCron } from '@/lib/security';
 
 function getSupabase() {
   return createClient(
@@ -115,8 +116,7 @@ ${appUrl}`;
 
 export async function GET(req: NextRequest) {
   // Verify cron secret
-  const cronSecret = req.headers.get('x-cron-secret') || req.nextUrl.searchParams.get('secret');
-  if (cronSecret !== process.env.CRON_SECRET) {
+  if (!isAuthorizedCron(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -140,7 +140,7 @@ export async function GET(req: NextRequest) {
 
   if (error) {
     console.error('Expiry check query error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Query failed' }, { status: 500 });
   }
 
   if (!expiringPosts || expiringPosts.length === 0) {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { createClient as createServerClient } from '@/lib/supabase/server';
 import { sendEmail } from '@/lib/email';
+import { escapeHtml } from '@/lib/security';
 
 function getAdminSupabase() {
   return createClient(
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { code } = await req.json();
-    if (!code) {
+    if (!code || typeof code !== 'string') {
       return NextResponse.json({ error: 'Invite code required' }, { status: 400 });
     }
 
@@ -108,7 +109,7 @@ export async function POST(req: NextRequest) {
             <div style="max-width:560px;margin:0 auto;padding:40px 20px;background:#1a2a20;font-family:Georgia,serif;">
               <div style="background:#f0ece0;padding:36px;">
                 <div style="font-family:Arial,sans-serif;font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:0.15em;color:#7a8a78;margin-bottom:8px;">Invite redeemed</div>
-                <h1 style="font-size:22px;color:#1a2a20;margin:0 0 16px;">${displayName} joined with your invite!</h1>
+                <h1 style="font-size:22px;color:#1a2a20;margin:0 0 16px;">${escapeHtml(displayName)} joined with your invite!</h1>
                 <p style="font-size:15px;color:#4a5a48;">Your invite code was used. They're now a trusted member of the community.</p>
               </div>
             </div>

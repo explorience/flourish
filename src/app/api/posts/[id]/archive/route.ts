@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createServiceClient } from '@/lib/supabase/server';
+import { getModeratorByEmail } from '@/lib/admin';
 
 export async function POST(
   req: NextRequest,
@@ -24,18 +25,27 @@ export async function POST(
     }
 
     // Owner or moderator can archive
-    const isModOrAdmin = false; // TODO: wire up mod/admin check
-    if (existing.user_id !== user.id && !isModOrAdmin) {
+    const isOwner = existing.user_id === user.id;
+    const isModOrAdmin = !isOwner && !!user.email && !!(await getModeratorByEmail(user.email));
+    if (!isOwner && !isModOrAdmin) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    await supabase
+    // Moderators archive other people's posts, which RLS (correctly) blocks
+    // for the user client, so use the service client for that case only.
+    const writer = isOwner ? supabase : await createServiceClient();
+    const { error: updateError } = await writer
       .from('posts')
       .update({
         status: 'archived',
         updated_at: new Date().toISOString(),
       })
       .eq('id', id);
+
+    if (updateError) {
+      console.error('Post archive update error:', updateError);
+      return NextResponse.json({ error: 'Could not archive post' }, { status: 500 });
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {
