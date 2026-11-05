@@ -18,6 +18,11 @@ export function PostSomethingButton() {
     isVouchRequiredClient().then(setVouchRequired);
     supabase.auth.getUser().then(({ data: { user } }) => {
       setIsLoggedIn(!!user);
+      // Came back from sign-in with intent to post: open the form straight away
+      if (user && new URLSearchParams(window.location.search).get('post') === '1') {
+        setShowCreate(true);
+        window.history.replaceState(null, '', window.location.pathname);
+      }
       if (user) {
         supabase.from('profiles').select('vouch_status').eq('id', user.id).single()
           .then(({ data }) => {
@@ -30,7 +35,7 @@ export function PostSomethingButton() {
   const handleClick = () => {
     if (isLoggedIn === null) return; // Still loading, do nothing
     if (!isLoggedIn) {
-      window.location.href = '/auth?next=/';
+      window.location.href = '/auth?next=' + encodeURIComponent('/?post=1');
       return;
     }
     if (vouchRequired && vouchStatus === 'unvouched') {

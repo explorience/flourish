@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { CATEGORIES, URGENCIES } from '@/lib/constants';
 import type { PostType, Category, Urgency, ContactMethod } from '@/types/database';
@@ -26,6 +26,18 @@ export function CreatePostForm({ onClose }: CreatePostFormProps) {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [imageUploading, setImageUploading] = useState(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase.from('profiles').select('display_name').eq('id', user.id).single()
+        .then(({ data }) => {
+          const n = data?.display_name || user.user_metadata?.display_name;
+          if (n) setContactName((cur) => cur || n);
+        });
+    });
+  }, []);
 
   const handleSubmit = async () => {
     if (!type || !title.trim() || !contactName.trim()) return;

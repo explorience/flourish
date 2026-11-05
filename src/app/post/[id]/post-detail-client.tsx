@@ -82,6 +82,15 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
     setThreading(null);
   };
 
+  const [closing, setClosing] = useState(false);
+  const markDone = async () => {
+    setClosing(true);
+    const supabase = createClient();
+    const { error } = await supabase.from('posts').update({ status: 'fulfilled' }).eq('id', post.id);
+    setClosing(false);
+    if (!error) router.refresh();
+  };
+
   const extendPost = async () => {
     setExtending(true);
     try {
@@ -174,6 +183,27 @@ export function PostDetailClient({ post, isModerator = false }: PostDetailClient
               {isNeed ? 'I can help with this' : 'I\'m interested in this'}
             </button>
           )}
+        </div>
+      )}
+
+      {/* Mark as given / received: the moment that matters most, so it lives on the post itself */}
+      {isPoster && post.status === 'active' && (
+        <div className="mb-4">
+          <button
+            onClick={markDone}
+            disabled={closing}
+            className="w-full py-4 rounded-2xl text-base font-bold transition-all font-display color-card disabled:opacity-60"
+            style={{ background: 'var(--offer)' }}
+          >
+            {closing ? 'Saving…' : isNeed ? 'Sorted! I got what I needed' : 'Mark as given'}
+          </button>
+        </div>
+      )}
+
+      {isPoster && post.status === 'fulfilled' && (
+        <div className="mb-6 p-4 rounded-2xl text-center" style={{ background: 'rgba(240,236,224,0.08)', border: '1.5px dashed var(--border)' }}>
+          <p className="font-display font-bold color-heading">{isNeed ? 'Glad it worked out.' : 'Gift given. Thank you!'}</p>
+          <p className="text-sm mt-1 font-serif color-sub">Want to say thanks publicly? A quick note makes the next neighbour braver.</p>
         </div>
       )}
 

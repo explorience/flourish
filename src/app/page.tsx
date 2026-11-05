@@ -4,6 +4,7 @@ import { Header } from '@/components/header';
 import { PostSomethingButton } from '@/components/post-something-button';
 import { APP_NAME, APP_TAGLINE, APP_DESCRIPTION } from '@/lib/constants';
 import { getModeratorByEmail } from '@/lib/admin';
+import { publicPost } from '@/lib/public-post';
 
 export const revalidate = 0;
 
@@ -58,7 +59,7 @@ export default async function Home() {
       {/* Feed */}
       <section className="w-full px-4 sm:px-6 lg:px-8 pb-24 flex flex-col items-center">
         <div className="w-full">
-          <PostFeed initialPosts={posts || []} isModerator={isModerator} />
+          <PostFeed initialPosts={(posts || []).map((p) => publicPost(p, user?.id))} isModerator={isModerator} />
         </div>
       </section>
     </main>
